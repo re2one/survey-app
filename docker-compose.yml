@@ -1,0 +1,14 @@
+version: '3'
+services:
+
+  survey_app_db:
+    image: mariadb:latest
+    container_name: SurveyAppDB
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'SurveyAppDB'
+      MYSQL_USER: 'survey_admin'
+      MYSQL_PASSWORD: '1337'
+      MYSQL_ROOT_PASSWORD: '1337'
+    ports:
+      - '3306:3306'
