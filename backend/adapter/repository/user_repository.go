@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"survey-app-backend/model"
 )
@@ -17,7 +18,16 @@ type UserRepository interface {
 	Delete(u *model.User) (*model.User, error)
 }
 
+type UserAlreadyExistsError struct{
+	user *model.User
+}
+
+func (uaee UserAlreadyExistsError) Error () string {
+	return fmt.Sprintf("User %+v already exists.\n", uaee.user)
+}
+
 func NewUserRepository(db *gorm.DB) UserRepository {
+	db.AutoMigrate(&model.User{})
 	return &userRepository{db}
 }
 
@@ -42,17 +52,16 @@ func (ur *userRepository) Find(u *model.User) (*model.User, error) {
 }
 
 func (ur *userRepository) Add(u *model.User) (*model.User, error) {
-	userExists := ur.db.NewRecord(u)
-	var err error
-	if userExists != true {
+	// userExists := ur.db.NewRecord(u)
+	var foundUsers []model.User
+	ur.db.Where("email = ?", u.Email).Find(&foundUsers)
+
+	if len(foundUsers) < 1 {
 		ur.db.Create(&u)
-
-	}
-
-	if err != nil {
+	} else {
+		err := UserAlreadyExistsError{u}
 		return nil, err
 	}
-
 	return u, nil
 }
 

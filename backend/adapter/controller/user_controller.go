@@ -2,6 +2,8 @@ package controller
 
 import (
 	"net/http"
+	"fmt"
+	"github.com/labstack/echo"
 	"survey-app-backend/model"
 	"survey-app-backend/usecase/interactor"
 )
@@ -13,7 +15,7 @@ type userController struct {
 type UserController interface {
 	GetAll(c Context) error
 	Get(c Context) error
-	Add(c Context) error
+	Add(c echo.Context) error
 	Update(c Context) error
 	Delete(c Context) error
 }
@@ -44,9 +46,12 @@ func (uc *userController) Get(c Context) error {
 	return c.JSON(http.StatusOK, u)
 }
 
-func (uc *userController) Add(c Context) error {
-	var u *model.User
-
+func (uc *userController) Add(c echo.Context) error {
+	u := new(model.User)
+	if err := c.Bind(u); err != nil {
+		return err
+	  }
+	fmt.Printf("%+v\n", u)
 	u, err := uc.userInteractor.Add(u)
 	if err != nil {
 		return err
