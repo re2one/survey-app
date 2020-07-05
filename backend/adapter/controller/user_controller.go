@@ -13,18 +13,18 @@ type userController struct {
 }
 
 type UserController interface {
-	GetAll(c Context) error
-	Get(c Context) error
+	GetAll(c echo.Context) error
+	Get(c echo.Context) error
 	Add(c echo.Context) error
-	Update(c Context) error
-	Delete(c Context) error
+	Update(c echo.Context) error
+	Delete(c echo.Context) error
 }
 
 func NewUserController(us interactor.UserInteractor) UserController {
 	return &userController{us}
 }
 
-func (uc *userController) GetAll(c Context) error {
+func (uc *userController) GetAll(c echo.Context) error {
 	var u []*model.User
 
 	u, err := uc.userInteractor.GetAll(u)
@@ -35,15 +35,15 @@ func (uc *userController) GetAll(c Context) error {
 	return c.JSON(http.StatusOK, u)
 }
 
-func (uc *userController) Get(c Context) error {
-	var u *model.User
+func (uc *userController) Get(c echo.Context) error {
+	u := model.User{Email: c.QueryParam("email")}
 
-	u, err := uc.userInteractor.Get(u)
+	result, err := uc.userInteractor.Get(&u)
 	if err != nil {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, u)
+	return c.JSON(http.StatusOK, result)
 }
 
 func (uc *userController) Add(c echo.Context) error {
@@ -60,7 +60,7 @@ func (uc *userController) Add(c echo.Context) error {
 	return c.JSON(http.StatusOK, u)
 }
 
-func (uc *userController) Update(c Context) error {
+func (uc *userController) Update(c echo.Context) error {
 	var u *model.User
 
 	u, err := uc.userInteractor.Update(u)
@@ -71,13 +71,13 @@ func (uc *userController) Update(c Context) error {
 	return c.JSON(http.StatusOK, u)
 }
 
-func (uc *userController) Delete(c Context) error {
-	var u *model.User
+func (uc *userController) Delete(c echo.Context) error {
+	u := model.User{Email: c.QueryParam("email")}
 
-	u, err := uc.userInteractor.Delete(u)
+	result, err := uc.userInteractor.Delete(&u)
 	if err != nil {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, u)
+	return c.JSON(http.StatusOK, result)
 }

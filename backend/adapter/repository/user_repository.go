@@ -42,7 +42,7 @@ func (ur *userRepository) FindAll(u []*model.User) ([]*model.User, error) {
 }
 
 func (ur *userRepository) Find(u *model.User) (*model.User, error) {
-	err := ur.db.Where("name = ?", u.Name).First(&u).Error
+	err := ur.db.Where("email = ?", u.Email).First(&u).Error
 
 	if err != nil {
 		return nil, err
@@ -76,11 +76,13 @@ func (ur *userRepository) Update(u *model.User) (*model.User, error) {
 }
 
 func (ur *userRepository) Delete(u *model.User) (*model.User, error) {
-	err := ur.db.Find(&u).Error
+	err := ur.db.Where("email = ?", u.Email).First(&u).Error
 
 	if err != nil {
 		return nil, err
 	}
+
+	ur.db.Delete(&u)
 
 	return u, nil
 }

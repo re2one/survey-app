@@ -8,6 +8,6 @@ RUN go build -o main .
 
 WORKDIR /dist
 
-RUN cp /build/main .
+RUN cp /app/main .
 
 CMD ["/dist/main"]
