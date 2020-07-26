@@ -15,7 +15,7 @@ type userInteractor struct {
 
 type UserInteractor interface {
 	Get(u *model.User) (*response.UserResponse, error)
-	Post(u *model.User) (*model.User, error)
+	Post(u *model.User, role string) (*response.UserResponse, error)
 }
 
 func NewUserInteractor(
@@ -50,12 +50,25 @@ func (us *userInteractor) Get(u *model.User) (*response.UserResponse, error) {
 	return res, nil
 }
 
-func (us *userInteractor) Post(u *model.User) (*model.User, error) {
-	u, err := us.UserRepository.Post(u)
+func (us *userInteractor) Post(u *model.User, role string) (*response.UserResponse, error) {
+	var err error
+	var res *response.UserResponse
+	var r *model.Role
+
+	u, err = us.UserRepository.Post(u)
 	if err != nil {
 		return nil, err
 	}
 
-	// return us.UserPresenter.SignupResponse(u), nil
-	return nil, nil
+	r, err = us.RoleRepository.Post(u, role)
+	if err != nil {
+		return nil, err
+	}
+
+	// hhhhh
+	res, err = us.UserPresenter.SignupResponse(u, r)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }

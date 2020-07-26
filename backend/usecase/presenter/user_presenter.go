@@ -6,6 +6,6 @@ import (
 )
 
 type UserPresenter interface {
-	SignupResponse(u *model.User) *model.User
+	SignupResponse(u *model.User, r *model.Role) (*response.UserResponse, error)
 	LoginResponse(u *model.User, r *model.Role) (*response.UserResponse, error)
 }

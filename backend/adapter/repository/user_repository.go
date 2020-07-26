@@ -49,8 +49,8 @@ func (ur *userRepository) Get(u *model.User) (*model.User, error) {
 
 func (ur *userRepository) Post(u *model.User) (*model.User, error) {
 	// userExists := ur.db.NewRecord(u)
-	var user model.User
-	err := ur.db.Where("email = ?", u.Email).First(&user).Error
+	// var user model.User
+	err := ur.db.Where("email = ?", u.Email).First(&u).Error
 
 	if err != nil {
 		ur.db.Create(&u)

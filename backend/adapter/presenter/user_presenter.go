@@ -13,7 +13,7 @@ type userPresenter struct {
 // fooo
 type UserPresenter interface {
 	LoginResponse(us *model.User, r *model.Role) (*response.UserResponse, error)
-	SignupResponse(us *model.User) *model.User
+	SignupResponse(us *model.User, r *model.Role) (*response.UserResponse, error)
 }
 
 // exported function
@@ -30,7 +30,11 @@ func (up *userPresenter) LoginResponse(user *model.User, r *model.Role) (*respon
 	return &response.UserResponse{Role: r.Role, Username: user.Name, Token: token}, nil
 }
 
-func (up *userPresenter) SignupResponse(user *model.User) *model.User {
+func (up *userPresenter) SignupResponse(user *model.User, r *model.Role) (*response.UserResponse, error) {
+	token, err := (*up.auth).CreateToken(user, r)
+	if err != nil {
+		return nil, err
+	}
 
-	return user
+	return &response.UserResponse{Role: r.Role, Username: user.Name, Token: token}, nil
 }

@@ -50,13 +50,20 @@ func (uc *userController) Login(writer http.ResponseWriter, request *http.Reques
 
 func (uc *userController) Signup(writer http.ResponseWriter, request *http.Request) {
 
+	var defaultRole string = "user"
+
 	// setting up a json decoder that returns an error if it encounters any fields not present in Message-struct
 	decoder := json.NewDecoder(request.Body)
 	decoder.DisallowUnknownFields()
 
 	var user model.User
+	decoderErr := decoder.Decode(&user)
+	if decoderErr != nil {
+		handleDecoderError(decoderErr, writer)
+		return
+	}
 
-	result, err := uc.userInteractor.Post(&user)
+	result, err := uc.userInteractor.Post(&user, defaultRole)
 	if err != nil {
 		return
 	}
