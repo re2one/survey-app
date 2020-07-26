@@ -1,9 +1,10 @@
 package repository
 
 import (
+	"backend/model"
 	"fmt"
+
 	"github.com/jinzhu/gorm"
-	"survey-app-backend/model"
 )
 
 type userRepository struct {
@@ -11,19 +12,24 @@ type userRepository struct {
 }
 
 type UserRepository interface {
-	FindAll(u []*model.User) ([]*model.User, error)
-	Find(u *model.User) (*model.User, error)
-	Add(u *model.User) (*model.User, error)
-	Update(u *model.User) (*model.User, error)
-	Delete(u *model.User) (*model.User, error)
+	Get(u *model.User) (*model.User, error)
+	Post(u *model.User) (*model.User, error)
 }
 
-type UserAlreadyExistsError struct{
+type UserAlreadyExistsError struct {
 	user *model.User
 }
 
-func (uaee UserAlreadyExistsError) Error () string {
-	return fmt.Sprintf("User %+v already exists.\n", uaee.user)
+func (u UserAlreadyExistsError) Error() string {
+	return fmt.Sprintf("User %+v already exists.\n", u.user)
+}
+
+type UserNotFoundError struct {
+	user *model.User
+}
+
+func (u UserNotFoundError) Error() string {
+	return fmt.Sprintf("User %+v not found.\n", u.user)
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {
@@ -31,19 +37,9 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepository{db}
 }
 
-func (ur *userRepository) FindAll(u []*model.User) ([]*model.User, error) {
-	err := ur.db.Find(&u).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return u, nil
-}
-
-func (ur *userRepository) Find(u *model.User) (*model.User, error) {
+func (ur *userRepository) Get(u *model.User) (*model.User, error) {
+	//check if record exists
 	err := ur.db.Where("email = ?", u.Email).First(&u).Error
-
 	if err != nil {
 		return nil, err
 	}
@@ -51,38 +47,16 @@ func (ur *userRepository) Find(u *model.User) (*model.User, error) {
 	return u, nil
 }
 
-func (ur *userRepository) Add(u *model.User) (*model.User, error) {
+func (ur *userRepository) Post(u *model.User) (*model.User, error) {
 	// userExists := ur.db.NewRecord(u)
-	var foundUsers []model.User
-	ur.db.Where("email = ?", u.Email).Find(&foundUsers)
+	var user model.User
+	err := ur.db.Where("email = ?", u.Email).First(&user).Error
 
-	if len(foundUsers) < 1 {
+	if err != nil {
 		ur.db.Create(&u)
 	} else {
-		err := UserAlreadyExistsError{u}
+		err = UserAlreadyExistsError{u}
 		return nil, err
 	}
-	return u, nil
-}
-
-func (ur *userRepository) Update(u *model.User) (*model.User, error) {
-	err := ur.db.Find(&u).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return u, nil
-}
-
-func (ur *userRepository) Delete(u *model.User) (*model.User, error) {
-	err := ur.db.Where("email = ?", u.Email).First(&u).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	ur.db.Delete(&u)
-
 	return u, nil
 }

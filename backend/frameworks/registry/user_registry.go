@@ -1,12 +1,12 @@
 package registry
 
 import (
-	"survey-app-backend/adapter/controller"
-	ip "survey-app-backend/adapter/presenter"
-	ir "survey-app-backend/adapter/repository"
-	"survey-app-backend/usecase/interactor"
-	up "survey-app-backend/usecase/presenter"
-	ur "survey-app-backend/usecase/repository"
+	"backend/adapter/controller"
+	ip "backend/adapter/presenter"
+	ir "backend/adapter/repository"
+	"backend/usecase/interactor"
+	up "backend/usecase/presenter"
+	ur "backend/usecase/repository"
 )
 
 func (r *registry) NewUserController() controller.UserController {
@@ -14,7 +14,7 @@ func (r *registry) NewUserController() controller.UserController {
 }
 
 func (r *registry) NewUserInteractor() interactor.UserInteractor {
-	return interactor.NewUserInteractor(r.NewUserRepository(), r.NewUserPresenter())
+	return interactor.NewUserInteractor(r.NewUserRepository(), r.NewRoleRepository(), r.NewUserPresenter())
 }
 
 func (r *registry) NewUserRepository() ur.UserRepository {
@@ -22,5 +22,9 @@ func (r *registry) NewUserRepository() ur.UserRepository {
 }
 
 func (r *registry) NewUserPresenter() up.UserPresenter {
-	return ip.NewUserPresenter()
+	return ip.NewUserPresenter(r.auth)
+}
+
+func (r *registry) NewRoleRepository() ur.RoleRepository {
+	return ir.NewRoleRepository(r.db)
 }

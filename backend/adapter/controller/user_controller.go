@@ -1,83 +1,73 @@
 package controller
 
 import (
+	"backend/model"
+	"backend/usecase/interactor"
+	"encoding/json"
 	"net/http"
-	"fmt"
-	"github.com/labstack/echo"
-	"survey-app-backend/model"
-	"survey-app-backend/usecase/interactor"
+
+	"github.com/rs/zerolog/log"
 )
 
 type userController struct {
 	userInteractor interactor.UserInteractor
 }
 
+// UserController defines functions available for requesat handling
 type UserController interface {
-	GetAll(c echo.Context) error
-	Get(c echo.Context) error
-	Add(c echo.Context) error
-	Update(c echo.Context) error
-	Delete(c echo.Context) error
+	Login(writer http.ResponseWriter, request *http.Request)
+	Signup(writer http.ResponseWriter, request *http.Request)
 }
 
+// NewUserController provides functions for request handling
 func NewUserController(us interactor.UserInteractor) UserController {
 	return &userController{us}
 }
 
-func (uc *userController) GetAll(c echo.Context) error {
-	var u []*model.User
+func (uc *userController) Login(writer http.ResponseWriter, request *http.Request) {
 
-	u, err := uc.userInteractor.GetAll(u)
-	if err != nil {
-		return err
+	// setting up a json decoder that returns an error if it encounters any fields not present in Message-struct
+	decoder := json.NewDecoder(request.Body)
+	decoder.DisallowUnknownFields()
+
+	var user model.User
+	decoderErr := decoder.Decode(&user)
+	if decoderErr != nil {
+		handleDecoderError(decoderErr, writer)
+		return
 	}
 
-	return c.JSON(http.StatusOK, u)
+	result, err := uc.userInteractor.Get(&user)
+	if err != nil {
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(result)
+	return
 }
 
-func (uc *userController) Get(c echo.Context) error {
-	u := model.User{Email: c.QueryParam("email")}
+func (uc *userController) Signup(writer http.ResponseWriter, request *http.Request) {
 
-	result, err := uc.userInteractor.Get(&u)
+	// setting up a json decoder that returns an error if it encounters any fields not present in Message-struct
+	decoder := json.NewDecoder(request.Body)
+	decoder.DisallowUnknownFields()
+
+	var user model.User
+
+	result, err := uc.userInteractor.Post(&user)
 	if err != nil {
-		return err
+		return
 	}
 
-	return c.JSON(http.StatusOK, result)
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(result)
+	return
 }
 
-func (uc *userController) Add(c echo.Context) error {
-	u := new(model.User)
-	if err := c.Bind(u); err != nil {
-		return err
-	  }
-	fmt.Printf("%+v\n", u)
-	u, err := uc.userInteractor.Add(u)
-	if err != nil {
-		return err
-	}
-
-	return c.JSON(http.StatusOK, u)
-}
-
-func (uc *userController) Update(c echo.Context) error {
-	var u *model.User
-
-	u, err := uc.userInteractor.Update(u)
-	if err != nil {
-		return err
-	}
-
-	return c.JSON(http.StatusOK, u)
-}
-
-func (uc *userController) Delete(c echo.Context) error {
-	u := model.User{Email: c.QueryParam("email")}
-
-	result, err := uc.userInteractor.Delete(&u)
-	if err != nil {
-		return err
-	}
-
-	return c.JSON(http.StatusOK, result)
+func handleDecoderError(err error, writer http.ResponseWriter) {
+	log.Err(err).Caller().Msg("Error while decoding the passed User.")
+	http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }

@@ -1,35 +1,32 @@
-
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
 
+	"github.com/gorilla/mux"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/labstack/echo"
 
-	// "github.com/manakuro/golang-clean-architecture/config"
-	"survey-app-backend/frameworks/persistence"
-	"survey-app-backend/frameworks/router"
-	"survey-app-backend/frameworks/registry"
+	"backend/common"
+	"backend/frameworks/persistence"
+	"backend/frameworks/registry"
 )
 
 func main() {
-	// config.ReadConfig()
 
+	appKey := "saldkjhasdlkfjblwkjahwpdojabldpmfblaowidh"
+	auth := common.NewAuth(appKey)
 	db := persistence.NewDB()
 	db.LogMode(true)
 	defer db.Close()
 
-	r := registry.NewRegistry(db)
+	router := mux.NewRouter()
+	reg := registry.NewRegistry(db, &auth)
+	// apiRouter := router.PathPrefix("/api").Subrouter()
 
-	e := echo.New()
-	e = router.NewRouter(e, r.NewAppController())
+	userController := reg.NewUserHandler()
+	router.HandleFunc("/signup", userController.Signup).Methods("POST")
+	router.HandleFunc("/login", userController.Login).Methods("POST")
 
-	fmt.Println("Server listen at http://localhost" + ":" + "8081")
-	//config.C.Server.Address)
-	if err := e.Start(":" + "8081"); err != nil {
-	// config.C.Server.Address); err != nil {
-		log.Fatalln(err)
-	}
+	log.Fatal(http.ListenAndServe(":8081", router))
 }

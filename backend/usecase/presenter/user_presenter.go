@@ -1,8 +1,11 @@
 package presenter
 
-import "survey-app-backend/model"
+import (
+	"backend/model"
+	"backend/model/response"
+)
 
 type UserPresenter interface {
-	ResponseUsers(u []*model.User) []*model.User
-	ResponseUser(u *model.User) *model.User
+	SignupResponse(u *model.User) *model.User
+	LoginResponse(u *model.User, r *model.Role) (*response.UserResponse, error)
 }

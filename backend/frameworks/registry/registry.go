@@ -1,22 +1,27 @@
 package registry
 
 import (
+	"backend/adapter/controller"
+	"backend/common"
+
 	"github.com/jinzhu/gorm"
-	"survey-app-backend/adapter/controller"
 )
 
 type registry struct {
-	db *gorm.DB
+	db   *gorm.DB
+	auth *common.Auth
 }
 
+// Registry xyz
 type Registry interface {
-	NewAppController() controller.AppController
+	NewUserHandler() controller.UserController
 }
 
-func NewRegistry(db *gorm.DB) Registry {
-	return &registry{db}
+// registry xyz
+func NewRegistry(db *gorm.DB, auth *common.Auth) Registry {
+	return registry{db, auth}
 }
 
-func (r *registry) NewAppController() controller.AppController {
+func (r registry) NewUserHandler() controller.UserController {
 	return r.NewUserController()
 }

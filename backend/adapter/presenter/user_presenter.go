@@ -1,29 +1,36 @@
 package presenter
 
-import "survey-app-backend/model"
+import (
+	"backend/common"
+	"backend/model"
+	"backend/model/response"
+)
 
 type userPresenter struct {
+	auth *common.Auth
 }
 
+// fooo
 type UserPresenter interface {
-	ResponseUsers(us []*model.User) []*model.User
-	ResponseUser(us *model.User) *model.User
+	LoginResponse(us *model.User, r *model.Role) (*response.UserResponse, error)
+	SignupResponse(us *model.User) *model.User
 }
 
-func NewUserPresenter() UserPresenter {
-	return &userPresenter{}
+// exported function
+func NewUserPresenter(a *common.Auth) UserPresenter {
+	return &userPresenter{a}
 }
 
-func (up *userPresenter) ResponseUsers(us []*model.User) []*model.User {
-	// for _, u := range us {
-	// 	u.Name = "Mr." + u.Name
-	// }
-	return us
+func (up *userPresenter) LoginResponse(user *model.User, r *model.Role) (*response.UserResponse, error) {
+	token, err := (*up.auth).CreateToken(user, r)
+	if err != nil {
+		return nil, err
+	}
+
+	return &response.UserResponse{Role: r.Role, Username: user.Name, Token: token}, nil
 }
 
-func (up *userPresenter) ResponseUser(u *model.User) *model.User {
-	// for _, u := range us {
-	// 	u.Name = "Mr." + u.Name
-	// }
-	return u
+func (up *userPresenter) SignupResponse(user *model.User) *model.User {
+
+	return user
 }
