@@ -7,6 +7,8 @@ import (
 	"github.com/gorilla/mux"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
+	// "github.com/rs/cors"
+
 	"backend/common"
 	"backend/frameworks/persistence"
 	"backend/frameworks/registry"
@@ -27,6 +29,8 @@ func main() {
 	userController := reg.NewUserHandler()
 	router.HandleFunc("/signup", userController.Signup).Methods("POST")
 	router.HandleFunc("/login", userController.Login).Methods("POST")
+
+	// corsRouter := cors.Default().Handler(router)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }

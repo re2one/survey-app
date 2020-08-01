@@ -15,17 +15,18 @@ COPY . .
 
 # ARG CONFIG=production
 
-RUN npm run build -- --output-path=./dist/out
+####RUN npm run build -- --output-path=./dist/out
 # --configuration $CONFIG --source-map=false --aot=false
+## RUN npm run runlocal
 
 # stage 1: run nginx web server
 
-# load nginx latest image
-FROM nginx:latest
+# # load nginx latest image
+# FROM nginx:latest
 
-# copy nginx config and certificate
-COPY nginx /etc/nginx/
+# # copy nginx config and certificate
+# COPY nginx /etc/nginx/
 
-# create and copy ng output to nginx html directoy
-WORKDIR /usr/share/nginx/html
-COPY --from=builder /usr/src/app/dist/out /usr/share/nginx/html
+# # create and copy ng output to nginx html directoy
+# WORKDIR /usr/share/nginx/html
+# COPY --from=builder /usr/src/app/dist/out /usr/share/nginx/html
