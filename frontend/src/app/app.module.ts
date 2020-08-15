@@ -14,8 +14,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import { SurveysComponent } from './components/surveys/surveys.component';
-
-import { HttpClientModule } from '@angular/common/http';
+import {AuthInterceptor} from './services/auth-interceptor.service';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
 import { environment } from '../environments/environment';
 
@@ -43,7 +43,15 @@ import { environment } from '../environments/environment';
   ],
   providers: [
     AppModule,
-    {provide: 'BACKEND_API_URL', useValue: environment.backendUrl},
+    {
+      provide: 'BACKEND_API_URL',
+      useValue: environment.backendUrl
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })
