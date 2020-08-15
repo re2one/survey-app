@@ -71,7 +71,6 @@ func (uc *userController) Signup(writer http.ResponseWriter, request *http.Reque
 	}
 
 	writer.Header().Set("Content-Type", "application/json")
-	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(result)
 	return

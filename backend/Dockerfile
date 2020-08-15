@@ -10,4 +10,4 @@ WORKDIR /dist
 
 RUN cp /app/main .
 
-CMD ["/dist/main"]
+CMD ["/dist/main", "-dbhost=SurveyAppDB:3306"]

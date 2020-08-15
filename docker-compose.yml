@@ -1,35 +1,35 @@
 version: '3'
 services:
 
-  survey_app_backend:
-    container_name: survey_app_backend
-    restart: always
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "81:8081"
-    depends_on:
-      - survey_app_db
-    networks:
-      - survey_app_network
+#  survey_app_backend:
+#    container_name: survey_app_backend
+#    restart: always
+#    build:
+#      context: ./backend
+#      dockerfile: Dockerfile
+#    ports:
+#      - "81:8081"
+#    depends_on:
+#      - survey_app_db
+#    networks:
+#      - survey_app_network
 
-  survey_app_frontend:
-    container_name: survey_app_frontend
-    restart: always
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - survey_app_db
-      - survey_app_backend
-    networks:
-      - survey_app_network
-    # command:
-    #   - "npm run runlocal"
+#  survey_app_frontend:
+#    container_name: survey_app_frontend
+#    restart: always
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    depends_on:
+#      - survey_app_db
+#      - survey_app_backend
+#    networks:
+#      - survey_app_network
+#    environment:
+#      BACKEND_URL: survey_app_backend
 
   survey_app_db:
     image: mariadb:latest

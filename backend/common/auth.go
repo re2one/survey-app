@@ -2,6 +2,7 @@ package common
 
 import (
 	"backend/model"
+	"backend/model/response"
 	"os"
 	"time"
 
@@ -14,7 +15,7 @@ type auth struct {
 
 // auth interface
 type Auth interface {
-	CreateToken(*model.User, *model.Role) (string, error)
+	CreateToken(*model.User, *model.Role) (*response.Token, error)
 }
 
 // blub
@@ -22,7 +23,7 @@ func NewAuth(appKey string) Auth {
 	return auth{appKey}
 }
 
-func (a auth) CreateToken(u *model.User, r *model.Role) (string, error) {
+func (a auth) CreateToken(u *model.User, r *model.Role) (*response.Token, error) {
 	var err error
 	//Creating Access Token
 	// os.Setenv("ACCESS_SECRET", "jdnfksdmfksd") //this should be in an env file
@@ -31,11 +32,12 @@ func (a auth) CreateToken(u *model.User, r *model.Role) (string, error) {
 	atClaims["email"] = u.Email
 	atClaims["password"] = u.Password
 	atClaims["role"] = r.Role
-	atClaims["exp"] = time.Now().Add(time.Minute * 15).Unix()
+	exp := time.Now().Add(time.Minute * 15).Unix()
+	atClaims["expiresAt"] = exp
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	token, err := at.SignedString([]byte(os.Getenv(a.AppKey)))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return token, nil
+	return &response.Token{Token: token, ExpiresAt: exp}, nil
 }

@@ -27,7 +27,7 @@ func (up *userPresenter) LoginResponse(user *model.User, r *model.Role) (*respon
 		return nil, err
 	}
 
-	return &response.UserResponse{Role: r.Role, Username: user.Name, Token: token}, nil
+	return &response.UserResponse{Role: r.Role, Username: user.Name, Token: token.Token, ExpiresAt: token.ExpiresAt}, nil
 }
 
 func (up *userPresenter) SignupResponse(user *model.User, r *model.Role) (*response.UserResponse, error) {
@@ -36,5 +36,5 @@ func (up *userPresenter) SignupResponse(user *model.User, r *model.Role) (*respo
 		return nil, err
 	}
 
-	return &response.UserResponse{Role: r.Role, Username: user.Name, Token: token}, nil
+	return &response.UserResponse{Role: r.Role, Username: user.Name, Token: token.Token, ExpiresAt: token.ExpiresAt}, nil
 }

@@ -17,6 +17,8 @@ import { SurveysComponent } from './components/surveys/surveys.component';
 
 import { HttpClientModule } from '@angular/common/http';
 
+import { environment } from '../environments/environment';
+
 
 
 @NgModule({
@@ -40,7 +42,8 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule
   ],
   providers: [
-    AppModule
+    AppModule,
+    {provide: 'BACKEND_API_URL', useValue: environment.backendUrl},
   ],
   bootstrap: [AppComponent]
 })

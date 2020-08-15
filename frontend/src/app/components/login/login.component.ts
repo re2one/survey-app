@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.loginService.isLoggedIn()){
+    if (this.loginService.isLoggedIn()){
       this.router.navigate(['/surveys']);
     }
   }
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
   onLoginSubmit(loginData): void {
     // Process checkout data here
     // this.items = this.cartService.clearCart();
-    this.loginForm.reset();
+    // this.loginForm.reset();
 
     // console.warn('LOGIN', loginData);
     this.loginService.getAccessToken(loginData.email, loginData.password).subscribe(
@@ -54,6 +54,7 @@ export class LoginComponent implements OnInit {
       error => console.log(error)
       // this.error.setError(error)
     );
+    this.loginForm.reset();
   }
 
   onSignupSubmit(signupData): void {
