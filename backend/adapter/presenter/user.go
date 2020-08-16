@@ -7,7 +7,7 @@ import (
 )
 
 type userPresenter struct {
-	auth *common.Auth
+	auth *common.Authenticator
 }
 
 // fooo
@@ -17,7 +17,7 @@ type UserPresenter interface {
 }
 
 // exported function
-func NewUserPresenter(a *common.Auth) UserPresenter {
+func NewUserPresenter(a *common.Authenticator) UserPresenter {
 	return &userPresenter{a}
 }
 

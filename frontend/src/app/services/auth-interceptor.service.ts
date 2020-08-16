@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
 import {Observable} from 'rxjs';
 import {LoginService} from './login.service';
 import {tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
-// import {OnofflineService} from './onoffline.service';
-import {environment} from '../../environments/environment';
 
 
 @Injectable({
@@ -13,7 +12,6 @@ import {environment} from '../../environments/environment';
 
 export class AuthInterceptor {
 
-  // constructor(private loginService: LoginService, private router: Router, private onofflineService: OnofflineService) {
   constructor(private loginService: LoginService, private router: Router) {
 
   }
@@ -28,15 +26,7 @@ export class AuthInterceptor {
         headers: req.headers.set('Authorization',
           'Bearer ' + idToken)
       });
-      /*
-      if (environment.debug)
-        console.log('HTTP INTERCEPTOR REQ > ', req);
-        */
       return next.handle(cloned).pipe(tap((error: HttpEvent<any>) => {
-        /*
-        if (environment.debug)
-          console.log('HTTP INTERCEPTOR RES < ', error);
-         */
         if (error instanceof HttpErrorResponse) {
           if (error.status === 401) {
             this.router.navigate(['/login']);

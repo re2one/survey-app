@@ -17,6 +17,7 @@ type userController struct {
 type UserController interface {
 	Login(writer http.ResponseWriter, request *http.Request)
 	Signup(writer http.ResponseWriter, request *http.Request)
+	RefreshToken(writer http.ResponseWriter, request *http.Request)
 }
 
 // NewUserController provides functions for request handling
@@ -45,7 +46,6 @@ func (uc *userController) Login(writer http.ResponseWriter, request *http.Reques
 	writer.Header().Set("Content-Type", "application/json")
 
 	writer.Header().Set("Access-Control-Allow-Origin", "*")
-	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(result)
 	return
 }
@@ -71,7 +71,18 @@ func (uc *userController) Signup(writer http.ResponseWriter, request *http.Reque
 	}
 
 	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(result)
+	return
+}
+
+func (uc *userController) RefreshToken(writer http.ResponseWriter, request *http.Request) {
+	result, err := uc.userInteractor.Refresh(request)
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to update token.")
+		writer.WriteHeader(http.StatusForbidden)
+		return
+	}
+	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(result)
 	return
 }

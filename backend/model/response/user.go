@@ -8,6 +8,6 @@ type UserResponse struct {
 }
 
 type Token struct {
-	Token     string
-	ExpiresAt int64
+	Token     string `json:"token"`
+	ExpiresAt int64  `json:"expiresAt"`
 }
