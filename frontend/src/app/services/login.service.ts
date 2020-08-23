@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {Router} from '@angular/router';
 import {environment} from '../../environments/environment';
 import {of} from 'rxjs';
 import * as moment from 'moment';
@@ -12,7 +13,8 @@ import * as moment from 'moment';
 export class LoginService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) { }
   getPubkey(): Observable<object>{
     return this.http.get(`/api/pubkey`);
@@ -48,26 +50,11 @@ export class LoginService {
     localStorage.removeItem('username');
     localStorage.removeItem('role');
     localStorage.removeItem('email');
+    this.router.navigate(['/login']);
   }
-  /*
-  public isLoggedIn(): Promise<boolean>{
-    return new Promise<boolean> ( (resolve, reject) => {
-      this.refresh().subscribe((response: HttpResponse<AuthResponse>) => {
-        if (response.status === 200) {
-          const now = new Date();
-          const expiration = new Date(response.body.expiresAt * 1000);
-          if (expiration >= now) {
-            resolve(true);
-          }
-        }
-        resolve(false);
-      });
-    });
-  }
-  */
   public isLoggedIn(): Observable<boolean>{
     return new Observable<boolean> ( observer => {
-      this.refresh().subscribe((response: HttpResponse<any>) => {
+      this.refresh().subscribe((response: HttpResponse<AuthResponse>) => {
         if (response.status === 200) {
           const now = new Date();
           const expiration = new Date(response.body.expiresAt * 1000);
@@ -89,11 +76,10 @@ export class LoginService {
   isLoggedOut(): boolean {
     return !this.isLoggedIn();
   }
-  getExpiration(): number {
-  // getExpiration(): moment.Moment {
-    const expiration = localStorage.getItem('expiresAt');
-    // return moment(expiration);
-    return parseInt(expiration, 10);
+
+  hasToken(): boolean {
+    const token = localStorage.getItem('idToken');
+    return token !== null;
   }
 
   isAdmin(): Observable<boolean>{

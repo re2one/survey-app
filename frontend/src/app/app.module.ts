@@ -13,6 +13,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import {MatMenu, MatMenuModule} from '@angular/material/menu';
 import { SurveysComponent } from './components/surveys/surveys.component';
 import {AuthInterceptor} from './services/auth-interceptor.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
@@ -39,6 +40,7 @@ import { environment } from '../environments/environment';
     MatSelectModule,
     MatInputModule,
     MatButtonModule,
+    MatMenuModule,
     HttpClientModule
   ],
   providers: [

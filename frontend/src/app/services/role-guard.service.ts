@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {LoginService} from './login.service';
 import {Observable, of} from 'rxjs';
-import {map, catchError} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuardService implements CanActivate{
+export class RoleGuardService implements CanActivate {
 
   constructor(private loginService: LoginService, private router: Router) { }
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean>{
-    return this.loginService.isLoggedIn().pipe(
+    return this.loginService.isAdmin().pipe(
       map(
         response => {
           if (response) {
@@ -20,8 +20,7 @@ export class AuthGuardService implements CanActivate{
             this.loginService.logout();
             return false;
           }
-        })
-      ,
+        }),
       catchError((err, response) => {
         this.loginService.logout();
         return of(false);

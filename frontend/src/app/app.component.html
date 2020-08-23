@@ -532,5 +532,12 @@
 
 <mat-toolbar>
   <span>Crispy Survey App</span>
+  <span>
+    <button *ngIf="isLoggedIn()" [matMenuTriggerFor]="menu">Menu</button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="logout()">Logout</button>
+    </mat-menu>
+  </span>
+
 </mat-toolbar>
 <router-outlet></router-outlet>
