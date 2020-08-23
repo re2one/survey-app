@@ -40,14 +40,20 @@ func main() {
 	ui := interactor.NewUserInteractor(ur, rr, up, authorizer, authenticator)
 	uc := controller.NewUserController(ui)
 
+	sr := repository.NewSurveyRepository(db)
+	sc := controller.NewSurveyController(sr)
+
 	pc := controller.NewPubkeyController()
-	sc := controller.NewSurveyController()
 
 	router := mux.NewRouter()
 	router.HandleFunc("/api/signup", uc.Signup).Methods(http.MethodPost)
 	router.HandleFunc("/api/login", uc.Login).Methods(http.MethodPost)
 	router.HandleFunc("/api/pubkey", pc.Get).Methods(http.MethodGet)
-	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("user", sc.Test)).Methods(http.MethodGet)
+	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("user", sc.GetAll)).Methods(http.MethodGet)
+	router.HandleFunc("/api/surveys/:title", authorizer.IsAuthorized("user", sc.Test)).Methods(http.MethodGet)
+	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("admin", sc.Test)).Methods(http.MethodPost)
+	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("admin", sc.Test)).Methods(http.MethodPut)
+	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("admin", sc.Test)).Methods(http.MethodDelete)
 	router.HandleFunc("/api/refresh", authorizer.IsAuthorized("user", uc.RefreshToken)).Methods(http.MethodGet)
 
 	log.Fatal(http.ListenAndServe(":8081", router))

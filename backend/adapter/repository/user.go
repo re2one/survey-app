@@ -2,6 +2,8 @@ package repository
 
 import (
 	"backend/model"
+	"backend/usecase/repository"
+
 	"fmt"
 
 	"github.com/jinzhu/gorm"
@@ -9,11 +11,6 @@ import (
 
 type userRepository struct {
 	db *gorm.DB
-}
-
-type UserRepository interface {
-	Get(u *model.User) (*model.User, error)
-	Post(u *model.User) (*model.User, error)
 }
 
 type UserAlreadyExistsError struct {
@@ -32,7 +29,7 @@ func (u UserNotFoundError) Error() string {
 	return fmt.Sprintf("User %+v not found.\n", u.user)
 }
 
-func NewUserRepository(db *gorm.DB) UserRepository {
+func NewUserRepository(db *gorm.DB) repository.UserRepository {
 	db.AutoMigrate(&model.User{})
 	return &userRepository{db}
 }
@@ -52,11 +49,11 @@ func (ur *userRepository) Post(u *model.User) (*model.User, error) {
 	// var user model.User
 	err := ur.db.Where("email = ?", u.Email).First(&u).Error
 
-	if err != nil {
-		ur.db.Create(&u)
-	} else {
+	if err == nil {
 		err = UserAlreadyExistsError{u}
 		return nil, err
 	}
+
+	ur.db.Create(&u)
 	return u, nil
 }
