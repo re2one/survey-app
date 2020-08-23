@@ -9,10 +9,10 @@ import (
 	"github.com/gorilla/mux"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
-	"backend/adapter/controller"
 	"backend/adapter/presenter"
 	"backend/adapter/repository"
 	"backend/common"
+	"backend/controller"
 	"backend/frameworks/persistence"
 	"backend/usecase/interactor"
 )
@@ -31,14 +31,6 @@ func main() {
 		return
 	}
 
-	/*publicKey, err := ioutil.ReadFile("common/keys/jwtRS256.key.pub")
-	if err != nil {
-		return
-	}*/
-	/*
-		fmt.Println(string(publicKey))
-		fmt.Println(string(privateKey))
-	*/
 	authenticator := common.NewAuthenticator(string(privateKey))
 	authorizer := common.NewAuthorizer(string(privateKey))
 
@@ -48,11 +40,13 @@ func main() {
 	ui := interactor.NewUserInteractor(ur, rr, up, authorizer, authenticator)
 	uc := controller.NewUserController(ui)
 
+	pc := controller.NewPubkeyController()
 	sc := controller.NewSurveyController()
 
 	router := mux.NewRouter()
 	router.HandleFunc("/api/signup", uc.Signup).Methods(http.MethodPost)
 	router.HandleFunc("/api/login", uc.Login).Methods(http.MethodPost)
+	router.HandleFunc("/api/pubkey", pc.Get).Methods(http.MethodGet)
 	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("user", sc.Test)).Methods(http.MethodGet)
 	router.HandleFunc("/api/refresh", authorizer.IsAuthorized("user", uc.RefreshToken)).Methods(http.MethodGet)
 

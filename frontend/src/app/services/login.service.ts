@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {of} from 'rxjs';
@@ -14,6 +14,9 @@ export class LoginService {
   constructor(
     private http: HttpClient
   ) { }
+  getPubkey(): Observable<object>{
+    return this.http.get(`/api/pubkey`);
+  }
 
   getAccessToken(email: string, password: string): Observable<object> {
       return this.http.post(`/api/login`, {
@@ -45,22 +48,39 @@ export class LoginService {
     localStorage.removeItem('username');
     localStorage.removeItem('role');
     localStorage.removeItem('email');
-    // this.username = null;
   }
-
-  // getUserName() {
-  //   if (this.username == null) {
-  //     return (this.username = localStorage.getItem('username'));
-  //   }
-  //   return this.username;
-  // }
-
-  public isLoggedIn(): boolean {
-    // return localStorage.getItem('id_token') !== null;
-    // return moment().isBefore(this.getExpiration());
-    const now = new Date();
-    const expiration = new Date(this.getExpiration() * 1000);
-    return now < expiration;
+  /*
+  public isLoggedIn(): Promise<boolean>{
+    return new Promise<boolean> ( (resolve, reject) => {
+      this.refresh().subscribe((response: HttpResponse<AuthResponse>) => {
+        if (response.status === 200) {
+          const now = new Date();
+          const expiration = new Date(response.body.expiresAt * 1000);
+          if (expiration >= now) {
+            resolve(true);
+          }
+        }
+        resolve(false);
+      });
+    });
+  }
+  */
+  public isLoggedIn(): Observable<boolean>{
+    return new Observable<boolean> ( observer => {
+      this.refresh().subscribe((response: HttpResponse<AuthResponse>) => {
+        if (response.status === 200) {
+          const now = new Date();
+          const expiration = new Date(response.body.expiresAt * 1000);
+          if (expiration >= now) {
+            observer.next(true);
+          }
+        }
+        observer.next(false);
+      });
+    });
+  }
+  refresh(): Observable<HttpResponse<any>> {
+    return this.http.get(`/api/refresh`, {observe: 'response'});
   }
 
   isLoggedOut(): boolean {
@@ -76,4 +96,12 @@ export class LoginService {
   isAdmin(): boolean {
     return (localStorage.getItem('admin') || '').toLowerCase() === 'true';
   }
+}
+
+class AuthResponse {
+  idToken: string;
+  username: string;
+  email: string;
+  role: string;
+  expiresAt: number;
 }

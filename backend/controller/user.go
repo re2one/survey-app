@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"backend/model"
-	"backend/usecase/interactor"
 	"encoding/json"
 	"net/http"
+
+	"backend/model"
+	"backend/usecase/interactor"
 
 	"github.com/rs/zerolog/log"
 )

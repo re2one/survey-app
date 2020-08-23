@@ -3,6 +3,7 @@ package common
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/rs/zerolog/log"
 
@@ -32,6 +33,11 @@ func (a *authorizer) IsAuthorized(role string, next http.HandlerFunc) http.Handl
 		if err != nil {
 			log.Error().Err(err).Msg("Failed to decipher token.")
 			writer.WriteHeader(http.StatusForbidden)
+		}
+		if claims.ExpiresAt < time.Now().Unix() {
+			log.Error().Err(err).Msg("Token expired.")
+			writer.WriteHeader(http.StatusForbidden)
+			return
 		}
 		if claims.Role != role {
 			log.Error().Err(err).Msg("Wrong role.")
