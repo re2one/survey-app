@@ -19,14 +19,15 @@ func NewSurveyRepository(db *gorm.DB) repository.SurveyRepository {
 	return &surveyRepository{db}
 }
 
-func (sr *surveyRepository) Get(s *model.Survey) (*model.Survey, error) {
+func (sr *surveyRepository) Get(title string) (*model.Survey, error) {
 	//check if record exists
-	err := sr.db.Where("title = ?", s.Title).First(&s).Error
+	var s model.Survey
+	err := sr.db.Where("title = ?", title).First(&s).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return s, nil
+	return &s, nil
 }
 
 func (sr *surveyRepository) GetAll() ([]*model.Survey, error) {
