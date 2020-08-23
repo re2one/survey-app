@@ -1,6 +1,7 @@
 package common
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 	"time"
@@ -33,6 +34,7 @@ func (a *authorizer) IsAuthorized(role string, next http.HandlerFunc) http.Handl
 		if err != nil {
 			log.Error().Err(err).Msg("Failed to decipher token.")
 			writer.WriteHeader(http.StatusForbidden)
+			return
 		}
 		if claims.ExpiresAt < time.Now().Unix() {
 			log.Error().Err(err).Msg("Token expired.")
@@ -55,6 +57,7 @@ func (a *authorizer) UnwrapClaims(request *http.Request) (*model.CustomClaims, e
 	strArr := strings.Split(bearerToken, " ")
 	if len(strArr) != 2 {
 		log.Error().Msg("Incorrect token.")
+		return nil, errors.New("incorrect token")
 	}
 
 	claims := model.CustomClaims{}
@@ -63,6 +66,7 @@ func (a *authorizer) UnwrapClaims(request *http.Request) (*model.CustomClaims, e
 	})
 	if err != nil {
 		log.Error().Msg("failed to unwrap token.")
+		return nil, errors.New("failed to unwrap token")
 	}
 	return &claims, nil
 }

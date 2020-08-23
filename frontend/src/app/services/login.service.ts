@@ -67,7 +67,7 @@ export class LoginService {
   */
   public isLoggedIn(): Observable<boolean>{
     return new Observable<boolean> ( observer => {
-      this.refresh().subscribe((response: HttpResponse<AuthResponse>) => {
+      this.refresh().subscribe((response: HttpResponse<any>) => {
         if (response.status === 200) {
           const now = new Date();
           const expiration = new Date(response.body.expiresAt * 1000);
@@ -75,8 +75,11 @@ export class LoginService {
             observer.next(true);
           }
         }
-        observer.next(false);
-      });
+      },
+        error => {
+          console.log('auth failed');
+          observer.next(false);
+        });
     });
   }
   refresh(): Observable<HttpResponse<any>> {
@@ -93,8 +96,20 @@ export class LoginService {
     return parseInt(expiration, 10);
   }
 
-  isAdmin(): boolean {
-    return (localStorage.getItem('admin') || '').toLowerCase() === 'true';
+  isAdmin(): Observable<boolean>{
+    return new Observable<boolean> ( observer => {
+      this.refresh().subscribe((response: HttpResponse<AuthResponse>) => {
+        if (response.status === 200) {
+          if (response.body.role === 'admin') {
+            observer.next(true);
+          }
+        }
+      },
+        error => {
+          console.log('auth failed');
+          observer.next(false);
+        });
+    });
   }
 }
 
