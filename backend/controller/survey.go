@@ -95,19 +95,29 @@ func (uc *surveyController) Put(writer http.ResponseWriter, request *http.Reques
 	}
 	survey2, err := uc.surveyRepository.Put(&survey)
 	if err != nil {
-		log.Error().Err(err).Msg("unable to write post survey to db")
+		log.Error().Err(err).Msg("unable to update survey to db")
 		writer.WriteHeader(http.StatusInternalServerError)
 	}
 	r := SingleSurveyResp{Survey: survey2}
-	// xyz := &Resp{Message: "hey everybody, shit is authed!!"}
 	json.NewEncoder(writer).Encode(r)
 	return
 }
 
 func (uc *surveyController) Delete(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
-
-	// xyz := &Resp{Message: "hey everybody, shit is authed!!"}
-	json.NewEncoder(writer).Encode(nil)
+	v := mux.Vars(request)
+	survey, err := uc.surveyRepository.Get(v["id"])
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve survey.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	survey2, err := uc.surveyRepository.Delete(survey)
+	if err != nil {
+		log.Error().Err(err).Msg("unable delete survey from db")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+	r := SingleSurveyResp{Survey: survey2}
+	json.NewEncoder(writer).Encode(r)
 	return
 }

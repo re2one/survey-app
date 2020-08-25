@@ -72,7 +72,7 @@ func (sr *surveyRepository) Put(s *model.Survey) (*model.Survey, error) {
 
 func (sr *surveyRepository) Delete(s *model.Survey) (*model.Survey, error) {
 
-	err := sr.db.Where("ID = ?", s.Title).First(&s).Error
+	err := sr.db.Where("ID = ?", s.ID).First(&s).Error
 
 	if err != nil {
 		err = errors.New("No Survey to delete")

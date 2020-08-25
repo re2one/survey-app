@@ -53,7 +53,7 @@ func main() {
 	router.HandleFunc("/api/surveys/{id}", authorizer.IsAuthorized("user", sc.Get)).Methods(http.MethodGet)
 	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("admin", sc.Post)).Methods(http.MethodPost)
 	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("admin", sc.Put)).Methods(http.MethodPut)
-	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("admin", sc.Delete)).Methods(http.MethodDelete)
+	router.HandleFunc("/api/surveys/{id}", authorizer.IsAuthorized("admin", sc.Delete)).Methods(http.MethodDelete)
 	router.HandleFunc("/api/refresh", authorizer.IsAuthorized("user", uc.RefreshToken)).Methods(http.MethodGet)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
