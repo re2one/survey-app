@@ -41,7 +41,7 @@ func (a *authorizer) IsAuthorized(role string, next http.HandlerFunc) http.Handl
 			writer.WriteHeader(http.StatusForbidden)
 			return
 		}
-		if claims.Role != role {
+		if claims.Role != role && !(claims.Role == "admin") {
 			log.Error().Err(err).Msg("Wrong role.")
 			writer.WriteHeader(http.StatusForbidden)
 			return
