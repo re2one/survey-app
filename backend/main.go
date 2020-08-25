@@ -45,16 +45,26 @@ func main() {
 
 	pc := controller.NewPubkeyController()
 
+	qr := repository.NewQuestionRepository(db)
+	qc := controller.NewQuestionController(qr, sr)
+
 	router := mux.NewRouter()
 	router.HandleFunc("/api/signup", uc.Signup).Methods(http.MethodPost)
 	router.HandleFunc("/api/login", uc.Login).Methods(http.MethodPost)
 	router.HandleFunc("/api/pubkey", pc.Get).Methods(http.MethodGet)
+	router.HandleFunc("/api/refresh", authorizer.IsAuthorized("user", uc.RefreshToken)).Methods(http.MethodGet)
+
 	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("user", sc.GetAll)).Methods(http.MethodGet)
 	router.HandleFunc("/api/surveys/{id}", authorizer.IsAuthorized("user", sc.Get)).Methods(http.MethodGet)
 	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("admin", sc.Post)).Methods(http.MethodPost)
 	router.HandleFunc("/api/surveys", authorizer.IsAuthorized("admin", sc.Put)).Methods(http.MethodPut)
 	router.HandleFunc("/api/surveys/{id}", authorizer.IsAuthorized("admin", sc.Delete)).Methods(http.MethodDelete)
-	router.HandleFunc("/api/refresh", authorizer.IsAuthorized("user", uc.RefreshToken)).Methods(http.MethodGet)
+
+	router.HandleFunc("/api/questions/{surveyId}", authorizer.IsAuthorized("user", qc.GetAll)).Methods(http.MethodGet)
+	router.HandleFunc("/api/questions/single/{id}", authorizer.IsAuthorized("user", qc.Get)).Methods(http.MethodGet)
+	router.HandleFunc("/api/questions/{surveyId}", authorizer.IsAuthorized("admin", qc.Post)).Methods(http.MethodPost)
+	router.HandleFunc("/api/questions", authorizer.IsAuthorized("admin", qc.Put)).Methods(http.MethodPut)
+	router.HandleFunc("/api/questions/{id}", authorizer.IsAuthorized("admin", qc.Delete)).Methods(http.MethodDelete)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }

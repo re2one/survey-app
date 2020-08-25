@@ -29,19 +29,19 @@ func (sr *questionRepository) Get(title string) (*model.Question, error) {
 	return &s, nil
 }
 
-func (sr *questionRepository) GetAll() ([]*model.Question, error) {
+func (sr *questionRepository) GetAll(surveyId string) ([]*model.Question, error) {
 	//check if record exists
 	questions := make([]*model.Question, 0)
-	if err := sr.db.Find(&questions).Error; err != nil {
+	if err := sr.db.Where("survey_id = ?", surveyId).Find(&questions).Error; err != nil {
 		log.Fatalln(err)
 	}
 
 	return questions, nil
 }
 
-func (sr *questionRepository) Post(s *model.Question) (*model.Question, error) {
+func (sr *questionRepository) Post(surveyId string, s *model.Question) (*model.Question, error) {
 
-	err := sr.db.Where("title = ?", s.Title).First(&s).Error
+	err := sr.db.Where("title = ? and survey_id = ?", s.Title, surveyId).First(&s).Error
 
 	if err == nil {
 		err = errors.New("question already exists")
