@@ -22,7 +22,7 @@ func NewSurveyRepository(db *gorm.DB) repository.SurveyRepository {
 func (sr *surveyRepository) Get(title string) (*model.Survey, error) {
 	//check if record exists
 	var s model.Survey
-	err := sr.db.Where("title = ?", title).First(&s).Error
+	err := sr.db.Where("ID = ?", title).First(&s).Error
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (sr *surveyRepository) Post(s *model.Survey) (*model.Survey, error) {
 func (sr *surveyRepository) Put(s *model.Survey) (*model.Survey, error) {
 
 	var survey model.Survey
-	err := sr.db.Where("title = ?", s.Title).First(&survey).Error
+	err := sr.db.Where("ID = ?", s.Title).First(&survey).Error
 
 	if err != nil {
 		err = errors.New("Survey does not exists")
@@ -72,7 +72,7 @@ func (sr *surveyRepository) Put(s *model.Survey) (*model.Survey, error) {
 
 func (sr *surveyRepository) Delete(s *model.Survey) (*model.Survey, error) {
 
-	err := sr.db.Where("title = ?", s.Title).First(&s).Error
+	err := sr.db.Where("ID = ?", s.Title).First(&s).Error
 
 	if err != nil {
 		err = errors.New("No Survey to delete")

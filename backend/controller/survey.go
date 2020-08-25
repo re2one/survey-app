@@ -53,7 +53,7 @@ func (uc *surveyController) GetAll(writer http.ResponseWriter, request *http.Req
 func (uc *surveyController) Get(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	v := mux.Vars(request)
-	survey, err := uc.surveyRepository.Get(v["title"])
+	survey, err := uc.surveyRepository.Get(v["id"])
 	if err != nil {
 		log.Error().Err(err).Msg("Unable to retrieve survey.")
 		writer.WriteHeader(http.StatusInternalServerError)
