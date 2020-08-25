@@ -85,9 +85,22 @@ func (uc *surveyController) Post(writer http.ResponseWriter, request *http.Reque
 
 func (uc *surveyController) Put(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
-
+	var survey model.Survey
+	decoder := json.NewDecoder(request.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&survey)
+	if err != nil {
+		log.Error().Err(err).Msg("unable to decode survey post body")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+	survey2, err := uc.surveyRepository.Put(&survey)
+	if err != nil {
+		log.Error().Err(err).Msg("unable to write post survey to db")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+	r := SingleSurveyResp{Survey: survey2}
 	// xyz := &Resp{Message: "hey everybody, shit is authed!!"}
-	json.NewEncoder(writer).Encode(nil)
+	json.NewEncoder(writer).Encode(r)
 	return
 }
 

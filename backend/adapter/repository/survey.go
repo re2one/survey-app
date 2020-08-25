@@ -56,7 +56,7 @@ func (sr *surveyRepository) Post(s *model.Survey) (*model.Survey, error) {
 func (sr *surveyRepository) Put(s *model.Survey) (*model.Survey, error) {
 
 	var survey model.Survey
-	err := sr.db.Where("ID = ?", s.Title).First(&survey).Error
+	err := sr.db.Where("ID = ?", s.ID).First(&survey).Error
 
 	if err != nil {
 		err = errors.New("Survey does not exists")
