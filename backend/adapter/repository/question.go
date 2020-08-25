@@ -1,0 +1,81 @@
+package repository
+
+import (
+	"errors"
+	"github.com/jinzhu/gorm"
+	"log"
+
+	"backend/model"
+	"backend/usecase/repository"
+)
+
+type questionRepository struct {
+	db *gorm.DB
+}
+
+func NewQuestionRepository(db *gorm.DB) repository.QuestionRepository {
+	db.AutoMigrate(&model.Question{})
+	return &questionRepository{db}
+}
+
+func (sr *questionRepository) Get(title string) (*model.Question, error) {
+	//check if record exists
+	var s model.Question
+	err := sr.db.Where("ID = ?", title).First(&s).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &s, nil
+}
+
+func (sr *questionRepository) GetAll() ([]*model.Question, error) {
+	//check if record exists
+	questions := make([]*model.Question, 0)
+	if err := sr.db.Find(&questions).Error; err != nil {
+		log.Fatalln(err)
+	}
+
+	return questions, nil
+}
+
+func (sr *questionRepository) Post(s *model.Question) (*model.Question, error) {
+
+	err := sr.db.Where("title = ?", s.Title).First(&s).Error
+
+	if err == nil {
+		err = errors.New("question already exists")
+		return nil, err
+	}
+
+	sr.db.Create(&s)
+	return s, nil
+}
+
+func (sr *questionRepository) Put(s *model.Question) (*model.Question, error) {
+
+	var question model.Question
+	err := sr.db.Where("ID = ?", s.ID).First(&question).Error
+
+	if err != nil {
+		err = errors.New("question does not exists")
+		return nil, err
+	}
+	question.Title = s.Title
+	question.Text = s.Text
+	question.Type = s.Type
+	sr.db.Save(question)
+	return &question, nil
+}
+
+func (sr *questionRepository) Delete(s *model.Question) (*model.Question, error) {
+
+	err := sr.db.Where("ID = ?", s.ID).First(&s).Error
+
+	if err != nil {
+		err = errors.New("No question to delete")
+		return nil, err
+	}
+	sr.db.Delete(s)
+	return s, nil
+}
