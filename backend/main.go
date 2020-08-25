@@ -48,6 +48,9 @@ func main() {
 	qr := repository.NewQuestionRepository(db)
 	qc := controller.NewQuestionController(qr, sr)
 
+	cr := repository.NewChoiceRepository(db)
+	cc := controller.NewChoiceController(cr, qr)
+
 	router := mux.NewRouter()
 	router.HandleFunc("/api/signup", uc.Signup).Methods(http.MethodPost)
 	router.HandleFunc("/api/login", uc.Login).Methods(http.MethodPost)
@@ -65,6 +68,12 @@ func main() {
 	router.HandleFunc("/api/questions/{surveyId}", authorizer.IsAuthorized("admin", qc.Post)).Methods(http.MethodPost)
 	router.HandleFunc("/api/questions", authorizer.IsAuthorized("admin", qc.Put)).Methods(http.MethodPut)
 	router.HandleFunc("/api/questions/{id}", authorizer.IsAuthorized("admin", qc.Delete)).Methods(http.MethodDelete)
+
+	router.HandleFunc("/api/choices/{questionId}", authorizer.IsAuthorized("user", cc.GetAll)).Methods(http.MethodGet)
+	router.HandleFunc("/api/choices/single/{id}", authorizer.IsAuthorized("user", cc.Get)).Methods(http.MethodGet)
+	router.HandleFunc("/api/choices/{questionId}", authorizer.IsAuthorized("admin", cc.Post)).Methods(http.MethodPost)
+	router.HandleFunc("/api/choices", authorizer.IsAuthorized("admin", cc.Put)).Methods(http.MethodPut)
+	router.HandleFunc("/api/choices/{id}", authorizer.IsAuthorized("admin", cc.Delete)).Methods(http.MethodDelete)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }
