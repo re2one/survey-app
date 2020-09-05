@@ -2,3 +2,12 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-tab-labels {
+  justify-content: center;
+}
+
+.mat-tab-body-wrapper{
+  text-align: center;
+  margin-top: 5%;
+}

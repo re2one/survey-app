@@ -1,0 +1,10 @@
+.topbar-container {
+  flex-display: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar-element {
+  width: auto;
+  margin: 10px;
+}
