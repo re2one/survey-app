@@ -1,47 +1,50 @@
-<div >
-  <mat-tab-group mat-align-tabs="center">
+<div class="container">
+  <mat-tab-group mat-align-tabs="center" animationDuration="0ms" class="opacity">
       <mat-tab label="Login">
-          <div>
+          <div class="elem">
               <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit(loginForm.value)">
-                  <mat-form-field appearance="fill">
+                  <mat-form-field class="input" appearance="fill">
                       <mat-label>Email</mat-label>
                       <input matInput formControlName="email">
                   </mat-form-field>
                   <br>
-                  <mat-form-field appearance="fill">
+                  <mat-form-field class="input" appearance="fill">
                       <mat-label>Password</mat-label>
-                      <input matInput formControlName="password">
+                      <input matInput type="password" formControlName="password">
                   </mat-form-field>
                   <br>
-                  <button mat-raised-button type="submit" color="primary">Submit</button>
+                  <button mat-raised-button type="submit" class="input in2" [disabled]="!loginForm.valid">Submit</button>
               </form>
           </div>
 
       </mat-tab>
       <mat-tab label="Signup">
-          <div >
+          <div class="elem">
               <form [formGroup]="signupForm" (ngSubmit)="onSignupSubmit(signupForm.value)">
-                  <mat-form-field appearance="fill">
+                  <mat-form-field class="input" appearance="fill">
                       <mat-label>Username</mat-label>
                       <input matInput formControlName="username">
                   </mat-form-field>
                   <br>
-                  <mat-form-field appearance="fill">
+                  <mat-form-field class="input" appearance="fill">
                       <mat-label>Email</mat-label>
                       <input matInput formControlName="email">
                   </mat-form-field>
                   <br>
-                  <mat-form-field appearance="fill">
+                  <mat-form-field class="input" appearance="fill">
                       <mat-label>Password</mat-label>
-                      <input matInput formControlName="password">
+                      <input matInput type="password" formControlName="password">
                   </mat-form-field>
                   <br>
-                  <mat-form-field appearance="fill">
+                  <mat-form-field class="input" appearance="fill">
                       <mat-label>Repeat Password</mat-label>
-                      <input matInput formControlName="passwordConfirmation">
+                      <input matInput type="password" formControlName="passwordConfirmation">
+                      <!--<mat-error *ngIf="signupForm.get('passwordConfirmation').hasError('passwordsEqual')">
+                        Passwörter stimmen nicht überein.
+                      </mat-error>-->
                   </mat-form-field>
                   <br>
-                  <button mat-raised-button type="submit" color="primary">Submit</button>
+                  <button mat-raised-button class="input in2" type="submit" [disabled]="!signupForm.valid">Submit</button>
               </form>
           </div>
       </mat-tab>

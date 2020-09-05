@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthTestService} from '../../services/auth-test.service';
-import {Observable} from 'rxjs';
+import { SurveysService} from '../../services/surveys.service';
+import {LoginService} from '../../services/login.service';
+import {Survey, Surveys} from '../../models/survey';
+import {Observable, of} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-surveys',
@@ -8,18 +11,27 @@ import {Observable} from 'rxjs';
   styleUrls: ['./surveys.component.css']
 })
 export class SurveysComponent implements OnInit {
-  someValue: string;
+  localSurveys: Array<Survey>;
 
   constructor(
-    private authTestService: AuthTestService
-  ) { }
+    private surveysService: SurveysService,
+    private loginService: LoginService
+  ) {
+    this.localSurveys = [];
+  }
 
   ngOnInit(): void {
-    this.authTestService.get().subscribe( obj => {
-      this.someValue = obj.message;
-    }, error => {
-      console.log(error);
+    this.surveysService.getSurveys().subscribe( obj => {
+      obj.surveys.forEach(survey => {
+        this.localSurveys.push(survey);
+      });
     });
+    console.log(this.localSurveys);
+  }
+
+  permissionCheck(): boolean {
+    const role = localStorage.getItem('role');
+    return role === 'admin';
   }
 
 }

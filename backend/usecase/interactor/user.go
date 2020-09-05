@@ -1,6 +1,7 @@
 package interactor
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
@@ -41,10 +42,15 @@ func (us *userInteractor) Get(u *model.User) (*response.UserResponse, error) {
 	var r *model.Role
 	var err error
 	var res *response.UserResponse
+	var pw = u.Password
 
 	u, err = us.UserRepository.Get(u)
 	if err != nil {
 		return nil, err
+	}
+
+	if u.Password != pw {
+		return nil, errors.New("Wrong password")
 	}
 
 	r, err = us.RoleRepository.Get(u)

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import {FormGroup, FormBuilder, ValidationErrors, ValidatorFn} from '@angular/forms';
 import {Router} from '@angular/router';
+import {Validators} from '@angular/forms';
+import {MatError} from '@angular/material/form-field';
 import {HttpErrorResponse} from '@angular/common/http';
 import {LoginService} from '../../services/login.service';
 
@@ -21,15 +23,15 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
   ) {
     this.loginForm = this.formBuilder.group({
-      email: '',
-      password: ''
+      email: ['', [Validators.required]],
+      password: ['', [Validators.required]],
     });
     this.signupForm = this.formBuilder.group({
-      username: '',
-      email: '',
-      password: '',
-      passwordConfirmation: ''
-    });
+      username: ['', [Validators.required]],
+      email: ['', [Validators.required]],
+      password: ['', [Validators.required]],
+      passwordConfirmation: ['', [Validators.required]],
+    }, {validators: this.checkPasswords });
   }
 
   ngOnInit(): void {
@@ -73,5 +75,12 @@ export class LoginComponent implements OnInit {
       error => console.log(error)
       // this.error.setError(error)
     );
+  }
+
+  checkPasswords: ValidatorFn = (control: FormGroup): ValidationErrors | null => {// here we have the 'passwords' group
+    const pass = control.get('password').value;
+    const confirmPass = control.get('passwordConfirmation').value;
+
+    return pass === confirmPass ? null : {passwordsEqual: true};
   }
 }

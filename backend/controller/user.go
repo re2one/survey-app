@@ -39,12 +39,17 @@ func (uc *userController) Login(writer http.ResponseWriter, request *http.Reques
 		return
 	}
 
+	writer.Header().Set("Content-Type", "application/json")
+	if user.Password == "" || user.Email == "" {
+		log.Error().Str("username", user.Email).Str("Password", user.Password).Msg("Loginattempt with empty username or Password.")
+		writer.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	result, err := uc.userInteractor.Get(&user)
 	if err != nil {
 		return
 	}
-
-	writer.Header().Set("Content-Type", "application/json")
 
 	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(writer).Encode(result)
@@ -66,12 +71,18 @@ func (uc *userController) Signup(writer http.ResponseWriter, request *http.Reque
 		return
 	}
 
+	writer.Header().Set("Content-Type", "application/json")
+	if user.Password == "" || user.Email == "" {
+		log.Error().Msg("Loginattempt with empty username or Password.")
+		writer.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	result, err := uc.userInteractor.Post(&user, defaultRole)
 	if err != nil {
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(result)
 	return
 }
