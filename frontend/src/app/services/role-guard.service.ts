@@ -17,12 +17,12 @@ export class RoleGuardService implements CanActivate {
           if (response) {
             return true;
           } else {
-            this.loginService.logout();
+            this.router.navigate(['/surveys']);
             return false;
           }
         }),
       catchError((err, response) => {
-        this.loginService.logout();
+        this.router.navigate(['/surveys']);
         return of(false);
       })
     );

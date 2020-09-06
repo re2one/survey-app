@@ -14,8 +14,8 @@ const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: 'login', component: LoginComponent},
   {path: 'surveys', canActivate: [AuthGuardService], component: SurveysComponent},
-  {path: 'surveys/survey-add', canActivate: [AuthGuardService, RoleGuardService], component: SurveyAddComponent},
-  {path: 'surveys/survey-edit/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: SurveyEditComponent},
+  {path: 'surveys/add', canActivate: [AuthGuardService, RoleGuardService], component: SurveyAddComponent},
+  {path: 'surveys/edit/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: SurveyEditComponent},
   {path: '**', redirectTo: 'login'}
 ];
 

@@ -38,7 +38,7 @@ export class SurveysComponent implements OnInit{
     return role === 'admin';
   }
   moveToAddForm(): void {
-    this.router.navigate(['/surveys/survey-add']);
+    this.router.navigate(['/surveys/add']);
   }
   delete(id: number): void {
     this.surveysService.deleteSurvey(id).subscribe((response: HttpResponse<any>) => {
@@ -49,7 +49,7 @@ export class SurveysComponent implements OnInit{
     });
   }
   moveToEditForm(surveyId: number): void {
-    this.router.navigate(['/surveys/survey-edit', surveyId]);
+    this.router.navigate(['/surveys/edit', surveyId]);
   }
 
 }

@@ -65,15 +65,17 @@ export class LoginService {
     return new Observable<boolean> ( observer => {
       this.refresh().subscribe((response: HttpResponse<AuthResponse>) => {
         if (response.status === 200) {
+          this.refreshSession(response.body);
           const now = new Date();
           const expiration = new Date(response.body.expiresAt * 1000);
           if (expiration >= now) {
             observer.next(true);
+            return;
           }
         }
+        observer.next(false);
       },
         error => {
-          console.log('auth failed');
           observer.next(false);
         });
     });
@@ -95,14 +97,14 @@ export class LoginService {
     return new Observable<boolean> ( observer => {
       this.refresh().subscribe((response: HttpResponse<AuthResponse>) => {
         if (response.status === 200) {
-          this.refreshSession(response.body);
           if (response.body.role === 'admin') {
             observer.next(true);
+            return;
           }
         }
+        observer.next(false);
       },
         error => {
-          console.log('auth failed');
           observer.next(false);
         });
     });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
 import {LoginService} from './login.service';
 import {Observable, of} from 'rxjs';
 import {map, catchError} from 'rxjs/operators';
@@ -7,9 +7,9 @@ import {map, catchError} from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuardService implements CanActivate{
+export class AuthGuardService implements CanActivate {
 
-  constructor(private loginService: LoginService, private router: Router) { }
+  constructor(private loginService: LoginService) { }
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean>{
     return this.loginService.isLoggedIn().pipe(
       map(
