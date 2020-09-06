@@ -1,17 +1,17 @@
 <div class="card-container">
-  <div *ngFor="let survey of localSurveys" class="card">
+  <div *ngFor="let survey of localSurveys | keyvalue" class="card">
     <mat-card class="bg-color">
       <mat-card-header>
-        <mat-card-title>{{survey.title}}</mat-card-title>
+        <mat-card-title>{{survey.value.title}}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <p>
-          {{survey.summary}}
+          {{survey.value.summary}}
         </p>
       </mat-card-content>
       <mat-card-actions>
-        <button *ngIf="permissionCheck()" mat-button>EDIT</button>
-        <button *ngIf="permissionCheck()" mat-button>DELETE</button>
+        <button *ngIf="permissionCheck()" mat-button (click)="moveToEditForm(survey.value.ID)">EDIT</button>
+        <button *ngIf="permissionCheck()" mat-button (click)="delete(survey.value.ID)">DELETE</button>
       </mat-card-actions>
     </mat-card>
   </div>

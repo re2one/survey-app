@@ -22,7 +22,7 @@ export class SurveyAddComponent implements OnInit {
     this.surveysService.postSurvey(
       surveyData.title,
       surveyData.summary,
-      surveyData.description,
+      surveyData.introduction,
       surveyData.disclaimer
     ).subscribe((response: HttpResponse<SurveyResponse>) => {
       console.log(response);

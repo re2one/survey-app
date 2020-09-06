@@ -17,15 +17,35 @@ export class SurveysService {
   getSurveys(): Observable<Surveys> {
     return this.http.get<Surveys>(`/api/surveys`);
   }
+  getSurvey(surveyId): Observable<any> {
+    return this.http.get(`/api/surveys/${surveyId}`, {observe: 'response'});
+  }
   postSurvey(
     title: string,
     summary: string,
-    description: string,
+    introduction: string,
     disclaimer: string): Observable<HttpResponse<any>> {
     return this.http.post(`/api/surveys`, {
       title,
       summary,
-      description,
+      introduction,
+      disclaimer
+    }, {observe: 'response'});
+  }
+  deleteSurvey(id: number): Observable<HttpResponse<any>> {
+    return this.http.delete(`/api/surveys/${id}`, {observe: 'response'});
+  }
+  putSurvey(
+    ID: number,
+    title: string,
+    summary: string,
+    introduction: string,
+    disclaimer: string): Observable<HttpResponse<any>> {
+    return this.http.put(`/api/surveys`, {
+      ID,
+      title,
+      summary,
+      introduction,
       disclaimer
     }, {observe: 'response'});
   }
