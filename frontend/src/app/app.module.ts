@@ -21,6 +21,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
 import { environment } from '../environments/environment';
 import { SurveyFormComponent } from './components/survey-form/survey-form.component';
+import { SurveyAddComponent } from './components/survey-add/survey-add.component';
 
 
 
@@ -29,7 +30,8 @@ import { SurveyFormComponent } from './components/survey-form/survey-form.compon
     AppComponent,
     LoginComponent,
     SurveysComponent,
-    SurveyFormComponent
+    SurveyFormComponent,
+    SurveyAddComponent
   ],
   imports: [
     FormsModule,

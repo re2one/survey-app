@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  align-items: stretch;
+  height:100%;
+}
+
+.opacity {
+  margin-top: 5%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  max-height: 80%;
+  width: 60%;
+}
+
+.input {
+  background: rgba(255, 255, 255, 0.3);
+  margin-top: 10px;
+  border-radius: 5px;
+  width: 100%
+}
+
+.in2{
+  margin-bottom: 10px;
+}

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {Survey, Surveys} from '../models/survey';
+import {Survey, SurveyResponse, Surveys} from '../models/survey';
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +16,17 @@ export class SurveysService {
 
   getSurveys(): Observable<Surveys> {
     return this.http.get<Surveys>(`/api/surveys`);
+  }
+  postSurvey(
+    title: string,
+    summary: string,
+    description: string,
+    disclaimer: string): Observable<HttpResponse<any>> {
+    return this.http.post(`/api/surveys`, {
+      title,
+      summary,
+      description,
+      disclaimer
+    }, {observe: 'response'});
   }
 }

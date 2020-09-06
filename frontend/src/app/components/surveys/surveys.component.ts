@@ -36,7 +36,7 @@ export class SurveysComponent implements OnInit {
     return role === 'admin';
   }
   moveToAddForm(): void {
-    this.router.navigate(['/survey-form']);
+    this.router.navigate(['/surveys/survey-add']);
   }
 
 }

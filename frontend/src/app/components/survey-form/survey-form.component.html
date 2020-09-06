@@ -1,1 +1,26 @@
-<p>survey-form works!</p>
+<div class="container">
+  <form [formGroup]="surveyForm" (ngSubmit)="onSurveySubmit(surveyForm.value)" class="opacity">
+    <mat-form-field class="input" appearance="fill">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title">
+    </mat-form-field>
+    <br>
+    <mat-form-field class="input" appearance="fill">
+      <mat-label>Summary</mat-label>
+      <textarea matInput formControlName="summary"></textarea>
+    </mat-form-field>
+    <br>
+    <mat-form-field class="input" appearance="fill">
+      <mat-label>Disclaimer</mat-label>
+      <textarea matInput formControlName="disclaimer"></textarea>
+    </mat-form-field>
+    <br>
+    <mat-form-field class="input" appearance="fill">
+      <mat-label>Introduction</mat-label>
+      <textarea matInput formControlName="introduction"></textarea>
+    </mat-form-field>
+    <br>
+    <button mat-raised-button type="submit" class="input in2" [disabled]="!surveyForm.valid">Submit</button>
+
+  </form>
+</div>

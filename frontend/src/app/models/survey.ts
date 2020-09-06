@@ -12,3 +12,7 @@ export class Survey {
 export class Surveys {
   public surveys: Array<Survey>;
 }
+
+export class SurveyResponse {
+  public survey: Survey;
+}
