@@ -34,20 +34,21 @@ export class SurveyFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.surveyForm.reset();
-    if (this.getSurvey === true) {this.activatedRoute.paramMap.subscribe(params => {
-      this.surveyId = params.get('surveyId');
-      this.surveysService.getSurvey(this.surveyId).subscribe((response: HttpResponse<SurveyResponse>) => {
-        if (response.status === 200) {
-          this.survey = response.body.survey;
-          console.log(this.survey);
-          this.surveyForm.setValue({
-            title: this.survey.title,
-            summary: this.survey.summary,
-            disclaimer: this.survey.disclaimer,
-            introduction: this.survey.introduction});
-        }
+    if (this.getSurvey === true) {
+      this.activatedRoute.paramMap.subscribe(params => {
+        this.surveyId = params.get('surveyId');
+        this.surveysService.getSurvey(this.surveyId).subscribe((response: HttpResponse<SurveyResponse>) => {
+          if (response.status === 200) {
+            this.survey = response.body.survey;
+            console.log(this.survey);
+            this.surveyForm.setValue({
+              title: this.survey.title,
+              summary: this.survey.summary,
+              disclaimer: this.survey.disclaimer,
+              introduction: this.survey.introduction});
+          }
+        });
       });
-    });
     }
   }
   onSurveySubmit(surveyData): void{

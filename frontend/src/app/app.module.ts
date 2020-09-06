@@ -23,6 +23,8 @@ import { environment } from '../environments/environment';
 import { SurveyFormComponent } from './components/survey-form/survey-form.component';
 import { SurveyAddComponent } from './components/survey-add/survey-add.component';
 import { SurveyEditComponent } from './components/survey-edit/survey-edit.component';
+import { QuestionsComponent } from './components/questions/questions.component';
+import { SurveyDetailsComponent } from './components/survey-details/survey-details.component';
 
 
 
@@ -33,7 +35,9 @@ import { SurveyEditComponent } from './components/survey-edit/survey-edit.compon
     SurveysComponent,
     SurveyFormComponent,
     SurveyAddComponent,
-    SurveyEditComponent
+    SurveyEditComponent,
+    QuestionsComponent,
+    SurveyDetailsComponent
   ],
   imports: [
     FormsModule,

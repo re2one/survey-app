@@ -1,1 +1,20 @@
-<app-survey-form (formData)="onSurveySubmit($event)" [getSurvey]="true"></app-survey-form>
+<div class="edit-container">
+  <app-survey-form (formData)="onSurveySubmit($event)" [getSurvey]="true" class="edit-element first"></app-survey-form>
+  <div class="edit-element last question-list">
+    <div *ngFor="let question of localQuestions | keyvalue" class="card">
+      <mat-card class="bg-color">
+        <mat-card-header>
+          <mat-card-title>{{question.value.title}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content >
+          <p>
+            {{question.value.text}}
+          </p>
+        </mat-card-content>
+        <mat-card-actions class="actions">
+          <button>ACTION</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

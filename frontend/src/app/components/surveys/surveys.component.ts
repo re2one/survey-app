@@ -51,5 +51,8 @@ export class SurveysComponent implements OnInit{
   moveToEditForm(surveyId: number): void {
     this.router.navigate(['/surveys/edit', surveyId]);
   }
+  moveToDetails(surveyId: number): void{
+    this.router.navigate(['/surveys/details', surveyId]);
+  }
 
 }

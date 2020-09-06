@@ -531,10 +531,10 @@
 
 <div class="main">
   <mat-toolbar class="topbar-container">
-      <div class=".topbar-element">
+      <div class="topbar-element" [routerLink]="['/surveys']">
         Crispy Survey App
       </div>
-      <div class=".topbar-element">
+      <div class="topbar-element">
         <button *ngIf="isLoggedIn()" class="top-button" mat-flat-button [matMenuTriggerFor]="menu">Menu</button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item class="top-button" (click)="logout()">Logout</button>
