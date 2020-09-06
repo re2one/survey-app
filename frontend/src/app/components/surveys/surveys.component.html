@@ -15,4 +15,7 @@
       </mat-card-actions>
     </mat-card>
   </div>
+  <div class="button-container">
+    <button *ngIf="permissionCheck()" class="bg-color add-button" mat-button (click)="moveToAddForm()">ADD</button>
+  </div>
 </div>

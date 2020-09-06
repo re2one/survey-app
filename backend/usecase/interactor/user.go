@@ -24,7 +24,7 @@ type userInteractor struct {
 type UserInteractor interface {
 	Get(*model.User) (*response.UserResponse, error)
 	Post(*model.User, string) (*response.UserResponse, error)
-	Refresh(*http.Request) (*response.Token, error)
+	Refresh(*http.Request) (*response.UserResponse, error)
 }
 
 func NewUserInteractor(
@@ -89,7 +89,7 @@ func (us *userInteractor) Post(u *model.User, role string) (*response.UserRespon
 	return res, nil
 }
 
-func (us *userInteractor) Refresh(request *http.Request) (*response.Token, error) {
+func (us *userInteractor) Refresh(request *http.Request) (*response.UserResponse, error) {
 	claims, err := us.authorizer.UnwrapClaims(request)
 	if err != nil {
 		return nil, err

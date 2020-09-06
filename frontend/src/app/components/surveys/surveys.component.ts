@@ -4,6 +4,7 @@ import {LoginService} from '../../services/login.service';
 import {Survey, Surveys} from '../../models/survey';
 import {Observable, of} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-surveys',
@@ -15,7 +16,8 @@ export class SurveysComponent implements OnInit {
 
   constructor(
     private surveysService: SurveysService,
-    private loginService: LoginService
+    private loginService: LoginService,
+    public router: Router,
   ) {
     this.localSurveys = [];
   }
@@ -32,6 +34,9 @@ export class SurveysComponent implements OnInit {
   permissionCheck(): boolean {
     const role = localStorage.getItem('role');
     return role === 'admin';
+  }
+  moveToAddForm(): void {
+    this.router.navigate(['/survey-form']);
   }
 
 }

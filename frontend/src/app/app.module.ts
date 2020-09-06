@@ -20,6 +20,7 @@ import {AuthInterceptor} from './services/auth-interceptor.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
 import { environment } from '../environments/environment';
+import { SurveyFormComponent } from './components/survey-form/survey-form.component';
 
 
 
@@ -27,7 +28,8 @@ import { environment } from '../environments/environment';
   declarations: [
     AppComponent,
     LoginComponent,
-    SurveysComponent
+    SurveysComponent,
+    SurveyFormComponent
   ],
   imports: [
     FormsModule,

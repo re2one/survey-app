@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {} from 'jwt-decode';
 import {environment} from '../../environments/environment';
 import {of} from 'rxjs';
 import * as moment from 'moment';
@@ -39,6 +40,14 @@ export class LoginService {
     localStorage.setItem('idToken', authResult.token);
     localStorage.setItem('expiresAt', authResult.expiresAt);
     localStorage.setItem('email', email);
+    localStorage.setItem('username', authResult.username);
+    localStorage.setItem('role', authResult.role);
+    // this.username = email;
+  }
+
+  public refreshSession(authResult): void {
+    localStorage.setItem('idToken', authResult.token);
+    localStorage.setItem('expiresAt', authResult.expiresAt);
     localStorage.setItem('username', authResult.username);
     localStorage.setItem('role', authResult.role);
     // this.username = email;
@@ -86,6 +95,7 @@ export class LoginService {
     return new Observable<boolean> ( observer => {
       this.refresh().subscribe((response: HttpResponse<AuthResponse>) => {
         if (response.status === 200) {
+          this.refreshSession(response.body);
           if (response.body.role === 'admin') {
             observer.next(true);
           }

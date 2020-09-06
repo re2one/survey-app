@@ -17,7 +17,7 @@ type authenticator struct {
 
 // authenticator interface
 type Authenticator interface {
-	CreateToken(*model.User, *model.Role) (*response.Token, error)
+	CreateToken(*model.User, *model.Role) (*response.UserResponse, error)
 }
 
 // blub
@@ -25,7 +25,7 @@ func NewAuthenticator(appKey string) Authenticator {
 	return &authenticator{appKey: appKey}
 }
 
-func (a authenticator) CreateToken(u *model.User, r *model.Role) (*response.Token, error) {
+func (a authenticator) CreateToken(u *model.User, r *model.Role) (*response.UserResponse, error) {
 	var err error
 	expiration := time.Now().Add(time.Minute * 15).Unix()
 	claims := &model.CustomClaims{
@@ -44,5 +44,5 @@ func (a authenticator) CreateToken(u *model.User, r *model.Role) (*response.Toke
 		log.Error().Err(err).Msg("Failed to create token")
 		return nil, err
 	}
-	return &response.Token{Token: tokenString, ExpiresAt: expiration}, nil
+	return &response.UserResponse{Token: tokenString, ExpiresAt: expiration, Username: u.Name, Role: r.Role}, nil
 }
