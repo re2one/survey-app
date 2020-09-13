@@ -57,4 +57,13 @@ export class SurveyEditComponent implements OnInit {
     const role = localStorage.getItem('role');
     return role === 'admin';
   }
+  delete(questionId: number): void {
+    console.log(`question id to be deleted: ${questionId}`);
+    this.questionsService.deleteQuestions(questionId).subscribe((response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        this.localQuestions.delete(questionId);
+        this.cdr.detectChanges();
+      }
+    });
+  }
 }
