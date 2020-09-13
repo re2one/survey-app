@@ -13,6 +13,7 @@ import {AnswerResponse} from '../../models/mucho';
 })
 export class MultipleAddComponent implements OnInit {
   questionId: string;
+  surveyId: string;
   constructor(
     public router: Router,
     private multipleService: MuchoService,
@@ -22,6 +23,7 @@ export class MultipleAddComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
       this.questionId = params.get('questionId');
+      this.surveyId = params.get('surveyId');
     });
   }
   onAnswerSubmit(surveyData): void{
@@ -31,7 +33,7 @@ export class MultipleAddComponent implements OnInit {
     ).subscribe((response: HttpResponse<AnswerResponse>) => {
       console.log(response);
       if (response.status === 200) {
-        this.router.navigate(['/questions/edit', this.questionId]);
+        this.router.navigate(['/questions/edit', this.questionId, this.surveyId]);
       }
     });
   }

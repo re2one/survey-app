@@ -67,7 +67,7 @@ export class SurveyEditComponent implements OnInit {
     });
   }
   moveToEditForm(questionId: number): void {
-    this.router.navigate(['/questions/edit', questionId]);
+    this.router.navigate(['/questions/edit', questionId, this.surveyId]);
   }
   moveToAddForm(): void {
     this.router.navigate(['/questions/add', this.surveyId]);

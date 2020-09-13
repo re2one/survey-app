@@ -8,6 +8,7 @@ export class Mucho{
   public Question: Question;
   public questionid: number;
   public text: string;
+  public nextQuestion: number;
 }
 
 export class Answers {

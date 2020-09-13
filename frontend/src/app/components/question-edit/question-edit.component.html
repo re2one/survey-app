@@ -4,11 +4,14 @@
     <div *ngFor="let answer of localAnswers | keyvalue" class="card">
       <mat-card class="bg-color">
         <mat-card-header>
-          <mat-card-title>Some foo</mat-card-title>
+          <mat-card-title>Answer No. {{answer.value.ID}}</mat-card-title>
         </mat-card-header>
         <mat-card-content >
           <p>
-            {{answer.value.text}}
+            Text: {{answer.value.text}}
+          </p>
+          <p *ngIf="answer.value.nextQuestion != 0">
+            Next Question: {{answer.value.nextQuestion}}
           </p>
         </mat-card-content>
         <mat-card-actions class="actions">

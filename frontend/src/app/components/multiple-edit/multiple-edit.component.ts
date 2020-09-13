@@ -12,6 +12,7 @@ import {SurveyResponse} from '../../models/survey';
 export class MultipleEditComponent implements OnInit {
 
   answerId: string;
+  surveyId: string;
   constructor(
     public router: Router,
     private multipleService: MuchoService,
@@ -21,16 +22,18 @@ export class MultipleEditComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
       this.answerId = params.get('answerId');
+      this.surveyId = params.get('surveyId');
     });
   }
   onAnswerSubmit(answerData): void{
     this.multipleService.putAnswer(
       parseInt(this.answerId, 10),
       answerData.questionid,
-      answerData.text
+      answerData.text,
+      parseInt(answerData.nextQuestion, 10),
     ).subscribe((response: HttpResponse<SurveyResponse>) => {
       if (response.status === 200) {
-        this.router.navigate(['/questions/edit', answerData.questionId]);
+        this.router.navigate(['/questions/edit', answerData.questionId, this.surveyId]);
       }
     });
   }

@@ -22,9 +22,9 @@ const routes: Routes = [
   {path: 'surveys/edit/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: SurveyEditComponent},
   {path: 'surveys/details/:surveyId', canActivate: [AuthGuardService], component: SurveyDetailsComponent},
   {path: 'questions/add/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: QuestionAddComponent},
-  {path: 'questions/edit/:questionId', canActivate: [AuthGuardService, RoleGuardService], component: QuestionEditComponent},
-  {path: 'multiple/add/:questionId', canActivate: [AuthGuardService, RoleGuardService], component: MultipleAddComponent},
-  {path: 'multiple/edit/:answerId', canActivate: [AuthGuardService, RoleGuardService], component: MultipleEditComponent},
+  {path: 'questions/edit/:questionId/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: QuestionEditComponent},
+  {path: 'multiple/add/:questionId/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: MultipleAddComponent},
+  {path: 'multiple/edit/:answerId/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: MultipleEditComponent},
   {path: '**', redirectTo: 'login'}
 ];
 

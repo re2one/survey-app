@@ -14,6 +14,7 @@ import {SurveyResponse} from '../../models/survey';
 export class QuestionEditComponent implements OnInit {
 
   questionId: string;
+  surveyId: string;
   question: Question;
   localAnswers: Map<any, any>;
   constructor(
@@ -29,6 +30,7 @@ export class QuestionEditComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
       this.questionId = params.get('questionId');
+      this.surveyId = params.get('surveyId');
     });
     setTimeout(() => {
       this.answersService.getAnswers(this.questionId).subscribe( (response: HttpResponse<any>) => {
@@ -67,9 +69,9 @@ export class QuestionEditComponent implements OnInit {
     });
   }
   moveToEditForm(answerId: number): void {
-    this.router.navigate(['/multiple/edit', answerId]);
+    this.router.navigate(['/multiple/edit', answerId, this.surveyId]);
   }
   moveToAddForm(): void {
-    this.router.navigate(['/multiple/add', this.questionId]);
+    this.router.navigate(['/multiple/add', this.questionId, this.surveyId]);
   }
 }

@@ -63,6 +63,7 @@ func (sr *choiceRepository) Put(s *model.Choice) (*model.Choice, error) {
 		return nil, err
 	}
 	choice.Text = s.Text
+	choice.NextQuestion = s.NextQuestion
 	sr.db.Save(choice)
 	return &choice, nil
 }

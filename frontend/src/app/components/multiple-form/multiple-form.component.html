@@ -5,6 +5,16 @@
       <input matInput formControlName="text">
     </mat-form-field>
     <br>
+    <mat-form-field *ngIf="getAnswer" class="input" appearance="fill">
+      <mat-label>Next Question</mat-label>
+      <select matNativeControl formControlName="nextQuestion">
+        <option value="" selected></option>
+        <option *ngFor="let q of questionz" [value]="q.value">
+          {{q.viewValue}}
+        </option>
+      </select>
+    </mat-form-field>
+    <br>
     <mat-form-field class="invisible" appearance="fill">
       <mat-label>QuestionId</mat-label>
       <input matInput formControlName="questionId">
