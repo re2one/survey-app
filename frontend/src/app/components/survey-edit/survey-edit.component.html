@@ -12,13 +12,13 @@
           </p>
         </mat-card-content>
         <mat-card-actions class="actions">
-          <button mat-button>EDIT</button>
+          <button mat-button (click)="moveToEditForm(question.value.ID)">EDIT</button>
           <button mat-button (click)="delete(question.value.ID)">DELETE</button>
         </mat-card-actions>
       </mat-card>
     </div>
     <div class="button-container">
-      <button *ngIf="permissionCheck()" class="bg-color add-button" mat-raised-button>ADD</button>
+      <button *ngIf="permissionCheck()" class="bg-color add-button" mat-raised-button (click)="moveToAddForm()">ADD</button>
     </div>
   </div>
 </div>

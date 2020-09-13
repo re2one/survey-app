@@ -1,1 +1,24 @@
-<p>question-edit works!</p>
+<div class="edit-container">
+  <app-question-form (formData)="onQuestionSubmit($event)" [getQuestion]="true" class="edit-element first"></app-question-form>
+  <div class="edit-element last question-list">
+    <div *ngFor="let answer of localAnswers | keyvalue" class="card">
+      <mat-card class="bg-color">
+        <mat-card-header>
+          <mat-card-title>Some foo</mat-card-title>
+        </mat-card-header>
+        <mat-card-content >
+          <p>
+            {{answer.value.text}}
+          </p>
+        </mat-card-content>
+        <mat-card-actions class="actions">
+          <button mat-button>EDIT</button>
+          <button mat-button (click)="delete(answer.value.ID)">DELETE</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+    <div class="button-container">
+      <button *ngIf="permissionCheck()" class="bg-color add-button" mat-raised-button>ADD</button>
+    </div>
+  </div>
+</div>

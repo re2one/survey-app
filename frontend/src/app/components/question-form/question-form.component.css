@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  height:100%;
+  width: 100%;
+}
+
+.opacity {
+  flex: 1;
+}
+
+.input {
+  background: rgba(255, 255, 255, 0.3);
+  margin-top: 10px;
+  border-radius: 5px;
+  width: 100%
+}
+
+.in2{
+  margin-bottom: 10px;
+}
+
+.invisible{
+  visibility: hidden;
+  height: 0;
+  width: 0;
+}

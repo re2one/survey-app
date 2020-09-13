@@ -24,7 +24,8 @@ export class SurveyFormComponent implements OnInit {
     private surveysService: SurveysService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-  ) { this.surveyForm = this.formBuilder.group({
+  ) {
+    this.surveyForm = this.formBuilder.group({
     title: ['', [Validators.required]],
     summary: ['', [Validators.required]],
     disclaimer: ['', [Validators.required]],
