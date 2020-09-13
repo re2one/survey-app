@@ -1,1 +1,16 @@
-<p>multiple-form works!</p>
+<div class="container">
+  <form [formGroup]="multipleForm" (ngSubmit)="onMultipleSubmit(multipleForm.value)" class="opacity">
+    <mat-form-field class="input" appearance="fill">
+      <mat-label>Text</mat-label>
+      <input matInput formControlName="text">
+    </mat-form-field>
+    <br>
+    <mat-form-field class="invisible" appearance="fill">
+      <mat-label>QuestionId</mat-label>
+      <input matInput formControlName="questionId">
+    </mat-form-field>
+    <button mat-raised-button type="submit" class="input in2" [disabled]="!multipleForm.valid">Submit</button>
+
+  </form>
+</div>
+

@@ -6,14 +6,14 @@ export class Mucho{
   public UpdatedAt: string;
   public DeletedAt: string;
   public Question: Question;
-  public questionId: number;
+  public questionid: number;
   public text: string;
 }
 
-export class Questions {
+export class Answers {
   public choices: Array<Mucho>;
 }
 
-export class SurveyResponse {
-  public question: Mucho;
+export class AnswerResponse {
+  public choice: Mucho;
 }

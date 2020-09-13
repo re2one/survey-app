@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MuchoService} from '../../services/mucho.service';
+import {HttpResponse} from '@angular/common/http';
+import {SurveyResponse} from '../../models/survey';
 
 @Component({
   selector: 'app-multiple-edit',
@@ -7,9 +11,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MultipleEditComponent implements OnInit {
 
-  constructor() { }
+  answerId: string;
+  constructor(
+    public router: Router,
+    private multipleService: MuchoService,
+    private activatedRoute: ActivatedRoute,
+  ) { }
 
   ngOnInit(): void {
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.answerId = params.get('answerId');
+    });
+  }
+  onAnswerSubmit(answerData): void{
+    this.multipleService.putAnswer(
+      parseInt(this.answerId, 10),
+      answerData.questionid,
+      answerData.text
+    ).subscribe((response: HttpResponse<SurveyResponse>) => {
+      if (response.status === 200) {
+        this.router.navigate(['/questions/edit', answerData.questionId]);
+      }
+    });
   }
 
 }

@@ -66,4 +66,10 @@ export class QuestionEditComponent implements OnInit {
       }
     });
   }
+  moveToEditForm(answerId: number): void {
+    this.router.navigate(['/multiple/edit', answerId]);
+  }
+  moveToAddForm(): void {
+    this.router.navigate(['/multiple/add', this.questionId]);
+  }
 }

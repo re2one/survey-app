@@ -40,8 +40,6 @@ export class QuestionFormComponent implements OnInit {
         this.questionsService.getQuestion(this.questionId).subscribe((response: HttpResponse<QuestionsResponse>) => {
           if (response.status === 200) {
             this.question = response.body.question;
-            console.log('HERE');
-            console.log(this.question);
             this.questionForm.setValue({
               title: this.question.title,
               text: this.question.text,
