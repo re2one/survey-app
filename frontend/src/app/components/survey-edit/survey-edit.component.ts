@@ -53,4 +53,8 @@ export class SurveyEditComponent implements OnInit {
       }
     });
   }
+  permissionCheck(): boolean {
+    const role = localStorage.getItem('role');
+    return role === 'admin';
+  }
 }

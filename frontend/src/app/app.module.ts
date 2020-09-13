@@ -25,6 +25,13 @@ import { SurveyAddComponent } from './components/survey-add/survey-add.component
 import { SurveyEditComponent } from './components/survey-edit/survey-edit.component';
 import { QuestionsComponent } from './components/questions/questions.component';
 import { SurveyDetailsComponent } from './components/survey-details/survey-details.component';
+import { QuestionAddComponent } from './components/question-add/question-add.component';
+import { QuestionEditComponent } from './components/question-edit/question-edit.component';
+import { QuestionDetailsComponent } from './components/question-details/question-details.component';
+import { QuestionFormComponent } from './components/question-form/question-form.component';
+import { MultipleFormComponent } from './components/multiple-form/multiple-form.component';
+import { MultipleEditComponent } from './components/multiple-edit/multiple-edit.component';
+import { MultipleAddComponent } from './components/multiple-add/multiple-add.component';
 
 
 
@@ -37,7 +44,14 @@ import { SurveyDetailsComponent } from './components/survey-details/survey-detai
     SurveyAddComponent,
     SurveyEditComponent,
     QuestionsComponent,
-    SurveyDetailsComponent
+    SurveyDetailsComponent,
+    QuestionAddComponent,
+    QuestionEditComponent,
+    QuestionDetailsComponent,
+    QuestionFormComponent,
+    MultipleFormComponent,
+    MultipleEditComponent,
+    MultipleAddComponent
   ],
   imports: [
     FormsModule,
