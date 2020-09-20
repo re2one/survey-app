@@ -78,12 +78,14 @@ func (uc *questionController) Post(writer http.ResponseWriter, request *http.Req
 	if err != nil {
 		log.Error().Err(err).Msg("unable to decode question post body")
 		writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	question.Survey = *survey
 	question2, err := uc.questionRepository.Post(v["surveyId"], &question)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to write post question to db")
 		writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	r := SingleQuestionResp{Question: question2}
 	json.NewEncoder(writer).Encode(r)
@@ -99,11 +101,13 @@ func (uc *questionController) Put(writer http.ResponseWriter, request *http.Requ
 	if err != nil {
 		log.Error().Err(err).Msg("unable to decode question post body")
 		writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	question2, err := uc.questionRepository.Put(&question)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to update question to db")
 		writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	r := SingleQuestionResp{Question: question2}
 	json.NewEncoder(writer).Encode(r)
