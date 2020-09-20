@@ -10,6 +10,14 @@
       <textarea matInput formControlName="text"></textarea>
     </mat-form-field>
     <br>
+    <mat-form-field class="input" appearance="fill">
+      <mat-label>Start with this Question</mat-label>
+      <select matNativeControl formControlName="first">
+        <option [value]="false" selected>Rather not.</option>
+        <option [value]="true">Of course!</option>
+      </select>
+    </mat-form-field>
+    <br>
     <mat-form-field class="invisible" appearance="fill">
       <mat-label>SurveyId</mat-label>
       <input matInput formControlName="surveyId">

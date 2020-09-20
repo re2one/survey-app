@@ -22,10 +22,12 @@ export class QuestionsService {
   postQuestion(
     title: string,
     text: string,
+    first: string,
     surveyId: string): Observable<HttpResponse<any>> {
     return this.http.post(`/api/questions/${surveyId}`, {
       title,
       text,
+      first,
       type: 'multiplechoice'
     }, {observe: 'response'});
   }
@@ -36,12 +38,14 @@ export class QuestionsService {
     ID: number,
     surveyId: string,
     title: string,
+    first: string,
     text: string): Observable<HttpResponse<any>> {
     return this.http.put(`/api/questions`, {
       ID,
       surveyId,
       title,
       text,
+      first,
       Survey: null,
       type: 'multiplechoice'
     }, {observe: 'response'});

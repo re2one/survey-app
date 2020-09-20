@@ -28,6 +28,7 @@ export class QuestionFormComponent implements OnInit {
     this.questionForm = this.formBuilder.group({
       title: ['', [Validators.required]],
       text: ['', [Validators.required]],
+      first: ['', [Validators.required]],
       surveyId: [''],
     });
   }
@@ -43,7 +44,8 @@ export class QuestionFormComponent implements OnInit {
             this.questionForm.setValue({
               title: this.question.title,
               text: this.question.text,
-              surveyId: this.question.surveyid
+              surveyId: this.question.surveyid,
+              first: this.question.first,
             });
           }
         });

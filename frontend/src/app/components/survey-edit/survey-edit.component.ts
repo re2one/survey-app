@@ -72,4 +72,11 @@ export class SurveyEditComponent implements OnInit {
   moveToAddForm(): void {
     this.router.navigate(['/questions/add', this.surveyId]);
   }
+  isFirst(first: string): boolean {
+    let result = false;
+    if (first === 'true') {
+      result = true;
+    }
+    return result;
+  }
 }

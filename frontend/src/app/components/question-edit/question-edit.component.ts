@@ -62,6 +62,7 @@ export class QuestionEditComponent implements OnInit {
       questionData.surveyid,
       questionData.title,
       questionData.text,
+      questionData.first,
     ).subscribe((response: HttpResponse<SurveyResponse>) => {
       if (response.status === 200) {
         this.router.navigate(['/surveys/edit', questionData.surveyId]);

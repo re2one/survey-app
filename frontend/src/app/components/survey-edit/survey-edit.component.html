@@ -10,6 +10,10 @@
           <p>
             {{question.value.text}}
           </p>
+
+          <h3 *ngIf="isFirst(question.value.first)">
+            This is the starting-question.
+          </h3>
         </mat-card-content>
         <mat-card-actions class="actions">
           <button mat-button (click)="moveToEditForm(question.value.ID)">EDIT</button>

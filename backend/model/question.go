@@ -11,6 +11,7 @@ type Question struct {
 	Title    string `json:"title"`
 	Text     string `json:"text"`
 	Type     string `json:"type"`
+	First    string `json:"first"`
 }
 
 func (Question) TableName() string { return "questions" }

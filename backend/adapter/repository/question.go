@@ -64,6 +64,7 @@ func (sr *questionRepository) Put(s *model.Question) (*model.Question, error) {
 	question.Title = s.Title
 	question.Text = s.Text
 	question.Type = s.Type
+	question.First = s.First
 	sr.db.Save(question)
 	return &question, nil
 }

@@ -27,6 +27,7 @@ export class QuestionAddComponent implements OnInit {
     this.questionsService.postQuestion(
       surveyData.title,
       surveyData.text,
+      surveyData.first,
       this.surveyId,
     ).subscribe((response: HttpResponse<QuestionsResponse>) => {
       console.log(response);

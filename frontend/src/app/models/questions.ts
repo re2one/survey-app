@@ -10,6 +10,7 @@ export class Question{
   public title: string;
   public text: string;
   public type: string;
+  public first: string;
 }
 
 export class Questions {
