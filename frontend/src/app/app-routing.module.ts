@@ -13,6 +13,7 @@ import {QuestionAddComponent} from './components/question-add/question-add.compo
 import {MultipleAddComponent} from './components/multiple-add/multiple-add.component';
 import {MultipleEditComponent} from './components/multiple-edit/multiple-edit.component';
 import {SurveyMainComponent} from './components/survey-main/survey-main.component';
+import {QuestionAnswerComponent} from './components/question-answer/question-answer.component';
 
 
 const routes: Routes = [
@@ -27,6 +28,7 @@ const routes: Routes = [
   {path: 'multiple/add/:questionId/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: MultipleAddComponent},
   {path: 'multiple/edit/:answerId/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: MultipleEditComponent},
   {path: 'survey/:surveyId', canActivate: [AuthGuardService], component: SurveyMainComponent},
+  {path: 'question/answer/:surveyId/:questionId', canActivate: [AuthGuardService], component: QuestionAnswerComponent},
   {path: '**', redirectTo: 'login'}
 ];
 

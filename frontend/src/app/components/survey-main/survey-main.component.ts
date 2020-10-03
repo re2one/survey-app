@@ -29,4 +29,7 @@ export class SurveyMainComponent implements OnInit {
       });
     });
   }
+  moveToAnswer(questionId: number): void {
+    this.router.navigate(['question/answer', this.surveyId, questionId.toString(10)]);
+  }
 }

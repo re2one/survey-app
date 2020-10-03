@@ -9,7 +9,7 @@
             <h3 *ngIf="question.answered">This question has already been answered.</h3>
         </mat-card-content>
         <mat-card-actions class="actions">
-          <button mat-button [disabled]="question.answered">GO!</button>
+          <button mat-button [disabled]="question.answered" (click)="moveToAnswer(question.questionId)">GO!</button>
         </mat-card-actions>
       </mat-card>
     </div>
