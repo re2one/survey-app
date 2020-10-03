@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"github.com/rs/zerolog/log"
+
 	"backend/model"
 	"backend/usecase/repository"
 
@@ -16,20 +18,25 @@ func NewAnsweredRepository(db *gorm.DB) repository.AnsweredRepository {
 	return &answeredRepository{db}
 }
 
-func (rr *answeredRepository) Get(u *model.User, q *model.Question) (*model.Answered, error) {
+func (rr *answeredRepository) Get(u *model.User, q *model.Question) (map[uint]*model.Answered, error) {
 
-	var answered model.Answered
-	err := rr.db.Model(&u).Model(q).Related(&answered).Error
+	answered := make([]model.Answered, 0)
+	err := rr.db.Model(u).Find(&answered).Error
 	if err != nil {
 		return nil, err
 	}
+	log.Info().Int("length", len(answered)).Msg("number of retrieved states")
+	result := make(map[uint]*model.Answered, len(answered))
+	for _, v := range answered {
+		result[v.QuestionId] = &v
+	}
 
-	return &answered, nil
+	return result, nil
 }
 
 func (rr *answeredRepository) Post(u *model.User, q *model.Question) (*model.Answered, error) {
 	// userExists := ur.db.NewRecord(u)
-	answered := model.Answered{User: *u, Question: *q, Answered: true}
+	answered := model.Answered{User: *u, QuestionId: q.ID, Answered: true}
 	err := rr.db.Create(&answered).Error
 	if err != nil {
 		return nil, err

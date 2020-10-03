@@ -20,3 +20,14 @@ export class Questions {
 export class QuestionsResponse {
   public question: Question;
 }
+
+export class FullQuestion {
+  public questionId: number;
+  public title: string;
+  public type: string;
+  public answered: boolean;
+}
+
+export class FullQuestions {
+  public questions: Array<FullQuestion>;
+}

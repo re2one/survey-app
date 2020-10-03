@@ -15,6 +15,7 @@ import (
 type fullQuestionsController struct {
 	questionRepository repository.QuestionRepository
 	answeredRepository repository.AnsweredRepository
+	surveyRepository   repository.SurveyRepository
 	userRepository     repository.UserRepository
 }
 
@@ -26,10 +27,12 @@ type FullQuestionsController interface {
 func NewFullQuestionsController(
 	questionRepository repository.QuestionRepository,
 	answeredRepository repository.AnsweredRepository,
+	surveyRepository repository.SurveyRepository,
 	userRepository repository.UserRepository,
 ) FullQuestionsController {
 	return &fullQuestionsController{
 		questionRepository: questionRepository,
+		surveyRepository:   surveyRepository,
 		answeredRepository: answeredRepository,
 		userRepository:     userRepository,
 	}
@@ -41,14 +44,24 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 
 	surveyId := v["surveyid"]
 	email := v["email"]
-	lookupUser := model.User{Email: email}
 
+	/*
+		lookupSurvey, err := uc.surveyRepository.Get(surveyId)
+		if err != nil {
+			log.Error().Err(err).Msg("Unable to retrieve survey.")
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	*/
+
+	lookupUser := model.User{Email: email}
 	retrievedUser, err := uc.userRepository.Get(&lookupUser)
 	if err != nil {
 		log.Error().Err(err).Msg("Unable to retrieve user.")
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 	questions, err := uc.questionRepository.GetAll(surveyId)
 	if err != nil {
 		log.Error().Err(err).Msg("Unable to retrieve questions.")
@@ -61,10 +74,12 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 
 		answered := false
 		state, err := uc.answeredRepository.Get(retrievedUser, q)
-		if err == nil {
-			answered = state.Answered
+		if err != nil {
+			log.Error().Err(err).Msg("fucking guck fukc")
 		}
-		log.Error().Err(err).Msg("No info for question x user pair. question is unanswered.")
+		if _, ok := state[q.ID]; ok {
+			answered = true
+		}
 		fullQuestion := response.FullQuestion{
 			QuestionId: q.ID,
 			Title:      q.Title,
