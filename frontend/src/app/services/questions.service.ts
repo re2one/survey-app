@@ -3,6 +3,7 @@ import {Observable} from 'rxjs';
 import {Surveys} from '../models/survey';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Router} from '@angular/router';
+import {Question} from '../models/questions';
 
 @Injectable({
   providedIn: 'root'

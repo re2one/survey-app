@@ -21,7 +21,7 @@ func NewAnsweredRepository(db *gorm.DB) repository.AnsweredRepository {
 func (rr *answeredRepository) Get(u *model.User, q *model.Question) (map[uint]*model.Answered, error) {
 
 	answered := make([]model.Answered, 0)
-	err := rr.db.Model(u).Find(&answered).Error
+	err := rr.db.Where("user_id = ?", u.ID).Find(&answered).Error
 	if err != nil {
 		return nil, err
 	}
