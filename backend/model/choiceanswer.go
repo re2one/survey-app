@@ -8,7 +8,7 @@ type ChoiceAnswer struct {
 	gorm.Model
 	Question   Question
 	QuestionId uint   `gorm:"foreignkey:QuestionRefer" json:"questionid"`
-	UserId     uint   `json:"userid"`
+	Email      string `json:"email"`
 	Text       string `json:"text"`
 }
 

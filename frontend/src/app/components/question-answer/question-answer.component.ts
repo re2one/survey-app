@@ -5,8 +5,9 @@ import {HttpResponse} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MuchoService} from '../../services/mucho.service';
 import {PuzzleService} from '../../services/puzzle.service';
-import {Mucho} from '../../models/mucho';
+import {Mucho, MultipleChoiceAnswer} from '../../models/mucho';
 import {FullQuestionsService} from '../../services/full-questions.service';
+import {MuchoAnswerService} from '../../services/mucho-answer.service';
 
 @Component({
   selector: 'app-question-answer',
@@ -21,6 +22,7 @@ export class QuestionAnswerComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private questionsService: QuestionsService,
     private fullQuestuionsService: FullQuestionsService,
+    private muchoAnswerService: MuchoAnswerService,
     private activatedRoute: ActivatedRoute,
     private router: Router
   ) {
@@ -39,10 +41,14 @@ export class QuestionAnswerComponent implements OnInit {
   }
   onAnswerSubmit(answer): void {
     const email = localStorage.getItem('email');
-    this.fullQuestuionsService.postFullQuestion(email, this.question).subscribe((response: HttpResponse<QuestionsResponse>) => {
+    this.muchoAnswerService.postAnswer(email, answer.answer, this.question).subscribe((response: HttpResponse<QuestionsResponse>) => {
       if (response.status === 200) {
-        console.log(response.body);
-        this.router.navigate(['survey', this.surveyId]);
+        this.fullQuestuionsService.postFullQuestion(email, this.question).subscribe((response2: HttpResponse<QuestionsResponse>) => {
+          if (response2.status === 200) {
+            console.log(response2.body);
+            this.router.navigate(['survey', this.surveyId]);
+          }
+        });
       }
     });
   }

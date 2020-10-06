@@ -18,3 +18,9 @@ export class Answers {
 export class AnswerResponse {
   public choice: Mucho;
 }
+
+export class MultipleChoiceAnswer {
+  public question: Question;
+  public text: string;
+  public email: string;
+}
