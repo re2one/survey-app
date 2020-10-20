@@ -51,11 +51,11 @@ func main() {
 	cr := repository.NewChoiceRepository(db)
 	cc := controller.NewChoiceController(cr, qr)
 
-	ar := repository.NewAnsweredRepository(db)
-	fc := controller.NewFullQuestionsController(qr, ar, sr, ur)
-
 	mr := repository.NewMultipleChoiceRepository(db)
 	mc := controller.NewMultipleChoiceController(mr, qr)
+
+	ar := repository.NewAnsweredRepository(db)
+	fc := controller.NewFullQuestionsController(qr, ar, sr, ur, mr, cr)
 
 	router := mux.NewRouter()
 	router.HandleFunc("/api/signup", uc.Signup).Methods(http.MethodPost)

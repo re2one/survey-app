@@ -30,4 +30,5 @@ export class FullQuestion {
 
 export class FullQuestions {
   public questions: Array<FullQuestion>;
+  public finished: boolean;
 }

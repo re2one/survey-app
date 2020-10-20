@@ -2,6 +2,7 @@ package response
 
 type FullQuestionsResponse struct {
 	Questions []*FullQuestion `json:"questions"`
+	Finished  bool            `json:"finished"`
 }
 
 type FullQuestion struct {

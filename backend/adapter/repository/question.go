@@ -18,10 +18,21 @@ func NewQuestionRepository(db *gorm.DB) repository.QuestionRepository {
 	return &questionRepository{db}
 }
 
-func (sr *questionRepository) Get(title string) (*model.Question, error) {
+func (sr *questionRepository) Get(id string) (*model.Question, error) {
 	//check if record exists
 	var s model.Question
-	err := sr.db.Where("ID = ?", title).First(&s).Error
+	err := sr.db.Where("ID = ?", id).First(&s).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &s, nil
+}
+
+func (sr *questionRepository) GetFirst(survey string) (*model.Question, error) {
+	//check if record exists
+	var s model.Question
+	err := sr.db.Where("survey_id = ? and first = 'true'", survey).First(&s).Error
 	if err != nil {
 		return nil, err
 	}

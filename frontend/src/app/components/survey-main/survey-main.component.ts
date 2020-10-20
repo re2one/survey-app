@@ -13,6 +13,7 @@ import {FullQuestion, FullQuestions} from '../../models/questions';
 export class SurveyMainComponent implements OnInit {
   private surveyId: string;
   public questions: Array<FullQuestion>;
+  public finished: boolean;
   constructor(
     private router: Router,
     private fullQuestionService: FullQuestionsService,
@@ -26,6 +27,7 @@ export class SurveyMainComponent implements OnInit {
       const email = localStorage.getItem('email');
       this.fullQuestionService.getFullQuestions(this.surveyId, email).subscribe((response: HttpResponse<FullQuestions>) => {
         this.questions = response.body.questions;
+        this.finished = response.body.finished;
       });
     });
   }

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -13,10 +14,12 @@ import (
 )
 
 type fullQuestionsController struct {
-	questionRepository repository.QuestionRepository
-	answeredRepository repository.AnsweredRepository
-	surveyRepository   repository.SurveyRepository
-	userRepository     repository.UserRepository
+	questionRepository       repository.QuestionRepository
+	answeredRepository       repository.AnsweredRepository
+	surveyRepository         repository.SurveyRepository
+	userRepository           repository.UserRepository
+	multiplechoiceRepository repository.MultipleChoiceRepository
+	choiceRepository         repository.ChoiceRepository
 }
 
 type FullQuestionsController interface {
@@ -29,12 +32,16 @@ func NewFullQuestionsController(
 	answeredRepository repository.AnsweredRepository,
 	surveyRepository repository.SurveyRepository,
 	userRepository repository.UserRepository,
+	multiplechoiceRepository repository.MultipleChoiceRepository,
+	choiceRepository repository.ChoiceRepository,
 ) FullQuestionsController {
 	return &fullQuestionsController{
-		questionRepository: questionRepository,
-		surveyRepository:   surveyRepository,
-		answeredRepository: answeredRepository,
-		userRepository:     userRepository,
+		questionRepository:       questionRepository,
+		surveyRepository:         surveyRepository,
+		answeredRepository:       answeredRepository,
+		userRepository:           userRepository,
+		multiplechoiceRepository: multiplechoiceRepository,
+		choiceRepository:         choiceRepository,
 	}
 }
 
@@ -45,15 +52,6 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 	surveyId := v["surveyid"]
 	email := v["email"]
 
-	/*
-		lookupSurvey, err := uc.surveyRepository.Get(surveyId)
-		if err != nil {
-			log.Error().Err(err).Msg("Unable to retrieve survey.")
-			writer.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	*/
-
 	lookupUser := model.User{Email: email}
 	retrievedUser, err := uc.userRepository.Get(&lookupUser)
 	if err != nil {
@@ -62,34 +60,68 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 		return
 	}
 
-	questions, err := uc.questionRepository.GetAll(surveyId)
+	fullQuestions := make([]*response.FullQuestion, 0)
+
+	currentQuestion, err := uc.questionRepository.GetFirst(surveyId)
 	if err != nil {
-		log.Error().Err(err).Msg("Unable to retrieve questions.")
+		log.Error().Err(err).Msg("Unable to retrieve first question.")
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	fullQuestions := make([]*response.FullQuestion, 0, len(questions))
-	for _, q := range questions {
+	finished := false
+	for answered := true; answered; {
 
-		answered := false
-		state, err := uc.answeredRepository.Get(retrievedUser, q)
+		state, err := uc.answeredRepository.Get(retrievedUser, currentQuestion)
 		if err != nil {
-			log.Error().Err(err).Msg("fucking guck fukc")
+			log.Error().Err(err).Msg("Unable to retrieve if current question has been answered.")
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
 		}
-		if _, ok := state[q.ID]; ok {
-			answered = true
+
+		if _, ok := state[currentQuestion.ID]; !ok {
+			answered = false
 		}
+
 		fullQuestion := response.FullQuestion{
-			QuestionId: q.ID,
-			Title:      q.Title,
-			Type:       q.Type,
+			QuestionId: currentQuestion.ID,
+			Title:      currentQuestion.Title,
+			Type:       currentQuestion.Type,
 			Answered:   answered,
 		}
+
 		fullQuestions = append(fullQuestions, &fullQuestion)
+
+		if _, ok := state[currentQuestion.ID]; !ok {
+			continue
+		}
+
+		userAnswer, err := uc.multiplechoiceRepository.Get(currentQuestion.ID, email)
+		if err != nil {
+			log.Error().Err(err).Msg("Unable to fetch the users answer.")
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		usedChoice, err := uc.choiceRepository.GetByText(currentQuestion.ID, userAnswer.Text)
+		if err != nil {
+			log.Error().Err(err).Msg("Unable to fetch the corresponding choice for an answer.")
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		currentQuestion, err = uc.questionRepository.Get(fmt.Sprint(usedChoice.NextQuestion))
+		if err != nil {
+			log.Error().Err(err).Msg("Unable to retrieve the following question question.")
+			finished = true
+			answered = false
+		}
 	}
 
-	json.NewEncoder(writer).Encode(response.FullQuestionsResponse{Questions: fullQuestions})
+	json.NewEncoder(writer).Encode(response.FullQuestionsResponse{
+		Questions: fullQuestions,
+		Finished:  finished,
+	})
 	return
 }
 

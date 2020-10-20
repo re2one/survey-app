@@ -30,6 +30,17 @@ func (sr *choiceRepository) Get(title string) (*model.Choice, error) {
 	return &s, nil
 }
 
+func (sr *choiceRepository) GetByText(questionId uint, text string) (*model.Choice, error) {
+	//check if record exists
+	var s model.Choice
+	err := sr.db.Where("question_id = ? and text = ?", questionId, text).First(&s).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &s, nil
+}
+
 func (sr *choiceRepository) GetAll(questionId string) ([]*model.Choice, error) {
 	//check if record exists
 	choices := make([]*model.Choice, 0)
