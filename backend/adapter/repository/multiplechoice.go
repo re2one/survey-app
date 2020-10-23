@@ -43,3 +43,15 @@ func (sr *multipleChoiceRepository) Get(questionId uint, email string) (*model.C
 
 	return &m2, nil
 }
+
+func (sr *multipleChoiceRepository) GetAll(questionId uint) ([]*model.ChoiceAnswer, error) {
+	var m2 []*model.ChoiceAnswer
+	err := sr.db.Where("question_id = ?", questionId).Find(&m2).Error
+
+	if err != nil {
+		err = errors.New("multiple choice does not exist")
+		return nil, err
+	}
+
+	return m2, nil
+}

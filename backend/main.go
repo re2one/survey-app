@@ -57,6 +57,8 @@ func main() {
 	ar := repository.NewAnsweredRepository(db)
 	fc := controller.NewFullQuestionsController(qr, ar, sr, ur, mr, cr)
 
+	rc := controller.NewResultsController(qr, mr)
+
 	router := mux.NewRouter()
 	router.HandleFunc("/api/signup", uc.Signup).Methods(http.MethodPost)
 	router.HandleFunc("/api/login", uc.Login).Methods(http.MethodPost)
@@ -85,6 +87,8 @@ func main() {
 	router.HandleFunc("/api/fullquestions/{email}", authorizer.IsAuthorized("user", fc.Post)).Methods(http.MethodPost)
 
 	router.HandleFunc("/api/answer/multiplechoice", authorizer.IsAuthorized("user", mc.Post)).Methods(http.MethodPost)
+
+	router.HandleFunc("/api/results/{surveyId}", authorizer.IsAuthorized("admin", rc.Get)).Methods(http.MethodGet)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }

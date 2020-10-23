@@ -54,5 +54,7 @@ export class SurveysComponent implements OnInit{
   moveToDetails(surveyId: number): void{
     this.router.navigate(['/surveys/details', surveyId]);
   }
-
+  getResult(surveyId: number): void{
+    console.log('Result');
+  }
 }

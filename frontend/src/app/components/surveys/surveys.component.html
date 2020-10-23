@@ -11,6 +11,7 @@
       </mat-card-content>
       <mat-card-actions class="actions">
         <button *ngIf="permissionCheck()" mat-button (click)="moveToEditForm(survey.value.ID)">EDIT</button>
+        <button *ngIf="permissionCheck()" mat-button (click)="getResult(survey.value.ID)">RESULT</button>
         <button *ngIf="permissionCheck()" mat-button (click)="delete(survey.value.ID)">DELETE</button>
       </mat-card-actions>
     </mat-card>
