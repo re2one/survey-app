@@ -5,6 +5,7 @@ import {Survey} from '../../models/survey';
 import {Router} from '@angular/router';
 import {HttpResponse} from '@angular/common/http';
 import {BehaviorSubject} from 'rxjs';
+import {ResultService} from '../../services/result.service';
 
 @Component({
   selector: 'app-surveys',
@@ -17,6 +18,7 @@ export class SurveysComponent implements OnInit{
   constructor(
     private surveysService: SurveysService,
     private loginService: LoginService,
+    private resultService: ResultService,
     private cdr: ChangeDetectorRef,
     public router: Router,
   ) {
@@ -55,6 +57,10 @@ export class SurveysComponent implements OnInit{
     this.router.navigate(['/surveys/details', surveyId]);
   }
   getResult(surveyId: number): void{
-    console.log('Result');
+    this.resultService.getResult(surveyId).subscribe((response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        console.log(response.body.result);
+      }
+    });
   }
 }
