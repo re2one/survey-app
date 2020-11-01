@@ -29,6 +29,7 @@ export class QuestionFormComponent implements OnInit {
       title: ['', [Validators.required]],
       text: ['', [Validators.required]],
       first: ['', [Validators.required]],
+      type: ['', [Validators.required]],
       surveyId: [''],
     });
   }
@@ -46,6 +47,7 @@ export class QuestionFormComponent implements OnInit {
               text: this.question.text,
               surveyId: this.question.surveyid,
               first: this.question.first,
+              type: this.question.type,
             });
           }
         });

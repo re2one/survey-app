@@ -40,7 +40,8 @@ export class QuestionsService {
     surveyId: string,
     title: string,
     first: string,
-    text: string): Observable<HttpResponse<any>> {
+    text: string,
+    type: string): Observable<HttpResponse<any>> {
     return this.http.put(`/api/questions`, {
       ID,
       surveyId,
@@ -48,7 +49,7 @@ export class QuestionsService {
       text,
       first,
       Survey: null,
-      type: 'multiplechoice'
+      type
     }, {observe: 'response'});
   }
 }

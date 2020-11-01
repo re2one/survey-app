@@ -35,6 +35,7 @@ import { MultipleAddComponent } from './components/multiple-add/multiple-add.com
 import { SurveyMainComponent } from './components/survey-main/survey-main.component';
 import { QuestionAnswerComponent } from './components/question-answer/question-answer.component';
 import { MultipleAnswerComponent } from './components/multiple-answer/multiple-answer.component';
+import { PuzzleAnswerComponent } from './components/puzzle-answer/puzzle-answer.component';
 
 
 
@@ -57,7 +58,8 @@ import { MultipleAnswerComponent } from './components/multiple-answer/multiple-a
     MultipleAddComponent,
     SurveyMainComponent,
     QuestionAnswerComponent,
-    MultipleAnswerComponent
+    MultipleAnswerComponent,
+    PuzzleAnswerComponent
   ],
   imports: [
     FormsModule,

@@ -1,3 +1,7 @@
 <div *ngIf="question!=null" class="container">
-  <app-multiple-answer *ngIf="question.type=='multiplechoice'" [question]="question" (answer)="onAnswerSubmit($event)"></app-multiple-answer>
+  <app-multiple-answer *ngIf="question.type=='multiplechoice'" [question]="question" (answer)="onAnswerSubmit($event)">
+  </app-multiple-answer>
+
+  <app-puzzle-answer *ngIf="question.type=='puzzle'">
+  </app-puzzle-answer>
 </div>
