@@ -16,7 +16,7 @@
           </h3>
         </mat-card-content>
         <mat-card-actions class="actions">
-          <button mat-button (click)="moveToEditForm(question.value.ID)">EDIT</button>
+          <button mat-button (click)="moveToEditForm(question.value.ID, question.value.type)">EDIT</button>
           <button mat-button (click)="delete(question.value.ID)">DELETE</button>
         </mat-card-actions>
       </mat-card>

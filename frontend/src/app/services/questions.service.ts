@@ -24,12 +24,14 @@ export class QuestionsService {
     title: string,
     text: string,
     first: string,
-    surveyId: string): Observable<HttpResponse<any>> {
+    surveyId: string,
+    type: string,
+    ): Observable<HttpResponse<any>> {
     return this.http.post(`/api/questions/${surveyId}`, {
       title,
       text,
       first,
-      type: 'multiplechoice'
+      type,
     }, {observe: 'response'});
   }
   deleteQuestions(id: number): Observable<HttpResponse<any>> {

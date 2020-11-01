@@ -29,6 +29,7 @@ export class QuestionAddComponent implements OnInit {
       surveyData.text,
       surveyData.first,
       this.surveyId,
+      surveyData.type,
     ).subscribe((response: HttpResponse<QuestionsResponse>) => {
       console.log(response);
       if (response.status === 200) {
