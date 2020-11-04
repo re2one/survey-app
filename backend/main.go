@@ -59,6 +59,9 @@ func main() {
 
 	rc := controller.NewResultsController(qr, mr)
 
+	assr := repository.NewAssetsRepository(db)
+	assc := controller.NewAssetsController(assr)
+
 	router := mux.NewRouter()
 	router.HandleFunc("/api/signup", uc.Signup).Methods(http.MethodPost)
 	router.HandleFunc("/api/login", uc.Login).Methods(http.MethodPost)
@@ -89,6 +92,8 @@ func main() {
 	router.HandleFunc("/api/answer/multiplechoice", authorizer.IsAuthorized("user", mc.Post)).Methods(http.MethodPost)
 
 	router.HandleFunc("/api/results/{surveyId}", authorizer.IsAuthorized("admin", rc.Get)).Methods(http.MethodGet)
+
+	router.HandleFunc("/api/assets/directory/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", assc.Post)).Methods(http.MethodPost)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }

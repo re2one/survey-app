@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {QuestionsService} from '../../services/questions.service';
 import {HttpResponse} from '@angular/common/http';
 import {QuestionsResponse} from '../../models/questions';
+import {AssetService} from '../../services/asset.service';
 
 @Component({
   selector: 'app-question-add',
@@ -16,6 +17,7 @@ export class QuestionAddComponent implements OnInit {
     public router: Router,
     private questionsService: QuestionsService,
     private activatedRoute: ActivatedRoute,
+    private assetService: AssetService,
     ) { }
 
   ngOnInit(): void {
@@ -33,8 +35,16 @@ export class QuestionAddComponent implements OnInit {
     ).subscribe((response: HttpResponse<QuestionsResponse>) => {
       console.log(response);
       if (response.status === 200) {
+        if (surveyData.type === 'puzzle') {
+          this.addDirectory(this.surveyId, response.body.question.ID.toString(10));
+        }
         this.router.navigate(['/surveys/edit', this.surveyId]);
       }
+    });
+  }
+  addDirectory(surveyId: string, questoinId: string): void {
+    this.assetService.addDirectory(surveyId, questoinId).subscribe((response: HttpResponse<QuestionsResponse>) => {
+      console.log(response);
     });
   }
 }
