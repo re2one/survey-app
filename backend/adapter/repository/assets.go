@@ -84,3 +84,14 @@ func (a *assetsRepository) GetFilenames(surveyId string, questionId string) ([]s
 	}
 	return result, nil
 }
+
+func (a *assetsRepository) Get(surveyId string, questionId string, filename string) (*os.File, error) {
+
+	path := fmt.Sprintf("assets/survey_%v/question_%v/%v", surveyId, questionId, filename)
+	img, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer img.Close()
+	return img, nil
+}

@@ -49,3 +49,12 @@
   margin-right: auto;
   margin-bottom: 1%;
 }
+
+.image {
+  max-width: 100%
+}
+
+.image-container {
+  overflow: auto;
+  max-height: 100%;
+}

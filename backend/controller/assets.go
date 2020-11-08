@@ -2,8 +2,11 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"image/jpeg"
+	"io"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -28,6 +31,7 @@ type FilenameResponse struct {
 type AssetsController interface {
 	Post(writer http.ResponseWriter, request *http.Request)
 	Upload(writer http.ResponseWriter, request *http.Request)
+	GetAll(writer http.ResponseWriter, request *http.Request)
 	Get(writer http.ResponseWriter, request *http.Request)
 }
 
@@ -81,7 +85,7 @@ func (a *assetsController) Upload(writer http.ResponseWriter, request *http.Requ
 	return
 }
 
-func (a *assetsController) Get(writer http.ResponseWriter, request *http.Request) {
+func (a *assetsController) GetAll(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	v := mux.Vars(request)
 	filenames, err := a.assetsRepository.GetFilenames(v["surveyId"], v["questionId"])
@@ -90,5 +94,21 @@ func (a *assetsController) Get(writer http.ResponseWriter, request *http.Request
 		writer.WriteHeader(http.StatusInternalServerError)
 	}
 	json.NewEncoder(writer).Encode(FilenameResponse{Filenames: filenames})
+	return
+}
+
+func (a *assetsController) Get(writer http.ResponseWriter, request *http.Request) {
+	v := mux.Vars(request)
+
+	// img, err := a.assetsRepository.Get(v["surveyId"], v["questionId"], v["imageName"])
+	path := fmt.Sprintf("assets/survey_%v/question_%v/%v", v["surveyId"], v["questionId"], v["imageName"])
+	img, err := os.Open(path)
+	defer img.Close()
+	if err != nil {
+		log.Error().Err(err).Caller().Msg("unable to retrieve image from disc")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+	writer.Header().Set("Content-Type", "image/jpeg") // <-- set the content-type header
+	io.Copy(writer, img)
 	return
 }

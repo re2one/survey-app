@@ -95,7 +95,8 @@ func main() {
 
 	router.HandleFunc("/api/assets/directory/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", assc.Post)).Methods(http.MethodPost)
 	router.HandleFunc("/api/assets/upload/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", assc.Upload)).Methods(http.MethodPost)
-	router.HandleFunc("/api/assets/{surveyId}/{questionId}", authorizer.IsAuthorized("user", assc.Get)).Methods(http.MethodGet)
+	router.HandleFunc("/api/assets/{surveyId}/{questionId}", authorizer.IsAuthorized("user", assc.GetAll)).Methods(http.MethodGet)
+	router.HandleFunc("/api/assets/{surveyId}/{questionId}/{imageName}", assc.Get).Methods(http.MethodGet)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }

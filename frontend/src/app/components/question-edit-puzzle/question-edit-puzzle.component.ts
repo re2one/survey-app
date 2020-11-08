@@ -40,10 +40,7 @@ export class QuestionEditPuzzleComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(params => {
       this.questionId = params.get('questionId');
       this.surveyId = params.get('surveyId');
-      this.assetService.getFilenames(this.surveyId, this.questionId).subscribe( (response: HttpResponse<any>) => {
-        this.filenames = response.body.filenames;
-        console.log(this.filenames);
-      });
+      this.getImages();
     });
     for (let i = 0; i < 20; i++ ) {
       this.puzzlepieces.set(i, i);
@@ -62,9 +59,17 @@ export class QuestionEditPuzzleComponent implements OnInit {
     this.assetService.postFile(this.fileToUpload, this.surveyId, this.questionId).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
         console.log('success!');
+        this.getImages();
       }
     }, error => {
       console.log('error');
     });
+  }
+  getImages(): void {
+    this.assetService.getFilenames(this.surveyId, this.questionId).subscribe( (response: HttpResponse<any>) => {
+      this.filenames = response.body.filenames;
+      console.log(this.filenames);
+    });
+    this.cdr.detectChanges();
   }
 }
