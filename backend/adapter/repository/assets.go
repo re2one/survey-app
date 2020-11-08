@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
+	"io/ioutil"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -69,4 +70,17 @@ func (a *assetsRepository) SaveFile(surveyId string, questionId string, data ima
 	defer f.Close()
 	jpeg.Encode(f, data, nil)
 	return nil
+}
+
+func (a *assetsRepository) GetFilenames(surveyId string, questionId string) ([]string, error) {
+	path := fmt.Sprintf("assets/survey_%v/question_%v", surveyId, questionId)
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]string, len(files))
+	for i, f := range files {
+		result[i] = f.Name()
+	}
+	return result, nil
 }

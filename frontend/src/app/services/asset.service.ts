@@ -28,4 +28,10 @@ export class AssetService {
     formData.append('fileKey', fileToUpload, fileToUpload.name);
     return this.http.post(endpoint, formData, {observe: 'response'});
   }
+  getFilenames(
+    surveyId: string,
+    questionId: string,
+  ): Observable<HttpResponse<any>> {
+    return this.http.get(`/api/assets/${surveyId}/${questionId}`, {observe: 'response'});
+  }
 }

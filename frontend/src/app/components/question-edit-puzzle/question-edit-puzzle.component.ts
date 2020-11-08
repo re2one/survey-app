@@ -19,6 +19,7 @@ export class QuestionEditPuzzleComponent implements OnInit {
   surveyId: string;
   uploadForm: FormGroup;
   fileToUpload: File = null;
+  filenames: Array<string>;
   constructor(
     public router: Router,
     private questionsService: QuestionsService,
@@ -35,9 +36,14 @@ export class QuestionEditPuzzleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.filenames = new Array<string>();
     this.activatedRoute.paramMap.subscribe(params => {
       this.questionId = params.get('questionId');
       this.surveyId = params.get('surveyId');
+      this.assetService.getFilenames(this.surveyId, this.questionId).subscribe( (response: HttpResponse<any>) => {
+        this.filenames = response.body.filenames;
+        console.log(this.filenames);
+      });
     });
     for (let i = 0; i < 20; i++ ) {
       this.puzzlepieces.set(i, i);

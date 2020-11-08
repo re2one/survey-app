@@ -21,9 +21,14 @@ type SingleAssetResponse struct {
 	QuestionId string `json:"questionId"`
 }
 
+type FilenameResponse struct {
+	Filenames []string `json:"filenames"`
+}
+
 type AssetsController interface {
 	Post(writer http.ResponseWriter, request *http.Request)
 	Upload(writer http.ResponseWriter, request *http.Request)
+	Get(writer http.ResponseWriter, request *http.Request)
 }
 
 func NewAssetsController(a repository.AssetsRepository) AssetsController {
@@ -73,5 +78,17 @@ func (a *assetsController) Upload(writer http.ResponseWriter, request *http.Requ
 
 	}
 
+	return
+}
+
+func (a *assetsController) Get(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	v := mux.Vars(request)
+	filenames, err := a.assetsRepository.GetFilenames(v["surveyId"], v["questionId"])
+	if err != nil {
+		log.Error().Err(err).Caller().Msg("unable to retrieve filenames from disc")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+	json.NewEncoder(writer).Encode(FilenameResponse{Filenames: filenames})
 	return
 }
