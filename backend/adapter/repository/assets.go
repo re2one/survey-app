@@ -2,6 +2,8 @@ package repository
 
 import (
 	"fmt"
+	"image"
+	"image/jpeg"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -55,5 +57,16 @@ func (a *assetsRepository) Upload(surveyId string, questionId string) error {
 		return err
 	}
 	log.Info().Str("question path", questionPath).Msg("Asset-Folder Created")
+	return nil
+}
+
+func (a *assetsRepository) SaveFile(surveyId string, questionId string, data image.Image, filename string) error {
+	path := fmt.Sprintf("assets/survey_%v/question_%v/%v", surveyId, questionId, filename)
+	f, err := os.Create(path)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	jpeg.Encode(f, data, nil)
 	return nil
 }
