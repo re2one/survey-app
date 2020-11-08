@@ -18,4 +18,14 @@ export class AssetService {
     return this.http.post(`/api/assets/directory/${surveyId}/${questionId}`, {
     }, {observe: 'response'});
   }
+  postFile(
+    fileToUpload: File,
+    surveyId: string,
+    questionId: string,
+    ): Observable<HttpResponse<any>> {
+    const endpoint = `/api/assets/upload/${surveyId}/${questionId}`;
+    const formData: FormData = new FormData();
+    formData.append('fileKey', fileToUpload, fileToUpload.name);
+    return this.http.post(endpoint, formData, {observe: 'response'});
+  }
 }

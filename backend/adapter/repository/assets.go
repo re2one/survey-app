@@ -44,3 +44,16 @@ func (a *assetsRepository) createDirectory(path string, dirType string, id strin
 	}
 	return dirPath, nil
 }
+
+func (a *assetsRepository) Upload(surveyId string, questionId string) error {
+	surveyPath, err := a.createDirectory("assets", "survey", surveyId)
+	if err != nil {
+		return err
+	}
+	questionPath, err := a.createDirectory(surveyPath, "question", questionId)
+	if err != nil {
+		return err
+	}
+	log.Info().Str("question path", questionPath).Msg("Asset-Folder Created")
+	return nil
+}

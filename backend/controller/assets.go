@@ -21,6 +21,7 @@ type SingleAssetResponse struct {
 
 type AssetsController interface {
 	Post(writer http.ResponseWriter, request *http.Request)
+	Upload(writer http.ResponseWriter, request *http.Request)
 }
 
 func NewAssetsController(a repository.AssetsRepository) AssetsController {
@@ -39,5 +40,12 @@ func (a *assetsController) Post(writer http.ResponseWriter, request *http.Reques
 	}
 	r := SingleAssetResponse{SurveyId: v["surveyId"], QuestionId: v["questionId"]}
 	json.NewEncoder(writer).Encode(r)
+	return
+}
+
+func (a *assetsController) Upload(writer http.ResponseWriter, request *http.Request) {
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusInternalServerError)
 	return
 }
