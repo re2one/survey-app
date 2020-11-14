@@ -1,0 +1,6 @@
+<h1 mat-dialog-title>Choose a card:</h1>
+<div mat-dialog-content>
+  <div *ngFor="let image of data.images" class="puzzle-element">
+    <img class="image" (click)="emitImage(image, data.surveyId, data.questionId, data.position)" src="{{'/api/assets/' + data.surveyId + '/' + data.questionId + '/' + image}}"/>
+  </div>
+</div>

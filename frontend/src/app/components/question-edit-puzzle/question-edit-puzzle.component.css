@@ -30,8 +30,33 @@
   font-size: 30px;
   border: solid 1px black;
   margin: 0.5%;
-  min-width: 17%;
+  width: 17%;
+  height: 22%;
   flex: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  position: relative;
+}
+
+.element-button-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+  max-height: 10%;
+  margin-bottom: 1%;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+}
+
+.element-button {
+  font-size: xx-small;
+  line-height: inherit;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .general-container {
@@ -42,19 +67,29 @@
 }
 
 .buttons {
-  width: 20%;
-  height: 5%;
   background: rgba(255, 255, 255, 0.2);
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 1%;
+  max-width: 33%;
 }
 
 .image {
-  max-width: 100%
+  max-width: 100%;
+}
+
+.puzzle-piece {
+  height: 80%;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.puzzle-piece-image{
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 .image-container {
   overflow: auto;
   max-height: 100%;
+  padding-right: 10px;
 }

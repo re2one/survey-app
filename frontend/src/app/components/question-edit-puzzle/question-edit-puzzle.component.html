@@ -1,7 +1,13 @@
 <div class="general-container">
   <div class="puzzle-container">
     <div *ngFor="let piece of puzzlepieces | keyvalue" class="puzzle-element">
-
+      <div class="puzzle-piece">
+        <img *ngIf="!piece.value.empty" class="puzzle-piece-image" src="{{'/api/assets/' + surveyId + '/' + questionId + '/' + piece.value.image}}">
+      </div>
+      <div class="element-button-container">
+        <button mat-flat-button class="element-button" (click)="openDialog(piece.key)">ADD</button>
+        <button mat-flat-button class="element-button" (click)="clear(piece.key)">CLEAR</button>
+      </div>
     </div>
   </div>
 
@@ -18,6 +24,9 @@
              id="file"
              (change)="handleFileInput($event.target.files)">
     </div>
-    <button mat-flat-button class="buttons" (click)="uploadFileToActivity()">UPLOAD</button>
+    <div class="button-container">
+      <button mat-flat-button class="buttons" (click)="uploadFileToActivity()">UPLOAD</button>
+      <button mat-flat-button class="buttons" >SAVE</button>
+    </div>
   </div>
 </div>

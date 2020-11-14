@@ -6,6 +6,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AssetService} from '../../services/asset.service';
 import {HttpResponse} from '@angular/common/http';
 import {SurveyResponse} from '../../models/survey';
+import {PuzzleAddDialogComponent, PuzzleDialogConfig} from '../puzzle-add-dialog/puzzle-add-dialog.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-question-edit-puzzle',
@@ -28,6 +30,7 @@ export class QuestionEditPuzzleComponent implements OnInit {
     private answersService: MuchoService,
     private assetService: AssetService,
     private formBuilder: FormBuilder,
+    public dialog: MatDialog,
   ) {
     this.puzzlepieces = new Map();
     this.uploadForm = this.formBuilder.group({
@@ -43,7 +46,8 @@ export class QuestionEditPuzzleComponent implements OnInit {
       this.getImages();
     });
     for (let i = 0; i < 20; i++ ) {
-      this.puzzlepieces.set(i, i);
+      const piece = new PuzzlePiece(i.toString(10));
+      this.puzzlepieces.set(i, piece);
     }
     this.cdr.detectChanges();
   }
@@ -72,4 +76,36 @@ export class QuestionEditPuzzleComponent implements OnInit {
     });
     this.cdr.detectChanges();
   }
+  openDialog(position: string): void{
+    const config = new PuzzleDialogConfig(this.filenames, this.surveyId, this.questionId, position);
+    const dialogRef = this.dialog.open(PuzzleAddDialogComponent, {
+      data: config
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      const piece = this.puzzlepieces.get(result.position);
+      piece.image = result.image;
+      piece.empty = false;
+      this.puzzlepieces.set(result.position, piece);
+    });
+  }
+  clear(position: string): void {
+    const piece = this.puzzlepieces.get(position);
+    piece.image = null;
+    piece.empty = true;
+    this.puzzlepieces.set(position, piece);
+  }
+}
+
+export class PuzzlePiece {
+  constructor(
+    position: string
+  ) {
+    this.empty = true;
+    this.tapped = false;
+    this.position = position;
+  }
+  public empty: boolean;
+  public image: string;
+  public position: string;
+  public tapped: boolean;
 }

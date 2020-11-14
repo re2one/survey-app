@@ -37,6 +37,9 @@ import { QuestionAnswerComponent } from './components/question-answer/question-a
 import { MultipleAnswerComponent } from './components/multiple-answer/multiple-answer.component';
 import { PuzzleAnswerComponent } from './components/puzzle-answer/puzzle-answer.component';
 import { QuestionEditPuzzleComponent } from './components/question-edit-puzzle/question-edit-puzzle.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { PuzzleAddDialogComponent } from './components/puzzle-add-dialog/puzzle-add-dialog.component';
+
 
 
 
@@ -61,7 +64,8 @@ import { QuestionEditPuzzleComponent } from './components/question-edit-puzzle/q
     QuestionAnswerComponent,
     MultipleAnswerComponent,
     PuzzleAnswerComponent,
-    QuestionEditPuzzleComponent
+    QuestionEditPuzzleComponent,
+    PuzzleAddDialogComponent
   ],
   imports: [
     FormsModule,
@@ -77,7 +81,8 @@ import { QuestionEditPuzzleComponent } from './components/question-edit-puzzle/q
     MatButtonModule,
     MatMenuModule,
     MatCardModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDialogModule,
   ],
   providers: [
     AppModule,
