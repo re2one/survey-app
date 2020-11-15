@@ -2,7 +2,7 @@
   <div class="puzzle-container">
     <div *ngFor="let piece of puzzlepieces | keyvalue" class="puzzle-element">
       <div class="puzzle-piece">
-        <img *ngIf="!piece.value.empty" class="puzzle-piece-image" src="{{'/api/assets/' + surveyId + '/' + questionId + '/' + piece.value.image}}">
+        <img *ngIf="!piece.value.empty" (click)="toggleTap(piece.key)" [ngClass]="{'puzzle-piece-image': !piece.value.tapped, 'puzzle-piece-image-tapped': piece.value.tapped }" src="{{'/api/assets/' + surveyId + '/' + questionId + '/' + piece.value.image}}">
       </div>
       <div class="element-button-container">
         <button mat-flat-button class="element-button" (click)="openDialog(piece.key)">ADD</button>
@@ -26,7 +26,7 @@
     </div>
     <div class="button-container">
       <button mat-flat-button class="buttons" (click)="uploadFileToActivity()">UPLOAD</button>
-      <button mat-flat-button class="buttons" >SAVE</button>
+      <button mat-flat-button class="buttons" (click)="save()">SAVE</button>
     </div>
   </div>
 </div>

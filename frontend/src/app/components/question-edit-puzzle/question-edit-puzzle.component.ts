@@ -8,6 +8,7 @@ import {HttpResponse} from '@angular/common/http';
 import {SurveyResponse} from '../../models/survey';
 import {PuzzleAddDialogComponent, PuzzleDialogConfig} from '../puzzle-add-dialog/puzzle-add-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
+import {PuzzleService} from '../../services/puzzle.service';
 
 @Component({
   selector: 'app-question-edit-puzzle',
@@ -29,6 +30,7 @@ export class QuestionEditPuzzleComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private answersService: MuchoService,
     private assetService: AssetService,
+    private puzzleService: PuzzleService,
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
   ) {
@@ -45,8 +47,8 @@ export class QuestionEditPuzzleComponent implements OnInit {
       this.surveyId = params.get('surveyId');
       this.getImages();
     });
-    for (let i = 0; i < 20; i++ ) {
-      const piece = new PuzzlePiece(i.toString(10));
+    for (let i = 0; i < 24; i++ ) {
+      const piece = new PuzzlePiece(i.toString(10), parseInt(this.questionId, 10));
       this.puzzlepieces.set(i, piece);
     }
     this.cdr.detectChanges();
@@ -94,18 +96,37 @@ export class QuestionEditPuzzleComponent implements OnInit {
     piece.empty = true;
     this.puzzlepieces.set(position, piece);
   }
+  toggleTap(position: string): void {
+    const piece = this.puzzlepieces.get(position);
+    piece.tapped = !piece.tapped;
+    this.puzzlepieces.set(position, piece);
+  }
+  save(): void {
+    const pieces = new Array<PuzzlePiece>();
+    this.puzzlepieces.forEach((value, key) => {
+      pieces.push(value);
+    });
+    this.puzzleService.update(this.surveyId, this.questionId, pieces).subscribe( (response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        this.router.navigate(['/surveys/edit', this.surveyId]);
+      }
+    });
+  }
 }
 
 export class PuzzlePiece {
   constructor(
-    position: string
+    position: string,
+    questionid: number
   ) {
     this.empty = true;
     this.tapped = false;
     this.position = position;
+    this.questionid = questionid;
   }
   public empty: boolean;
   public image: string;
   public position: string;
   public tapped: boolean;
+  public questionid: number;
 }

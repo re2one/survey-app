@@ -62,6 +62,9 @@ func main() {
 	assr := repository.NewAssetsRepository(db)
 	assc := controller.NewAssetsController(assr)
 
+	puzzr := repository.NewPuzzleRepository(db)
+	puzzc := controller.NewPuzzleController(puzzr)
+
 	router := mux.NewRouter()
 	router.HandleFunc("/api/signup", uc.Signup).Methods(http.MethodPost)
 	router.HandleFunc("/api/login", uc.Login).Methods(http.MethodPost)
@@ -97,6 +100,8 @@ func main() {
 	router.HandleFunc("/api/assets/upload/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", assc.Upload)).Methods(http.MethodPost)
 	router.HandleFunc("/api/assets/{surveyId}/{questionId}", authorizer.IsAuthorized("user", assc.GetAll)).Methods(http.MethodGet)
 	router.HandleFunc("/api/assets/{surveyId}/{questionId}/{imageName}", assc.Get).Methods(http.MethodGet)
+
+	router.HandleFunc("/api/puzzle/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", puzzc.Put)).Methods(http.MethodPut)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }
