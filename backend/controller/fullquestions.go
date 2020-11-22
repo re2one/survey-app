@@ -96,21 +96,35 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 			continue
 		}
 
-		userAnswer, err := uc.multiplechoiceRepository.Get(currentQuestion.ID, email)
-		if err != nil {
-			log.Error().Err(err).Msg("Unable to fetch the users answer.")
+		// branching here
+		// todo:
+		// check wether question is multiple choice or puzzle
+		// case multiple choice: do below
+		// case puzzle: come up with a function that returns the next questions id...
+
+		var nextQuestion string
+		switch currentQuestion.Type {
+		case "multiplechoice":
+			userAnswer, err := uc.multiplechoiceRepository.Get(currentQuestion.ID, email)
+			if err != nil {
+				log.Error().Err(err).Msg("Unable to fetch the users answer.")
+				writer.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+
+			usedChoice, err := uc.choiceRepository.GetByText(currentQuestion.ID, userAnswer.Text)
+			if err != nil {
+				log.Error().Err(err).Msg("Unable to fetch the corresponding choice for an answer.")
+				writer.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			nextQuestion = fmt.Sprint(usedChoice.NextQuestion)
+		default:
 			writer.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
-		usedChoice, err := uc.choiceRepository.GetByText(currentQuestion.ID, userAnswer.Text)
-		if err != nil {
-			log.Error().Err(err).Msg("Unable to fetch the corresponding choice for an answer.")
-			writer.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		currentQuestion, err = uc.questionRepository.Get(fmt.Sprint(usedChoice.NextQuestion))
+		currentQuestion, err = uc.questionRepository.Get(nextQuestion)
 		if err != nil {
 			log.Error().Err(err).Msg("Unable to retrieve the following question question.")
 			finished = true
