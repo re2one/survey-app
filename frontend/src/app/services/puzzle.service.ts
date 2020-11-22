@@ -18,4 +18,7 @@ export class PuzzleService {
   ): Observable<HttpResponse<any>> {
     return this.http.put(`/api/puzzle/${surveyId}/${questionId}`, puzzlepieces, {observe: 'response'});
   }
+  getAll(questionId: string): Observable<HttpResponse<any>>  {
+    return this.http.get(`/api/puzzle/${questionId}`, {observe: 'response'});
+  }
 }

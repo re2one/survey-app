@@ -75,3 +75,13 @@ func (sr *puzzleRepository) deletePiece(surveyId string, questionId string, piec
 	sr.db.Delete(loadedPiece)
 	return nil
 }
+
+func (sr *puzzleRepository) GetAll(questionId string) ([]*model.Puzzlepiece, error) {
+	//check if record exists
+	pieces := make([]*model.Puzzlepiece, 0)
+	if err := sr.db.Where("question_id = ?", questionId).Find(&pieces).Error; err != nil {
+		return nil, err
+	}
+
+	return pieces, nil
+}

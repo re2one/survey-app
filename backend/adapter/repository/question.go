@@ -2,8 +2,8 @@ package repository
 
 import (
 	"errors"
+
 	"github.com/jinzhu/gorm"
-	"log"
 
 	"backend/model"
 	"backend/usecase/repository"
@@ -44,7 +44,8 @@ func (sr *questionRepository) GetAll(surveyId string) ([]*model.Question, error)
 	//check if record exists
 	questions := make([]*model.Question, 0)
 	if err := sr.db.Where("survey_id = ?", surveyId).Find(&questions).Error; err != nil {
-		log.Fatalln(err)
+		// log.Fatalln(err)
+		return nil, err
 	}
 
 	return questions, nil

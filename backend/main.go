@@ -102,6 +102,7 @@ func main() {
 	router.HandleFunc("/api/assets/{surveyId}/{questionId}/{imageName}", assc.Get).Methods(http.MethodGet)
 
 	router.HandleFunc("/api/puzzle/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", puzzc.Put)).Methods(http.MethodPut)
+	router.HandleFunc("/api/puzzle/{questionId}", authorizer.IsAuthorized("user", puzzc.GetAll)).Methods(http.MethodGet)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }

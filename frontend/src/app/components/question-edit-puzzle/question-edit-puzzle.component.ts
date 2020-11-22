@@ -51,6 +51,7 @@ export class QuestionEditPuzzleComponent implements OnInit {
       const piece = new PuzzlePiece(i.toString(10), parseInt(this.questionId, 10));
       this.puzzlepieces.set(i, piece);
     }
+    this.load();
     this.cdr.detectChanges();
   }
   permissionCheck(): boolean {
@@ -109,6 +110,16 @@ export class QuestionEditPuzzleComponent implements OnInit {
     this.puzzleService.update(this.surveyId, this.questionId, pieces).subscribe( (response: HttpResponse<any>) => {
       if (response.status === 200) {
         this.router.navigate(['/surveys/edit', this.surveyId]);
+      }
+    });
+  }
+  load(): void {
+    this.puzzleService.getAll(this.questionId).subscribe((response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        response.body.pieces.forEach( piece => {
+          console.log(piece);
+          this.puzzlepieces.set(parseInt(piece.position, 10), piece);
+        });
       }
     });
   }
