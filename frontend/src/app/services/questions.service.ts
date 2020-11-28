@@ -39,7 +39,7 @@ export class QuestionsService {
 
   putQuestion(
     ID: number,
-    surveyId: string,
+    surveyId: number,
     title: string,
     first: string,
     text: string,
@@ -47,7 +47,7 @@ export class QuestionsService {
     bracket: string): Observable<HttpResponse<any>> {
     return this.http.put(`/api/questions`, {
       ID,
-      surveyId,
+      surveyid: surveyId,
       title,
       text,
       first,

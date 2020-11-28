@@ -9,6 +9,8 @@ import {SurveyResponse} from '../../models/survey';
 import {PuzzleAddDialogComponent, PuzzleDialogConfig} from '../puzzle-add-dialog/puzzle-add-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 import {PuzzleService} from '../../services/puzzle.service';
+import {BracketService} from '../../services/bracket.service';
+import {Question, QuestionsResponse} from '../../models/questions';
 
 @Component({
   selector: 'app-question-edit-puzzle',
@@ -23,6 +25,10 @@ export class QuestionEditPuzzleComponent implements OnInit {
   uploadForm: FormGroup;
   fileToUpload: File = null;
   filenames: Array<string>;
+  brackets: Array<any>;
+  bracketForm: FormGroup;
+  question: Question;
+
   constructor(
     public router: Router,
     private questionsService: QuestionsService,
@@ -32,11 +38,15 @@ export class QuestionEditPuzzleComponent implements OnInit {
     private assetService: AssetService,
     private puzzleService: PuzzleService,
     private formBuilder: FormBuilder,
+    private bracketService: BracketService,
     public dialog: MatDialog,
   ) {
     this.puzzlepieces = new Map();
     this.uploadForm = this.formBuilder.group({
       file: ['', [Validators.required]],
+    });
+    this.bracketForm = this.formBuilder.group({
+      bracket: ['', [Validators.required]],
     });
   }
 
@@ -46,6 +56,15 @@ export class QuestionEditPuzzleComponent implements OnInit {
       this.questionId = params.get('questionId');
       this.surveyId = params.get('surveyId');
       this.getImages();
+      this.getBrackets(this.surveyId);
+      this.questionsService.getQuestion(this.questionId).subscribe((response: HttpResponse<QuestionsResponse>) => {
+        if (response.status === 200) {
+          this.question = response.body.question;
+          this.bracketForm.setValue({
+            bracket: response.body.question.bracket,
+          });
+        }
+      });
     });
     for (let i = 0; i < 24; i++ ) {
       const piece = new PuzzlePiece(i.toString(10), parseInt(this.questionId, 10));
@@ -107,19 +126,42 @@ export class QuestionEditPuzzleComponent implements OnInit {
     this.puzzlepieces.forEach((value, key) => {
       pieces.push(value);
     });
-    this.puzzleService.update(this.surveyId, this.questionId, pieces).subscribe( (response: HttpResponse<any>) => {
+    this.questionsService.putQuestion(
+      this.question.ID,
+      this.question.surveyid,
+      this.question.title,
+      this.question.first,
+      this.question.text,
+      this.question.type,
+      this.bracketForm.get('name').value,
+    ).subscribe((response: HttpResponse<SurveyResponse>) => {
+      if (response.status === 200) {
+        console.log('nice');
+      }
+    });
+    this.puzzleService.update(this.surveyId, this.questionId, pieces).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
         this.router.navigate(['/surveys/edit', this.surveyId]);
       }
     });
   }
+
   load(): void {
     this.puzzleService.getAll(this.questionId).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
-        response.body.pieces.forEach( piece => {
+        response.body.pieces.forEach(piece => {
           console.log(piece);
           this.puzzlepieces.set(parseInt(piece.position, 10), piece);
         });
+      }
+    });
+  }
+
+  getBrackets(surveyId: string): void {
+    this.bracketService.getBrackets(surveyId).subscribe((response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        console.log(response.body.brackets);
+        this.brackets = response.body.brackets;
       }
     });
   }

@@ -17,13 +17,22 @@
         <img class="image" src="{{'/api/assets/' + surveyId + '/' + questionId + '/' + image}}"/>
       </div>
     </div>
-    <div class="form-group" >
+    <div class="form-group">
       <label for="file">Choose File</label>
       <input type="file"
              accept="image/jpg"
              id="file"
              (change)="handleFileInput($event.target.files)">
     </div>
+    <form [formGroup]="bracketForm">
+      <mat-form-field class="input" appearance="fill">
+        <mat-label>To which random bracket does this question belong?</mat-label>
+        <select matNativeControl formControlName="bracket">
+          <option [value]="'none'" selected>none</option>
+          <option *ngFor="let bracket of brackets" [value]="bracket.name">{{bracket.name}}</option>
+        </select>
+      </mat-form-field>
+    </form>
     <div class="button-container">
       <button mat-flat-button class="buttons" (click)="uploadFileToActivity()">UPLOAD</button>
       <button mat-flat-button class="buttons" (click)="save()">SAVE</button>
