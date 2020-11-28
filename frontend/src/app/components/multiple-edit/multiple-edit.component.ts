@@ -30,7 +30,7 @@ export class MultipleEditComponent implements OnInit {
       parseInt(this.answerId, 10),
       answerData.questionid,
       answerData.text,
-      parseInt(answerData.nextQuestion, 10),
+      answerData.nextQuestion,
     ).subscribe((response: HttpResponse<SurveyResponse>) => {
       if (response.status === 200) {
         this.router.navigate(['/questions/edit', answerData.questionId, this.surveyId]);

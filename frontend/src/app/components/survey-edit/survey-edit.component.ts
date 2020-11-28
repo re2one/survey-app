@@ -5,6 +5,8 @@ import {Router} from '@angular/router';
 import {SurveysService} from '../../services/surveys.service';
 import {ActivatedRoute} from '@angular/router';
 import {QuestionsService} from '../../services/questions.service';
+import {BracketService} from '../../services/bracket.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-survey-edit',
@@ -15,14 +17,21 @@ export class SurveyEditComponent implements OnInit {
   surveyId: string;
   survey: Survey;
   localQuestions: Map<any, any>;
+  brackets: Array<string>;
+  bracketForm: FormGroup;
   constructor(
     public router: Router,
     private surveysService: SurveysService,
     private questionsService: QuestionsService,
     private activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private formBuilder: FormBuilder,
+    private bracketService: BracketService,
   ) {
     this.localQuestions = new Map();
+    this.bracketForm = this.formBuilder.group({
+      name: ['', [Validators.required]],
+    });
   }
 
   ngOnInit(): void {
@@ -38,6 +47,7 @@ export class SurveyEditComponent implements OnInit {
           console.log(this.localQuestions);
         }
       });
+      this.getBrackets(this.surveyId);
     }, 0);
   }
   onSurveySubmit(surveyData): void{
@@ -79,5 +89,22 @@ export class SurveyEditComponent implements OnInit {
       result = true;
     }
     return result;
+  }
+  getBrackets(surveyId: string): void {
+    this.bracketService.getBrackets(surveyId).subscribe((response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        console.log(response.body.brackets);
+        this.brackets = response.body.brackets;
+      }
+    });
+  }
+  onBracketSubmit(bracketData): void{
+    this.bracketService.postBracket(this.surveyId, bracketData.name).subscribe((response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        this.bracketForm.reset();
+        this.getBrackets(this.surveyId);
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

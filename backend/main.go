@@ -65,6 +65,9 @@ func main() {
 	puzzr := repository.NewPuzzleRepository(db)
 	puzzc := controller.NewPuzzleController(puzzr)
 
+	br := repository.NewBracketRepository(db)
+	bc := controller.NewBracketController(br, sr)
+
 	router := mux.NewRouter()
 	router.HandleFunc("/api/signup", uc.Signup).Methods(http.MethodPost)
 	router.HandleFunc("/api/login", uc.Login).Methods(http.MethodPost)
@@ -103,6 +106,9 @@ func main() {
 
 	router.HandleFunc("/api/puzzle/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", puzzc.Put)).Methods(http.MethodPut)
 	router.HandleFunc("/api/puzzle/{questionId}", authorizer.IsAuthorized("user", puzzc.GetAll)).Methods(http.MethodGet)
+
+	router.HandleFunc("/api/brackets/{surveyId}", authorizer.IsAuthorized("admin", bc.Get)).Methods(http.MethodGet)
+	router.HandleFunc("/api/brackets/{surveyId}", authorizer.IsAuthorized("admin", bc.Post)).Methods(http.MethodPost)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }

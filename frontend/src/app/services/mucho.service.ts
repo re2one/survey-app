@@ -34,7 +34,7 @@ export class MuchoService {
     ID: number,
     questionId: string,
     text: string,
-    nextQuestion: number,
+    nextQuestion: string,
   ): Observable<HttpResponse<any>> {
     return this.http.put(`/api/choices`, {
       ID,

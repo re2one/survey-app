@@ -9,6 +9,9 @@
       <mat-label>Next Question</mat-label>
       <select matNativeControl formControlName="nextQuestion">
         <option value="" selected></option>
+        <option *ngFor="let randomBracket of randomBrackets" [value]="randomBracket">
+          {{randomBracket}}
+        </option>
         <option *ngFor="let q of questionz" [value]="q.value">
           {{q.viewValue}}
         </option>

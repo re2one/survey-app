@@ -98,9 +98,10 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 
 		// branching here
 		// todo:
-		// check wether question is multiple choice or puzzle
-		// case multiple choice: do below
+		// [x] check wether question is multiple choice or puzzle
+		// [x] case multiple choice: do below
 		// case puzzle: come up with a function that returns the next questions id...
+		// how to get to the first question id of a random question?
 
 		var nextQuestion string
 		switch currentQuestion.Type {
@@ -118,7 +119,11 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 				writer.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-			nextQuestion = fmt.Sprint(usedChoice.NextQuestion)
+			switch usedChoice.NextQuestion {
+			case "random":
+			default:
+				nextQuestion = fmt.Sprint(usedChoice.NextQuestion)
+			}
 		default:
 			writer.WriteHeader(http.StatusInternalServerError)
 			return

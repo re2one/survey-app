@@ -6,6 +6,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {QuestionsService} from '../../services/questions.service';
 import {MuchoService} from '../../services/mucho.service';
 import {HttpResponse} from '@angular/common/http';
+import {BracketService} from '../../services/bracket.service';
 
 @Component({
   selector: 'app-multiple-form',
@@ -20,13 +21,15 @@ export class MultipleFormComponent implements OnInit {
   multipleId: string;
   answer: Mucho;
   questionz: Array<SelectOptions>;
+  randomBrackets: Array<string>;
   constructor(
     public router: Router,
     private multipleService: MuchoService,
     private questionsService: QuestionsService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private bracketService: BracketService,
   ) {
     this.multipleForm = this.formBuilder.group({
       text: ['', [Validators.required]],
@@ -60,6 +63,12 @@ export class MultipleFormComponent implements OnInit {
               });
               this.cdr.detectChanges();
             }
+          });
+          this.bracketService.getBrackets(this.surveyId).subscribe((response: HttpResponse<any>) => {
+            if (response.status === 200) {
+              this.randomBrackets = response.body.brackets;
+            }
+            this.cdr.detectChanges();
           });
         }, 0);
       });
