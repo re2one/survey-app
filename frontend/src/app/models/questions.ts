@@ -12,6 +12,7 @@ export class Question{
   public type: string;
   public first: string;
   public bracket: string;
+  public next: string;
 }
 
 export class Questions {

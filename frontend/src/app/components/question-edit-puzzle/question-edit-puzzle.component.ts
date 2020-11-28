@@ -28,6 +28,7 @@ export class QuestionEditPuzzleComponent implements OnInit {
   brackets: Array<any>;
   bracketForm: FormGroup;
   question: Question;
+  questionz: Array<SelectOptions>;
 
   constructor(
     public router: Router,
@@ -42,11 +43,13 @@ export class QuestionEditPuzzleComponent implements OnInit {
     public dialog: MatDialog,
   ) {
     this.puzzlepieces = new Map();
+    this.questionz = new Array <SelectOptions> ();
     this.uploadForm = this.formBuilder.group({
       file: ['', [Validators.required]],
     });
     this.bracketForm = this.formBuilder.group({
       bracket: ['', [Validators.required]],
+      next: ['', [Validators.required]],
     });
   }
 
@@ -62,9 +65,21 @@ export class QuestionEditPuzzleComponent implements OnInit {
           this.question = response.body.question;
           this.bracketForm.setValue({
             bracket: response.body.question.bracket,
+            next: response.body.question.next,
           });
         }
       });
+      setTimeout(() => {
+        this.questionsService.getQuestions(this.surveyId).subscribe( (response: HttpResponse<any>) => {
+          if (response.status === 200) {
+            response.body.questions.forEach(question => {
+              const option = new SelectOptions(question.ID, question.title);
+              this.questionz.push(option);
+            });
+            this.cdr.detectChanges();
+          }
+        });
+      }, 0);
     });
     for (let i = 0; i < 24; i++ ) {
       const piece = new PuzzlePiece(i.toString(10), parseInt(this.questionId, 10));
@@ -133,7 +148,8 @@ export class QuestionEditPuzzleComponent implements OnInit {
       this.question.first,
       this.question.text,
       this.question.type,
-      this.bracketForm.get('name').value,
+      this.bracketForm.get('bracket').value,
+      this.bracketForm.get('next').value,
     ).subscribe((response: HttpResponse<SurveyResponse>) => {
       if (response.status === 200) {
         console.log('nice');
@@ -182,4 +198,13 @@ export class PuzzlePiece {
   public position: string;
   public tapped: boolean;
   public questionid: number;
+}
+
+class SelectOptions {
+  value: string;
+  viewValue: string;
+  constructor(value: string, viewValue: string) {
+    this.value = value;
+    this.viewValue = viewValue;
+  }
 }
