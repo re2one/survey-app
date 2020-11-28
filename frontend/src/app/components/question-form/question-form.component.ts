@@ -2,10 +2,8 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Question, QuestionsResponse} from '../../models/questions';
 import {ActivatedRoute, Router} from '@angular/router';
-import {SurveysService} from '../../services/surveys.service';
 import {QuestionsService} from '../../services/questions.service';
 import {HttpResponse} from '@angular/common/http';
-import {SurveyResponse} from '../../models/survey';
 
 @Component({
   selector: 'app-question-form',
@@ -15,6 +13,7 @@ import {SurveyResponse} from '../../models/survey';
 export class QuestionFormComponent implements OnInit {
 
   @Input() getQuestion: boolean;
+  @Input() brackets: Array<any>;
   @Output() formData = new EventEmitter<any>();
   questionForm: FormGroup;
   questionId: string;
@@ -30,6 +29,7 @@ export class QuestionFormComponent implements OnInit {
       text: ['', [Validators.required]],
       first: ['', [Validators.required]],
       type: ['', [Validators.required]],
+      bracket: ['', [Validators.required]],
       surveyId: [''],
     });
   }
@@ -48,6 +48,7 @@ export class QuestionFormComponent implements OnInit {
               surveyId: this.question.surveyid,
               first: this.question.first,
               type: this.question.type,
+              bracket: this.question.bracket,
             });
           }
         });

@@ -12,6 +12,7 @@ type Question struct {
 	Text     string `json:"text"`
 	Type     string `json:"type"`
 	First    string `json:"first"`
+	Bracket  string `json:"bracket"`
 }
 
 func (Question) TableName() string { return "questions" }

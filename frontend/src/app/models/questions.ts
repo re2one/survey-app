@@ -11,6 +11,7 @@ export class Question{
   public text: string;
   public type: string;
   public first: string;
+  public bracket: string;
 }
 
 export class Questions {

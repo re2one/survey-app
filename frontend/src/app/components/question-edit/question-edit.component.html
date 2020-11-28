@@ -1,5 +1,6 @@
 <div class="edit-container">
-  <app-question-form (formData)="onQuestionSubmit($event)" [getQuestion]="true" class="edit-element first"></app-question-form>
+  <app-question-form (formData)="onQuestionSubmit($event)" [brackets]="brackets" [getQuestion]="true"
+                     class="edit-element first"></app-question-form>
   <div class="edit-element last question-list">
     <div *ngFor="let answer of localAnswers | keyvalue" class="card">
       <mat-card class="bg-color">

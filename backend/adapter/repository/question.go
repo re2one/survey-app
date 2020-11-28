@@ -77,6 +77,7 @@ func (sr *questionRepository) Put(s *model.Question) (*model.Question, error) {
 	question.Text = s.Text
 	question.Type = s.Type
 	question.First = s.First
+	question.Bracket = s.Bracket
 	sr.db.Save(question)
 	return &question, nil
 }

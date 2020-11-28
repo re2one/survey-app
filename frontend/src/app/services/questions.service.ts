@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Surveys} from '../models/survey';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {Question} from '../models/questions';
 
 @Injectable({
   providedIn: 'root'
@@ -34,16 +32,19 @@ export class QuestionsService {
       type,
     }, {observe: 'response'});
   }
+
   deleteQuestions(id: number): Observable<HttpResponse<any>> {
     return this.http.delete(`/api/questions/${id}`, {observe: 'response'});
   }
+
   putQuestion(
     ID: number,
     surveyId: string,
     title: string,
     first: string,
     text: string,
-    type: string): Observable<HttpResponse<any>> {
+    type: string,
+    bracket: string): Observable<HttpResponse<any>> {
     return this.http.put(`/api/questions`, {
       ID,
       surveyId,
@@ -51,7 +52,8 @@ export class QuestionsService {
       text,
       first,
       Survey: null,
-      type
+      type,
+      bracket
     }, {observe: 'response'});
   }
 }

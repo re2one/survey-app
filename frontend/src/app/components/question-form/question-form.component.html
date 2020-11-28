@@ -19,6 +19,14 @@
     </mat-form-field>
     <br>
     <mat-form-field class="input" appearance="fill">
+      <mat-label>To which random bracket does this question belong?</mat-label>
+      <select matNativeControl formControlName="bracket">
+        <option [value]="'none'" selected>None</option>
+        <option *ngFor="let bracket of brackets" [value]="bracket.name">{{bracket.name}}</option>
+      </select>
+    </mat-form-field>
+    <br>
+    <mat-form-field class="input" appearance="fill">
       <mat-label>Start with this Question</mat-label>
       <select matNativeControl formControlName="first">
         <option [value]="false" selected>Rather not.</option>

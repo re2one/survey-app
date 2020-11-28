@@ -5,6 +5,7 @@ import {QuestionsService} from '../../services/questions.service';
 import {HttpResponse} from '@angular/common/http';
 import {MuchoService} from '../../services/mucho.service';
 import {SurveyResponse} from '../../models/survey';
+import {BracketService} from '../../services/bracket.service';
 
 @Component({
   selector: 'app-question-edit',
@@ -17,12 +18,14 @@ export class QuestionEditComponent implements OnInit {
   surveyId: string;
   question: Question;
   localAnswers: Map<any, any>;
+  brackets: Array<any>;
   constructor(
     public router: Router,
     private questionsService: QuestionsService,
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private answersService: MuchoService
+    private answersService: MuchoService,
+    private bracketService: BracketService,
   ) {
     this.localAnswers = new Map();
   }
@@ -33,7 +36,7 @@ export class QuestionEditComponent implements OnInit {
       this.surveyId = params.get('surveyId');
     });
     setTimeout(() => {
-      this.answersService.getAnswers(this.questionId).subscribe( (response: HttpResponse<any>) => {
+      this.answersService.getAnswers(this.questionId).subscribe((response: HttpResponse<any>) => {
         if (response.status === 200) {
           response.body.choices.forEach(answer => {
             this.localAnswers.set(answer.ID, answer);
@@ -41,12 +44,14 @@ export class QuestionEditComponent implements OnInit {
           console.log(this.localAnswers);
         }
       });
+      this.getBrackets(this.surveyId);
     }, 0);
   }
   permissionCheck(): boolean {
     const role = localStorage.getItem('role');
     return role === 'admin';
   }
+
   delete(questionId: number): void {
     console.log(`question id to be deleted: ${questionId}`);
     this.answersService.deleteAnswers(questionId).subscribe((response: HttpResponse<any>) => {
@@ -56,14 +61,25 @@ export class QuestionEditComponent implements OnInit {
       }
     });
   }
-  onQuestionSubmit(questionData): void{
+
+  getBrackets(surveyId: string): void {
+    this.bracketService.getBrackets(surveyId).subscribe((response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        console.log(response.body.brackets);
+        this.brackets = response.body.brackets;
+      }
+    });
+  }
+
+  onQuestionSubmit(questionData): void {
     this.questionsService.putQuestion(
       parseInt(this.questionId, 10),
       questionData.surveyid,
       questionData.title,
-      questionData.text,
       questionData.first,
+      questionData.text,
       questionData.type,
+      questionData.bracket,
     ).subscribe((response: HttpResponse<SurveyResponse>) => {
       if (response.status === 200) {
         this.router.navigate(['/surveys/edit', questionData.surveyId]);
