@@ -13,6 +13,8 @@ export class Question{
   public first: string;
   public bracket: string;
   public next: string;
+  public secondToNext: string;
+  public typeOfNextQuestion: string;
 }
 
 export class Questions {

@@ -48,7 +48,7 @@ export class QuestionFormComponent implements OnInit {
               surveyId: this.question.surveyid,
               first: this.question.first,
               type: this.question.type,
-              bracket: this.question.bracket,
+              bracket: this.question.bracket || 'none',
             });
           }
         });

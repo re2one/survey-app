@@ -29,7 +29,7 @@ export class QuestionEditPuzzleComponent implements OnInit {
   bracketForm: FormGroup;
   question: Question;
   questionz: Array<SelectOptions>;
-
+  secondDisabled: boolean;
   constructor(
     public router: Router,
     private questionsService: QuestionsService,
@@ -50,6 +50,8 @@ export class QuestionEditPuzzleComponent implements OnInit {
     this.bracketForm = this.formBuilder.group({
       bracket: ['', [Validators.required]],
       next: ['', [Validators.required]],
+      secondToNext: [''],
+      typeOfNextQuestion: ['', [Validators.required]],
     });
   }
 
@@ -66,7 +68,10 @@ export class QuestionEditPuzzleComponent implements OnInit {
           this.bracketForm.setValue({
             bracket: response.body.question.bracket,
             next: response.body.question.next,
+            secondToNext: response.body.question.secondToNext,
+            typeOfNextQuestion: response.body.question.typeOfNextQuestion,
           });
+          (response.body.question.typeOfNextQuestion === 'regular') ? this.secondDisabled = true : this.secondDisabled = false;
         }
       });
       setTimeout(() => {
@@ -94,12 +99,10 @@ export class QuestionEditPuzzleComponent implements OnInit {
   }
   handleFileInput(files: FileList): void {
     this.fileToUpload = files.item(0);
-    console.log(this.fileToUpload);
   }
   uploadFileToActivity(): void {
     this.assetService.postFile(this.fileToUpload, this.surveyId, this.questionId).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
-        console.log('success!');
         this.getImages();
       }
     }, error => {
@@ -109,7 +112,6 @@ export class QuestionEditPuzzleComponent implements OnInit {
   getImages(): void {
     this.assetService.getFilenames(this.surveyId, this.questionId).subscribe( (response: HttpResponse<any>) => {
       this.filenames = response.body.filenames;
-      console.log(this.filenames);
     });
     this.cdr.detectChanges();
   }
@@ -150,6 +152,8 @@ export class QuestionEditPuzzleComponent implements OnInit {
       this.question.type,
       this.bracketForm.get('bracket').value,
       this.bracketForm.get('next').value,
+      this.bracketForm.get('secondToNext').value,
+      this.bracketForm.get('typeOfNextQuestion').value,
     ).subscribe((response: HttpResponse<SurveyResponse>) => {
       if (response.status === 200) {
         console.log('nice');
@@ -166,7 +170,6 @@ export class QuestionEditPuzzleComponent implements OnInit {
     this.puzzleService.getAll(this.questionId).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
         response.body.pieces.forEach(piece => {
-          console.log(piece);
           this.puzzlepieces.set(parseInt(piece.position, 10), piece);
         });
       }
@@ -176,10 +179,20 @@ export class QuestionEditPuzzleComponent implements OnInit {
   getBrackets(surveyId: string): void {
     this.bracketService.getBrackets(surveyId).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
-        console.log(response.body.brackets);
         this.brackets = response.body.brackets;
       }
     });
+  }
+
+  disableSecond(event): void {
+    switch (event.target.value) {
+      case ('random'):
+        this.secondDisabled = false;
+        break;
+      default:
+        this.secondDisabled = true;
+        break;
+    }
   }
 }
 

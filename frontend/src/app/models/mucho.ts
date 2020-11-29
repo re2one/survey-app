@@ -1,6 +1,6 @@
 import {Question} from './questions';
 
-export class Mucho{
+export class Mucho {
   public ID: number;
   public CreatedAt: string;
   public UpdatedAt: string;
@@ -9,6 +9,8 @@ export class Mucho{
   public questionid: number;
   public text: string;
   public nextQuestion: number;
+  public secondToNext: string;
+  public typeOfNextQuestion: string;
 }
 
 export class Answers {

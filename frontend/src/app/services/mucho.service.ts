@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Router} from '@angular/router';
@@ -35,6 +35,8 @@ export class MuchoService {
     questionId: string,
     text: string,
     nextQuestion: string,
+    secondToNext: string,
+    typeOfNextQuestion: string
   ): Observable<HttpResponse<any>> {
     return this.http.put(`/api/choices`, {
       ID,
@@ -42,6 +44,8 @@ export class MuchoService {
       text,
       nextQuestion,
       Question: null,
+      secondToNext,
+      typeOfNextQuestion,
     }, {observe: 'response'});
   }
 }

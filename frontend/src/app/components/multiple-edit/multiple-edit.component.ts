@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MuchoService} from '../../services/mucho.service';
 import {HttpResponse} from '@angular/common/http';
@@ -31,6 +31,8 @@ export class MultipleEditComponent implements OnInit {
       answerData.questionid,
       answerData.text,
       answerData.nextQuestion,
+      answerData.secondToNext,
+      answerData.typeOfNextQuestion,
     ).subscribe((response: HttpResponse<SurveyResponse>) => {
       if (response.status === 200) {
         this.router.navigate(['/questions/edit', answerData.questionId, this.surveyId]);

@@ -5,6 +5,14 @@
       <input matInput formControlName="text">
     </mat-form-field>
     <br>
+    <mat-form-field class="input" appearance="fill">
+      <mat-label>Is the follwing question a random one?</mat-label>
+      <select matNativeControl formControlName="typeOfNextQuestion" (change)="disableSecond($event)">
+        <option [value]="'regular'" selected>regular</option>
+        <option [value]="'random'">random</option>
+      </select>
+    </mat-form-field>
+    <br>
     <mat-form-field *ngIf="getAnswer" class="input" appearance="fill">
       <mat-label>Next Question</mat-label>
       <select matNativeControl formControlName="nextQuestion">
@@ -15,9 +23,19 @@
         <option *ngFor="let q of questionz" [value]="q.value">
           {{q.viewValue}}
         </option>
+        <option [value]="'lastQuestion'">This is the last Question.</option>
       </select>
     </mat-form-field>
     <br>
+    <mat-form-field class="input" appearance="fill" *ngIf="!secondDisabled">
+      <mat-label>Second to next Question</mat-label>
+      <select matNativeControl formControlName="secondToNext">
+        <option [value]="" selected></option>
+        <option *ngFor="let q of questionz" [value]="q.value">
+          {{q.viewValue}}
+        </option>
+      </select>
+    </mat-form-field>
     <mat-form-field class="invisible" appearance="fill">
       <mat-label>QuestionId</mat-label>
       <input matInput formControlName="questionId">

@@ -26,6 +26,14 @@
     </div>
     <form [formGroup]="bracketForm">
       <mat-form-field class="input" appearance="fill">
+        <mat-label>Is the follwing question a random one?</mat-label>
+        <select matNativeControl formControlName="typeOfNextQuestion" (change)="disableSecond($event)">
+          <option [value]="'regular'" selected>regular</option>
+          <option [value]="'random'">random</option>
+        </select>
+      </mat-form-field>
+      <br>
+      <mat-form-field class="input" appearance="fill">
         <mat-label>To which random bracket does this question belong?</mat-label>
         <select matNativeControl formControlName="bracket">
           <option [value]="'none'" selected>none</option>
@@ -36,10 +44,21 @@
       <mat-form-field class="input" appearance="fill">
         <mat-label>Next Question</mat-label>
         <select matNativeControl formControlName="next">
-          <option value="" selected></option>
+          <option [value]="" selected></option>
           <option *ngFor="let bracket of brackets" [value]="bracket.name">
             {{bracket.name}}
           </option>
+          <option *ngFor="let q of questionz" [value]="q.value">
+            {{q.viewValue}}
+          </option>
+          <option [value]="'lastQuestion'">This is the last question.</option>
+        </select>
+      </mat-form-field>
+      <br>
+      <mat-form-field class="input" appearance="fill" *ngIf="!secondDisabled">
+        <mat-label>Second to next Question</mat-label>
+        <select matNativeControl formControlName="secondToNext">
+          <option [value]="" selected></option>
           <option *ngFor="let q of questionz" [value]="q.value">
             {{q.viewValue}}
           </option>

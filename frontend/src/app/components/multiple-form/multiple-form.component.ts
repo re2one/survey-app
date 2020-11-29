@@ -1,6 +1,5 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Question, QuestionsResponse} from '../../models/questions';
 import {AnswerResponse, Mucho} from '../../models/mucho';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QuestionsService} from '../../services/questions.service';
@@ -22,6 +21,7 @@ export class MultipleFormComponent implements OnInit {
   answer: Mucho;
   questionz: Array<SelectOptions>;
   randomBrackets: Array<string>;
+  secondDisabled: boolean;
   constructor(
     public router: Router,
     private multipleService: MuchoService,
@@ -35,6 +35,8 @@ export class MultipleFormComponent implements OnInit {
       text: ['', [Validators.required]],
       questionId: [''],
       nextQuestion: [''],
+      secondToNext: [''],
+      typeOfNextQuestion: ['', [Validators.required]],
     });
     this.questionz = new Array <SelectOptions> ();
   }
@@ -51,7 +53,10 @@ export class MultipleFormComponent implements OnInit {
               text: this.answer.text,
               questionId: this.answer.questionid,
               nextQuestion: this.answer.nextQuestion,
+              secondToNext: this.answer.secondToNext,
+              typeOfNextQuestion: this.answer.typeOfNextQuestion,
             });
+            (this.answer.typeOfNextQuestion === 'regular') ? this.secondDisabled = true : this.secondDisabled = false;
           }
         });
         setTimeout(() => {
@@ -74,8 +79,20 @@ export class MultipleFormComponent implements OnInit {
       });
     }
   }
-  onMultipleSubmit(multipleData): void{
+
+  onMultipleSubmit(multipleData): void {
     this.formData.emit(multipleData);
+  }
+
+  disableSecond(event): void {
+    switch (event.target.value) {
+      case ('random'):
+        this.secondDisabled = false;
+        break;
+      default:
+        this.secondDisabled = true;
+        break;
+    }
   }
 
 }

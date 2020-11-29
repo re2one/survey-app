@@ -45,7 +45,9 @@ export class QuestionsService {
     text: string,
     type: string,
     bracket: string,
-    next: string): Observable<HttpResponse<any>> {
+    next: string,
+    secondToNext: string,
+    typeOfNextQuestion: string): Observable<HttpResponse<any>> {
     return this.http.put(`/api/questions`, {
       ID,
       surveyid: surveyId,
@@ -55,7 +57,9 @@ export class QuestionsService {
       Survey: null,
       type,
       bracket,
-      next
+      next,
+      secondToNext,
+      typeOfNextQuestion,
     }, {observe: 'response'});
   }
 }

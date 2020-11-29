@@ -80,7 +80,8 @@ func (uc *choiceController) Post(writer http.ResponseWriter, request *http.Reque
 		writer.WriteHeader(http.StatusInternalServerError)
 	}
 	choice.Question = *question
-	choice2, err := uc.choiceRepository.Post(v["surveyId"], &choice)
+	choice.QuestionId = question.ID
+	choice2, err := uc.choiceRepository.Post(v["questionId"], &choice)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to write post choice to db")
 		writer.WriteHeader(http.StatusInternalServerError)
