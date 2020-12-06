@@ -1,0 +1,11 @@
+<div class="general-container">
+  <div class="puzzle-container">
+    <div *ngFor="let piece of puzzlepieces | keyvalue" class="puzzle-element">
+      <div class="puzzle-piece">
+        <img *ngIf="!piece.value.empty"
+             [ngClass]="{'puzzle-piece-image': !piece.value.tapped, 'puzzle-piece-image-tapped': piece.value.tapped }"
+             src="{{'/api/assets/' + question.surveyid + '/' + question.ID + '/' + piece.value.image}}">
+      </div>
+    </div>
+  </div>
+</div>
