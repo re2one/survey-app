@@ -45,13 +45,6 @@ export class PuzzlePreviewComponent implements OnInit {
       },
     };
     this.counter.subscribe(myObserver);
-    /*
-    this.fqService.postViewed(email, this.question).subscribe((response: HttpResponse<any>) => {
-      if (response.status === 200) {
-        console.log('beep');
-      }
-    });
-     */
   }
 
   getImages(): void {
@@ -68,6 +61,8 @@ export class PuzzlePreviewComponent implements OnInit {
         if (response.status === 200) {
           response.body.pieces.forEach(piece => {
             this.puzzlepieces.set(parseInt(piece.position, 10), piece);
+          });
+          this.fqService.postViewed(email, this.question).subscribe((response2: HttpResponse<any>) => {
           });
         }
       }, (error) => {

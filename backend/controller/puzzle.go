@@ -106,7 +106,7 @@ func (pc *puzzleController) GetAllForQuestionaire(writer http.ResponseWriter, re
 		return
 	}
 
-	if ans.Viewed == true {
+	if len(ans) > 0 {
 		log.Error().Err(err).Msg("Question has already been watched.")
 		writer.WriteHeader(http.StatusBadRequest)
 		return

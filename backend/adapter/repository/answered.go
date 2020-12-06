@@ -34,16 +34,16 @@ func (rr *answeredRepository) Get(u *model.User, q *model.Question) (map[uint]*m
 	return result, nil
 }
 
-func (rr *answeredRepository) GetSingle(u *model.User, q *model.Question) (*model.Answered, error) {
+func (rr *answeredRepository) GetSingle(u *model.User, q *model.Question) ([]*model.Answered, error) {
 
-	answered := make([]model.Answered, 0)
+	answered := make([]*model.Answered, 0)
 	err := rr.db.Where("user_id = ? and question_id = ?", u.ID, q.ID).Find(&answered).Error
 	if err != nil {
 		return nil, err
 	}
 	log.Info().Int("length", len(answered)).Msg("number of retrieved states")
 
-	return &answered[0], nil
+	return answered, nil
 }
 
 func (rr *answeredRepository) Post(u *model.User, q *model.Question) (*model.Answered, error) {
