@@ -12,20 +12,34 @@ import (
 )
 
 type puzzleController struct {
-	puzzleRepository repository.PuzzleRepository
+	puzzleRepository   repository.PuzzleRepository
+	answeredRepository repository.AnsweredRepository
+	userRepository     repository.UserRepository
+	questionRepository repository.QuestionRepository
 }
 
 type PuzzleController interface {
 	Put(writer http.ResponseWriter, request *http.Request)
 	GetAll(writer http.ResponseWriter, request *http.Request)
+	GetAllForQuestionaire(writer http.ResponseWriter, request *http.Request)
 }
 
 type PuzzleResponse struct {
 	Pieces []*model.Puzzlepiece `json:"pieces"`
 }
 
-func NewPuzzleController(repo repository.PuzzleRepository) PuzzleController {
-	return &puzzleController{puzzleRepository: repo}
+func NewPuzzleController(
+	repo repository.PuzzleRepository,
+	answeredRepository repository.AnsweredRepository,
+	userRepository repository.UserRepository,
+	questionRepository repository.QuestionRepository,
+) PuzzleController {
+	return &puzzleController{
+		puzzleRepository:   repo,
+		answeredRepository: answeredRepository,
+		userRepository:     userRepository,
+		questionRepository: questionRepository,
+	}
 }
 
 func (pc *puzzleController) Put(writer http.ResponseWriter, request *http.Request) {
@@ -56,6 +70,48 @@ func (pc *puzzleController) Put(writer http.ResponseWriter, request *http.Reques
 func (pc *puzzleController) GetAll(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	v := mux.Vars(request)
+	pieces, err := pc.puzzleRepository.GetAll(v["questionId"])
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve questions.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(writer).Encode(PuzzleResponse{Pieces: pieces})
+	return
+}
+
+func (pc *puzzleController) GetAllForQuestionaire(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	v := mux.Vars(request)
+
+	lookupUser := model.User{Email: v["email"]}
+	retrievedUser, err := pc.userRepository.Get(&lookupUser)
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve user.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	q, err := pc.questionRepository.Get(v["questionId"])
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve question.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	ans, err := pc.answeredRepository.GetSingle(retrievedUser, q)
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve question state.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if ans.Viewed == true {
+		log.Error().Err(err).Msg("Question has already been watched.")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	pieces, err := pc.puzzleRepository.GetAll(v["questionId"])
 	if err != nil {
 		log.Error().Err(err).Msg("Unable to retrieve questions.")

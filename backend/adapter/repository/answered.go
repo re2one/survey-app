@@ -21,7 +21,7 @@ func NewAnsweredRepository(db *gorm.DB) repository.AnsweredRepository {
 func (rr *answeredRepository) Get(u *model.User, q *model.Question) (map[uint]*model.Answered, error) {
 
 	answered := make([]model.Answered, 0)
-	err := rr.db.Where("user_id = ?", u.ID).Find(&answered).Error
+	err := rr.db.Where("user_id = ? and answered = ?", u.ID, true).Find(&answered).Error
 	if err != nil {
 		return nil, err
 	}
@@ -34,9 +34,39 @@ func (rr *answeredRepository) Get(u *model.User, q *model.Question) (map[uint]*m
 	return result, nil
 }
 
+func (rr *answeredRepository) GetSingle(u *model.User, q *model.Question) (*model.Answered, error) {
+
+	answered := make([]model.Answered, 0)
+	err := rr.db.Where("user_id = ? and question_id = ?", u.ID, q.ID).Find(&answered).Error
+	if err != nil {
+		return nil, err
+	}
+	log.Info().Int("length", len(answered)).Msg("number of retrieved states")
+
+	return &answered[0], nil
+}
+
 func (rr *answeredRepository) Post(u *model.User, q *model.Question) (*model.Answered, error) {
 	// userExists := ur.db.NewRecord(u)
-	answered := model.Answered{User: *u, QuestionId: q.ID, Answered: true}
+	var answered model.Answered
+	err := rr.db.Where("user_id = ? and question_id = ?", u.ID, q.ID).Find(&answered).Error
+	if err != nil {
+		answered := model.Answered{User: *u, QuestionId: q.ID, Answered: true}
+		err := rr.db.Create(&answered).Error
+		if err != nil {
+			return nil, err
+		}
+		return &answered, nil
+	}
+	answered.Answered = true
+	rr.db.Save(answered)
+	return &answered, nil
+
+}
+
+func (rr *answeredRepository) Viewed(u *model.User, q *model.Question) (*model.Answered, error) {
+	// userExists := ur.db.NewRecord(u)
+	answered := model.Answered{User: *u, QuestionId: q.ID, Viewed: true, Answered: false}
 	err := rr.db.Create(&answered).Error
 	if err != nil {
 		return nil, err

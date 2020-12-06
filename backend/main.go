@@ -63,7 +63,7 @@ func main() {
 	assc := controller.NewAssetsController(assr)
 
 	puzzr := repository.NewPuzzleRepository(db)
-	puzzc := controller.NewPuzzleController(puzzr)
+	puzzc := controller.NewPuzzleController(puzzr, ar, ur, qr)
 
 	par := repository.NewPuzzleAnswerRepository(db)
 	pac := controller.NewPuzzleAnswerController(par)
@@ -97,6 +97,7 @@ func main() {
 
 	router.HandleFunc("/api/fullquestions/{surveyid}/{email}", authorizer.IsAuthorized("user", fc.GetAll)).Methods(http.MethodGet)
 	router.HandleFunc("/api/fullquestions/{email}", authorizer.IsAuthorized("user", fc.Post)).Methods(http.MethodPost)
+	router.HandleFunc("/api/fullquestions/viewed/{email}", authorizer.IsAuthorized("user", fc.Viewed)).Methods(http.MethodPost)
 
 	router.HandleFunc("/api/answer/multiplechoice", authorizer.IsAuthorized("user", mc.Post)).Methods(http.MethodPost)
 
@@ -109,6 +110,7 @@ func main() {
 
 	router.HandleFunc("/api/puzzle/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", puzzc.Put)).Methods(http.MethodPut)
 	router.HandleFunc("/api/puzzle/{questionId}", authorizer.IsAuthorized("user", puzzc.GetAll)).Methods(http.MethodGet)
+	router.HandleFunc("/api/puzzle/{questionId}/{email}", authorizer.IsAuthorized("user", puzzc.GetAllForQuestionaire)).Methods(http.MethodGet)
 
 	router.HandleFunc("/api/brackets/{surveyId}", authorizer.IsAuthorized("admin", bc.Get)).Methods(http.MethodGet)
 	router.HandleFunc("/api/brackets/{surveyId}", authorizer.IsAuthorized("admin", bc.Post)).Methods(http.MethodPost)

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {PuzzlePiece} from '../components/question-edit-puzzle/question-edit-puzzle.component';
@@ -11,6 +11,7 @@ export class PuzzleService {
   constructor(
     private http: HttpClient,
   ) { }
+
   update(
     surveyId: string,
     questionId: string,
@@ -18,7 +19,12 @@ export class PuzzleService {
   ): Observable<HttpResponse<any>> {
     return this.http.put(`/api/puzzle/${surveyId}/${questionId}`, puzzlepieces, {observe: 'response'});
   }
-  getAll(questionId: string): Observable<HttpResponse<any>>  {
+
+  getAll(questionId: string): Observable<HttpResponse<any>> {
     return this.http.get(`/api/puzzle/${questionId}`, {observe: 'response'});
+  }
+
+  getAllForQuestionaire(questionId: string, email: string): Observable<HttpResponse<any>> {
+    return this.http.get(`/api/puzzle/${questionId}/${email}`, {observe: 'response'});
   }
 }

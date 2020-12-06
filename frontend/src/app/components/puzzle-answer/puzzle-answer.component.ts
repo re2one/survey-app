@@ -86,6 +86,7 @@ export class PuzzleAnswerComponent implements OnInit {
   }
 
   togglePreview(toggle: boolean): void {
+    console.log('TOGGLE');
     this.previewActive = toggle;
   }
 

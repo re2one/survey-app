@@ -5,6 +5,7 @@ import {AssetService} from '../../services/asset.service';
 import {PuzzleService} from '../../services/puzzle.service';
 import {PuzzlePiece} from '../question-edit-puzzle/question-edit-puzzle.component';
 import {Observable} from 'rxjs';
+import {FullQuestionsService} from '../../services/full-questions.service';
 
 @Component({
   selector: 'app-puzzle-preview',
@@ -22,30 +23,35 @@ export class PuzzlePreviewComponent implements OnInit {
     private assetService: AssetService,
     private cdr: ChangeDetectorRef,
     private puzzleService: PuzzleService,
+    private fqService: FullQuestionsService,
   ) {
     this.puzzlepieces = new Map();
-    setTimeout(
-      () => {
-        const myObserver = {
-          next: x => {
-          },
-          error: err => console.error('Observer got an error: ' + err),
-          complete: () => {
-            this.finished.emit(false);
-          },
-        };
-        this.counter.subscribe(myObserver);
-      }, 0
-    );
   }
   ngOnInit(): void {
+    const email = localStorage.getItem('email');
     this.getImages();
     for (let i = 0; i < 24; i++) {
       const piece = new PuzzlePiece(i.toString(10), this.question.ID);
       this.puzzlepieces.set(i, piece);
     }
-    this.load();
+    this.load(email);
     this.cdr.detectChanges();
+    const myObserver = {
+      next: x => {
+      },
+      error: err => console.error('Observer got an error: ' + err),
+      complete: () => {
+        this.finished.emit(false);
+      },
+    };
+    this.counter.subscribe(myObserver);
+    /*
+    this.fqService.postViewed(email, this.question).subscribe((response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        console.log('beep');
+      }
+    });
+     */
   }
 
   getImages(): void {
@@ -56,13 +62,16 @@ export class PuzzlePreviewComponent implements OnInit {
     });
   }
 
-  load(): void {
-    this.puzzleService.getAll(this.question.ID.toString(10)).subscribe((response: HttpResponse<any>) => {
-      if (response.status === 200) {
-        response.body.pieces.forEach(piece => {
-          this.puzzlepieces.set(parseInt(piece.position, 10), piece);
-        });
-      }
-    });
+  load(email: string): void {
+    this.puzzleService.getAllForQuestionaire(this.question.ID.toString(10), email).subscribe(
+      (response: HttpResponse<any>) => {
+        if (response.status === 200) {
+          response.body.pieces.forEach(piece => {
+            this.puzzlepieces.set(parseInt(piece.position, 10), piece);
+          });
+        }
+      }, (error) => {
+        this.finished.emit(false);
+      });
   }
 }
