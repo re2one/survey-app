@@ -1,9 +1,10 @@
-import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Question} from '../../models/questions';
 import {HttpResponse} from '@angular/common/http';
 import {AssetService} from '../../services/asset.service';
 import {PuzzleService} from '../../services/puzzle.service';
 import {PuzzlePiece} from '../question-edit-puzzle/question-edit-puzzle.component';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-puzzle-preview',
@@ -11,7 +12,9 @@ import {PuzzlePiece} from '../question-edit-puzzle/question-edit-puzzle.componen
   styleUrls: ['./puzzle-preview.component.css']
 })
 export class PuzzlePreviewComponent implements OnInit {
+  @Input() counter: Observable<number>;
   @Input() question: Question;
+  @Output() finished = new EventEmitter<boolean>();
   filenames: Array<string>;
   puzzlepieces: Map<any, any>;
 
@@ -21,8 +24,20 @@ export class PuzzlePreviewComponent implements OnInit {
     private puzzleService: PuzzleService,
   ) {
     this.puzzlepieces = new Map();
+    setTimeout(
+      () => {
+        const myObserver = {
+          next: x => {
+          },
+          error: err => console.error('Observer got an error: ' + err),
+          complete: () => {
+            this.finished.emit(false);
+          },
+        };
+        this.counter.subscribe(myObserver);
+      }, 0
+    );
   }
-
   ngOnInit(): void {
     this.getImages();
     for (let i = 0; i < 24; i++) {

@@ -40,9 +40,6 @@ export class PuzzleAnswerComponent implements OnInit {
       take(this.count),
       map(() => --this.count)
     );
-    setTimeout(() => {
-      this.previewActive = false;
-    }, 10 * 1000);
   }
 
   ngOnInit(): void {
@@ -86,6 +83,10 @@ export class PuzzleAnswerComponent implements OnInit {
     const piece = this.puzzlepieces.get(position);
     piece.tapped = !piece.tapped;
     this.puzzlepieces.set(position, piece);
+  }
+
+  togglePreview(toggle: boolean): void {
+    this.previewActive = toggle;
   }
 
   save(): void {
