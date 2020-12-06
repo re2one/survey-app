@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/rs/zerolog/log"
 
 	"backend/model"
 	"backend/usecase/repository"
@@ -17,9 +18,18 @@ func NewPuzzleAnswerRepository(db *gorm.DB) repository.PuzzleAnswerRepository {
 }
 
 func (par *puzzleAnswerRepository) Post(pieces []*model.PuzzleAnswer) ([]*model.PuzzleAnswer, error) {
-	for _, piece := range pieces {
-		par.db.Create(&piece)
+	for _, p := range pieces {
+
+		var p2 model.PuzzleAnswer
+		err := par.db.Where("questionId = ? and email = ?", p.Question.ID, p.Email).First(&p2).Error
+
+		if err == nil {
+			log.Error().Msg("multiple puzzle answer already exists")
+			continue
+		}
+
+		par.db.Create(&p)
 	}
 
-	return nil, nil
+	return pieces, nil
 }

@@ -65,7 +65,6 @@ export class QuestionsService {
   }
 
   answerPuzzle(pieces: Array<Puzzlepiece>): Observable<HttpResponse<any>> {
-    console.log('beep');
     return this.http.post(`/api/answer/puzzle`, pieces, {observe: 'response'});
   }
 }

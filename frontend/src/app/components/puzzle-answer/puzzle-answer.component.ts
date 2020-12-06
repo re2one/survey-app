@@ -10,6 +10,7 @@ import {PuzzleService} from '../../services/puzzle.service';
 import {MatDialog} from '@angular/material/dialog';
 import {QuestionsService} from '../../services/questions.service';
 import {Router} from '@angular/router';
+import {Puzzlepiece} from '../../models/puzzle';
 
 @Component({
   selector: 'app-puzzle-answer',
@@ -86,5 +87,22 @@ export class PuzzleAnswerComponent implements OnInit {
   }
 
   save(): void {
+    const pieces = Array<Puzzlepiece>();
+    this.puzzlepieces.forEach((value, key) => {
+      if (value.empty === false) {
+        const newPiece = new Puzzlepiece();
+        newPiece.Tapped = value.tapped;
+        newPiece.Image = value.image;
+        newPiece.Email = localStorage.getItem('email');
+        newPiece.Question = this.question;
+        newPiece.Position = value.position;
+        pieces.push(newPiece);
+      }
+    });
+    this.questionsService.answerPuzzle(pieces).subscribe((response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        this.router.navigate(['survey', this.question.surveyid]);
+      }
+    });
   }
 }
