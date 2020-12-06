@@ -10,6 +10,7 @@ type Answered struct {
 	UserId     uint `gorm:"foreignkey:UserRefer" json:"userid"`
 	QuestionId uint `json:"questionid"`
 	Answered   bool `json:"answered"`
+	Viewed     bool `json:"viewed"`
 }
 
 func (Answered) TableName() string { return "answered" }

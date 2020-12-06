@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
@@ -124,9 +125,30 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 			default:
 				nextQuestion = fmt.Sprint(usedChoice.NextQuestion)
 			}
+		case "puzzle":
+			q, err := uc.questionRepository.Get(strconv.Itoa(int(currentQuestion.ID)))
+			// userAnswer, err := uc.multiplechoiceRepository.Get(currentQuestion.ID, email)
+			if err != nil {
+				log.Error().Err(err).Msg("Unable to fetch question.")
+				writer.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+
+			switch q.TypeOfNextQuestion {
+			case "random":
+			default:
+				nextQuestion = fmt.Sprint(q.Next)
+			}
 		default:
 			writer.WriteHeader(http.StatusInternalServerError)
 			return
+		}
+
+		if nextQuestion == "lastQuestion" {
+			log.Info().Msg("This was the last question.")
+			finished = true
+			answered = false
+			continue
 		}
 
 		currentQuestion, err = uc.questionRepository.Get(nextQuestion)

@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {Question} from '../../models/questions';
+import {Question, QuestionsResponse} from '../../models/questions';
 import {Observable, timer} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {PuzzleAddDialogComponent, PuzzleDialogConfig} from '../puzzle-add-dialog/puzzle-add-dialog.component';
@@ -11,6 +11,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {QuestionsService} from '../../services/questions.service';
 import {Router} from '@angular/router';
 import {Puzzlepiece} from '../../models/puzzle';
+import {FullQuestionsService} from '../../services/full-questions.service';
 
 @Component({
   selector: 'app-puzzle-answer',
@@ -32,6 +33,7 @@ export class PuzzleAnswerComponent implements OnInit {
     public dialog: MatDialog,
     private questionsService: QuestionsService,
     private router: Router,
+    private fullQuestuionsService: FullQuestionsService,
   ) {
     this.puzzlepieces = new Map();
     this.counter$ = timer(0, 1000).pipe(
@@ -88,12 +90,13 @@ export class PuzzleAnswerComponent implements OnInit {
 
   save(): void {
     const pieces = Array<Puzzlepiece>();
+    const email = localStorage.getItem('email');
     this.puzzlepieces.forEach((value, key) => {
       if (value.empty === false) {
         const newPiece = new Puzzlepiece();
         newPiece.Tapped = value.tapped;
         newPiece.Image = value.image;
-        newPiece.Email = localStorage.getItem('email');
+        newPiece.Email = email;
         newPiece.Question = this.question;
         newPiece.Position = value.position;
         pieces.push(newPiece);
@@ -101,7 +104,12 @@ export class PuzzleAnswerComponent implements OnInit {
     });
     this.questionsService.answerPuzzle(pieces).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
-        this.router.navigate(['survey', this.question.surveyid]);
+        this.fullQuestuionsService.postFullQuestion(email, this.question).subscribe((response2: HttpResponse<QuestionsResponse>) => {
+          if (response2.status === 200) {
+            console.log(response2.body);
+            this.router.navigate(['survey', this.question.surveyid]);
+          }
+        });
       }
     });
   }

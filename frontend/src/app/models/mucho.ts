@@ -11,6 +11,7 @@ export class Mucho {
   public nextQuestion: number;
   public secondToNext: string;
   public typeOfNextQuestion: string;
+  public bracket: string;
 }
 
 export class Answers {
