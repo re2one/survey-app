@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Router} from '@angular/router';
+import {Puzzlepiece} from '../models/puzzle';
 
 @Injectable({
   providedIn: 'root'
@@ -61,5 +62,10 @@ export class QuestionsService {
       secondToNext,
       typeOfNextQuestion,
     }, {observe: 'response'});
+  }
+
+  answerPuzzle(pieces: Array<Puzzlepiece>): Observable<HttpResponse<any>> {
+    console.log('beep');
+    return this.http.post(`/api/answer/puzzle`, pieces, {observe: 'response'});
   }
 }

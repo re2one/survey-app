@@ -1,11 +1,8 @@
-import {ChangeDetectorRef, Component, OnInit, OnChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {QuestionsService} from '../../services/questions.service';
 import {Question, QuestionsResponse} from '../../models/questions';
 import {HttpResponse} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {MuchoService} from '../../services/mucho.service';
-import {PuzzleService} from '../../services/puzzle.service';
-import {Mucho, MultipleChoiceAnswer} from '../../models/mucho';
 import {FullQuestionsService} from '../../services/full-questions.service';
 import {MuchoAnswerService} from '../../services/mucho-answer.service';
 
@@ -35,6 +32,7 @@ export class QuestionAnswerComponent implements OnInit {
       this.questionsService.getQuestion(this.questionId).subscribe((response: HttpResponse<QuestionsResponse>) => {
         if (response.status === 200) {
           this.question = response.body.question;
+          console.log(this.question.type);
         }
       });
     });
