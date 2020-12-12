@@ -20,7 +20,7 @@ export class MultipleFormComponent implements OnInit {
   multipleId: string;
   answer: Mucho;
   questionz: Array<SelectOptions>;
-  randomBrackets: Array<string>;
+  randomBrackets: Array<any>;
   secondDisabled: boolean;
   constructor(
     public router: Router,

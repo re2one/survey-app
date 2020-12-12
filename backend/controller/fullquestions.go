@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
 
@@ -71,15 +72,15 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 		return
 	}
 
+	state, err := uc.answeredRepository.Get(retrievedUser, currentQuestion)
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve if current question has been answered.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	finished := false
 	for answered := true; answered; {
-
-		state, err := uc.answeredRepository.Get(retrievedUser, currentQuestion)
-		if err != nil {
-			log.Error().Err(err).Msg("Unable to retrieve if current question has been answered.")
-			writer.WriteHeader(http.StatusInternalServerError)
-			return
-		}
 
 		if _, ok := state[currentQuestion.ID]; !ok {
 			answered = false
@@ -121,8 +122,35 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 				writer.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-			switch usedChoice.NextQuestion {
+			switch usedChoice.TypeOfNextQuestion {
 			case "random":
+				questionsInBracket, err := uc.questionRepository.GetBracket(surveyId, usedChoice.NextQuestion)
+				if err != nil {
+					log.Error().Err(err).Msg("Unable to fetch questions in random bracket.")
+					writer.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+
+				possibleNextQuestions := make([]uint, 0)
+
+				for k, _ := range questionsInBracket {
+					if _, ok := state[k]; !ok {
+						possibleNextQuestions = append(possibleNextQuestions, k)
+						continue
+					}
+					delete(questionsInBracket, k)
+				}
+
+				if len(possibleNextQuestions) < 1 {
+					nextQuestion = fmt.Sprint(usedChoice.SecondToNext)
+					break
+				}
+
+				if len(possibleNextQuestions) > 0 {
+					randomIndex := rand.Intn(len(possibleNextQuestions))
+					nextQuestion = fmt.Sprint(questionsInBracket[possibleNextQuestions[uint(randomIndex)]].ID)
+				}
+
 			default:
 				nextQuestion = fmt.Sprint(usedChoice.NextQuestion)
 			}
@@ -137,6 +165,31 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 
 			switch q.TypeOfNextQuestion {
 			case "random":
+				questionsInBracket, err := uc.questionRepository.GetBracket(surveyId, q.Next)
+				if err != nil {
+					log.Error().Err(err).Msg("Unable to fetch questions in random bracket.")
+					writer.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+
+				possibleNextQuestions := make([]uint, 0)
+
+				for k, _ := range questionsInBracket {
+					if _, ok := state[k]; !ok {
+						possibleNextQuestions = append(possibleNextQuestions, k)
+						continue
+					}
+					delete(questionsInBracket, k)
+				}
+
+				if len(possibleNextQuestions) < 1 {
+					nextQuestion = fmt.Sprint(q.SecondToNext)
+					break
+				}
+
+				randomIndex := rand.Intn(len(possibleNextQuestions))
+				nextQuestion = fmt.Sprint(questionsInBracket[uint(randomIndex)].ID)
+
 			default:
 				nextQuestion = fmt.Sprint(q.Next)
 			}

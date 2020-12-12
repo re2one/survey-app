@@ -51,6 +51,24 @@ func (sr *questionRepository) GetAll(surveyId string) ([]*model.Question, error)
 	return questions, nil
 }
 
+func (sr *questionRepository) GetBracket(surveyId string, bracket string) (map[uint]*model.Question, error) {
+	//check if record exists
+	questions := make([]*model.Question, 0)
+
+	if err := sr.db.Where("survey_id = ? and bracket = ?", surveyId, bracket).Find(&questions).Error; err != nil {
+		// log.Fatalln(err)
+		return nil, err
+	}
+
+	result := make(map[uint]*model.Question)
+
+	for _, question := range questions {
+		result[question.ID] = question
+	}
+
+	return result, nil
+}
+
 func (sr *questionRepository) Post(surveyId string, s *model.Question) (*model.Question, error) {
 
 	err := sr.db.Where("title = ? and survey_id = ?", s.Title, surveyId).First(&s).Error
