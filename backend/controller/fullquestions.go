@@ -133,11 +133,18 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 
 				possibleNextQuestions := make([]uint, 0)
 
-				for k, _ := range questionsInBracket {
+				for k, v := range questionsInBracket {
 					if _, ok := state[k]; !ok {
 						possibleNextQuestions = append(possibleNextQuestions, k)
 						continue
 					}
+					fq := response.FullQuestion{
+						QuestionId: v.ID,
+						Title:      v.Title,
+						Type:       v.Type,
+						Answered:   answered,
+					}
+					fullQuestions = append(fullQuestions, &fq)
 					delete(questionsInBracket, k)
 				}
 
@@ -174,11 +181,18 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 
 				possibleNextQuestions := make([]uint, 0)
 
-				for k, _ := range questionsInBracket {
+				for k, v := range questionsInBracket {
 					if _, ok := state[k]; !ok {
 						possibleNextQuestions = append(possibleNextQuestions, k)
 						continue
 					}
+					fq := response.FullQuestion{
+						QuestionId: v.ID,
+						Title:      v.Title,
+						Type:       v.Type,
+						Answered:   answered,
+					}
+					fullQuestions = append(fullQuestions, &fq)
 					delete(questionsInBracket, k)
 				}
 
