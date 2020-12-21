@@ -44,6 +44,16 @@ func (ur *userRepository) Get(u *model.User) (*model.User, error) {
 	return u, nil
 }
 
+func (ur *userRepository) GetAll() ([]*model.User, error) {
+	var users []*model.User
+	err := ur.db.Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 func (ur *userRepository) Post(u *model.User) (*model.User, error) {
 	// userExists := ur.db.NewRecord(u)
 	// var user model.User

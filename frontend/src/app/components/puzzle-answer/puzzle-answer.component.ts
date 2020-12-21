@@ -21,7 +21,7 @@ import {FullQuestionsService} from '../../services/full-questions.service';
 export class PuzzleAnswerComponent implements OnInit {
   @Input() question: Question;
   counter$: Observable<number>;
-  count = 11;
+  count = 10;
   previewActive = true;
   puzzlepieces: Map<any, any>;
   filenames: Array<string>;
@@ -37,8 +37,10 @@ export class PuzzleAnswerComponent implements OnInit {
   ) {
     this.puzzlepieces = new Map();
     this.counter$ = timer(0, 1000).pipe(
-      take(this.count),
-      map(() => --this.count)
+      map(x => {
+        return this.count - x;
+      }),
+      take(this.count + 1)
     );
   }
 

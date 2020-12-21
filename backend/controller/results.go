@@ -4,17 +4,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
 
+	"backend/model"
 	"backend/usecase/repository"
 )
 
 type resultsController struct {
 	questionRepository       repository.QuestionRepository
 	multiplechoiceRepository repository.MultipleChoiceRepository
+	puzzleSolutionRepository repository.PuzzleRepository
+	puzzleAnswerRepository   repository.PuzzleAnswerRepository
+	userRepository           repository.UserRepository
 }
 
 type ResultsController interface {
@@ -44,10 +49,16 @@ type ResultResponse struct {
 func NewResultsController(
 	questionRepository repository.QuestionRepository,
 	multiplechoiceRepository repository.MultipleChoiceRepository,
+	puzzleSolutionRepository repository.PuzzleRepository,
+	puzzleAnswerRepository repository.PuzzleAnswerRepository,
+	userRepository repository.UserRepository,
 ) ResultsController {
 	return &resultsController{
 		questionRepository:       questionRepository,
 		multiplechoiceRepository: multiplechoiceRepository,
+		puzzleSolutionRepository: puzzleSolutionRepository,
+		puzzleAnswerRepository:   puzzleAnswerRepository,
+		userRepository:           userRepository,
 	}
 }
 
@@ -66,7 +77,8 @@ func (rc *resultsController) Get(writer http.ResponseWriter, request *http.Reque
 	resultQuestions := make([]*Question, 0, len(questions))
 
 	for _, q := range questions {
-		if q.Type == "multiplechoice" {
+		switch q.Type {
+		case "multiplechoice":
 			answers, err := rc.multiplechoiceRepository.GetAll(q.ID)
 			if err != nil {
 				log.Error().Err(err).Msg("Unable to retrieve answers.")
@@ -78,12 +90,84 @@ func (rc *resultsController) Get(writer http.ResponseWriter, request *http.Reque
 				resultAnswers = append(resultAnswers, &Answer{User: a.Email, Score: a.Text})
 			}
 			resultQuestions = append(resultQuestions, &Question{Type: q.Type, Text: q.Text, Id: q.ID, Answers: resultAnswers})
+		case "puzzle":
+			solutions, err := rc.puzzleSolutionRepository.GetAll(strconv.Itoa(int(q.ID)))
+			if err != nil {
+				log.Error().Err(err).Msg("Unable to retrieve puzzle solution.")
+				writer.WriteHeader(http.StatusInternalServerError)
+			}
+
+			solutionsMap, err := rc.mapPositions(solutions)
+			if err != nil {
+				log.Error().Err(err).Msg("Unable to map their positions onto solutions.")
+				writer.WriteHeader(http.StatusInternalServerError)
+			}
+
+			users, err := rc.userRepository.GetAll()
+			if err != nil {
+				log.Error().Err(err).Msg("Unable to retrieve the users.")
+				writer.WriteHeader(http.StatusInternalServerError)
+			}
+
+			resultAnswers := make([]*Answer, 0)
+			for _, user := range users {
+				userPieces, err := rc.puzzleAnswerRepository.GetUserSolution(user.Email, strconv.Itoa(int(q.ID)))
+				if err != nil {
+					log.Error().Err(err).Msg("Unable to retrieve the submitted answers for this puzzle question.")
+					writer.WriteHeader(http.StatusInternalServerError)
+				}
+
+				userPiecesMap, err := rc.mapUserSolution(userPieces)
+				if err != nil {
+					log.Error().Err(err).Msg("Unable to map their positions onto solutions.")
+					writer.WriteHeader(http.StatusInternalServerError)
+				}
+
+				score := 0
+				for i := 0; i < 24; i++ {
+					solution, fieldFilled := solutionsMap[strconv.Itoa(i)]
+					answer, fieldAnswered := userPiecesMap[strconv.Itoa(i)]
+					if !fieldFilled && !fieldAnswered {
+						score++
+						continue
+					}
+
+					if fieldFilled && fieldAnswered {
+						if solution.Image == answer.Image {
+							score++
+							continue
+						}
+					}
+				}
+
+				resultAnswers = append(resultAnswers, &Answer{User: user.Email, Score: strconv.Itoa(score)})
+			}
+
+			resultQuestions = append(resultQuestions, &Question{Type: q.Type, Text: q.Text, Id: q.ID, Answers: resultAnswers})
+		default:
+			continue
 		}
 	}
 
 	transformedResult := rc.transformOutput(resultQuestions)
 
 	json.NewEncoder(writer).Encode(&ResultResponse{Result: transformedResult})
+}
+
+func (rc *resultsController) mapPositions(solutions []*model.Puzzlepiece) (map[string]*model.Puzzlepiece, error) {
+	result := make(map[string]*model.Puzzlepiece, len(solutions))
+	for _, s := range solutions {
+		result[s.Position] = s
+	}
+	return result, nil
+}
+
+func (rc *resultsController) mapUserSolution(solutions []*model.PuzzleAnswer) (map[string]*model.PuzzleAnswer, error) {
+	result := make(map[string]*model.PuzzleAnswer, len(solutions))
+	for _, s := range solutions {
+		result[s.Position] = s
+	}
+	return result, nil
 }
 
 func (rc *resultsController) transformOutput(questions []*Question) string {

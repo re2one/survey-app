@@ -32,3 +32,11 @@ func (par *puzzleAnswerRepository) Post(pieces []*model.PuzzleAnswer) ([]*model.
 
 	return pieces, nil
 }
+
+func (par *puzzleAnswerRepository) GetUserSolution(email, questionId string) ([]*model.PuzzleAnswer, error) {
+	var retrievedPieces []*model.PuzzleAnswer
+	if err := par.db.Where("question_id = ? and email = ?", questionId, email).Find(&retrievedPieces).Error; err != nil {
+		return nil, err
+	}
+	return retrievedPieces, nil
+}

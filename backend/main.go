@@ -57,8 +57,6 @@ func main() {
 	ar := repository.NewAnsweredRepository(db)
 	fc := controller.NewFullQuestionsController(qr, ar, sr, ur, mr, cr)
 
-	rc := controller.NewResultsController(qr, mr)
-
 	assr := repository.NewAssetsRepository(db)
 	assc := controller.NewAssetsController(assr)
 
@@ -67,6 +65,8 @@ func main() {
 
 	par := repository.NewPuzzleAnswerRepository(db)
 	pac := controller.NewPuzzleAnswerController(par)
+
+	rc := controller.NewResultsController(qr, mr, puzzr, par, ur)
 
 	br := repository.NewBracketRepository(db)
 	bc := controller.NewBracketController(br, sr)
