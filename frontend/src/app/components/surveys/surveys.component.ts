@@ -1,10 +1,8 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import { SurveysService} from '../../services/surveys.service';
+import {SurveysService} from '../../services/surveys.service';
 import {LoginService} from '../../services/login.service';
-import {Survey} from '../../models/survey';
 import {Router} from '@angular/router';
 import {HttpResponse} from '@angular/common/http';
-import {BehaviorSubject} from 'rxjs';
 import {ResultService} from '../../services/result.service';
 
 @Component({
@@ -59,7 +57,10 @@ export class SurveysComponent implements OnInit{
   getResult(surveyId: number): void{
     this.resultService.getResult(surveyId).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
-        console.log(response.body.result);
+        // console.log(response.body.result);
+        const data = new Blob([response.body.result], {type: 'text/csv'});
+        const url = window.URL.createObjectURL(data);
+        window.open(url);
       }
     });
   }
