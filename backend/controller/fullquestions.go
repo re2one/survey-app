@@ -221,7 +221,7 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 
 		currentQuestion, err = uc.questionRepository.Get(nextQuestion)
 		if err != nil {
-			log.Error().Err(err).Msg("Unable to retrieve the following question question.")
+			log.Error().Err(err).Msg("Unable to retrieve the following question.")
 			finished = true
 			answered = false
 		}
