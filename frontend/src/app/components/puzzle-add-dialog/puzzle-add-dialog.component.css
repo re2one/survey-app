@@ -1,0 +1,21 @@
+.dialog-container {
+  display: flex;
+  flex-direction: row;
+  flex-flow: row wrap;
+}
+
+.dialog-element {
+  max-width: 15%;
+  height: 50%;
+  margin-right: 2%;
+}
+
+.dialog-element:nth-child(6n) {
+  page-break-after: always;
+  margin-right: 0%;
+}
+
+.dialog-image {
+  max-width: 100%;
+  max-height: 100%;
+}
