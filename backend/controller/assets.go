@@ -33,6 +33,7 @@ type AssetsController interface {
 	Post(writer http.ResponseWriter, request *http.Request)
 	Upload(writer http.ResponseWriter, request *http.Request)
 	UploadPDF(writer http.ResponseWriter, request *http.Request)
+	GetPDF(writer http.ResponseWriter, request *http.Request)
 	GetAll(writer http.ResponseWriter, request *http.Request)
 	Get(writer http.ResponseWriter, request *http.Request)
 }
@@ -149,5 +150,20 @@ func (a *assetsController) Get(writer http.ResponseWriter, request *http.Request
 	}
 	writer.Header().Set("Content-Type", "image/jpeg") // <-- set the content-type header
 	io.Copy(writer, img)
+	return
+}
+
+func (a *assetsController) GetPDF(writer http.ResponseWriter, request *http.Request) {
+	v := mux.Vars(request)
+
+	path := fmt.Sprintf("assets/survey_%v/introduction/introduction.pdf", v["surveyId"])
+	file, err := os.Open(path)
+	defer file.Close()
+	if err != nil {
+		log.Error().Err(err).Caller().Msg("unable to retrieve image from disc")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+	writer.Header().Set("Content-Type", "application/pdf") // <-- set the content-type header
+	io.Copy(writer, file)
 	return
 }

@@ -39,6 +39,12 @@ export class AssetService {
     return this.http.post(endpoint, formData, {observe: 'response'});
   }
 
+  getIntroduction(
+    surveyId: string,
+  ): Observable<HttpResponse<any>> {
+    return this.http.get(`/api/assets/introduction`, {observe: 'response'});
+  }
+
   getFilenames(
     surveyId: string,
     questionId: string,
