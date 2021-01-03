@@ -40,8 +40,11 @@ func main() {
 	ui := interactor.NewUserInteractor(ur, rr, up, authorizer, authenticator)
 	uc := controller.NewUserController(ui)
 
+	assr := repository.NewAssetsRepository(db)
+	assc := controller.NewAssetsController(assr)
+
 	sr := repository.NewSurveyRepository(db)
-	sc := controller.NewSurveyController(sr)
+	sc := controller.NewSurveyController(sr, assr)
 
 	pc := controller.NewPubkeyController()
 
@@ -56,9 +59,6 @@ func main() {
 
 	ar := repository.NewAnsweredRepository(db)
 	fc := controller.NewFullQuestionsController(qr, ar, sr, ur, mr, cr)
-
-	assr := repository.NewAssetsRepository(db)
-	assc := controller.NewAssetsController(assr)
 
 	puzzr := repository.NewPuzzleRepository(db)
 	puzzc := controller.NewPuzzleController(puzzr, ar, ur, qr)
@@ -105,6 +105,7 @@ func main() {
 
 	router.HandleFunc("/api/assets/directory/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", assc.Post)).Methods(http.MethodPost)
 	router.HandleFunc("/api/assets/upload/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", assc.Upload)).Methods(http.MethodPost)
+	router.HandleFunc("/api/assets/introduction/{surveyId}", authorizer.IsAuthorized("admin", assc.UploadPDF)).Methods(http.MethodPost)
 	router.HandleFunc("/api/assets/{surveyId}/{questionId}", authorizer.IsAuthorized("user", assc.GetAll)).Methods(http.MethodGet)
 	router.HandleFunc("/api/assets/{surveyId}/{questionId}/{imageName}", assc.Get).Methods(http.MethodGet)
 

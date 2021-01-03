@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
@@ -13,6 +14,7 @@ import (
 
 type surveyController struct {
 	surveyRepository repository.SurveyRepository
+	assetRepository  repository.AssetsRepository
 }
 
 type SurveyResp struct {
@@ -33,8 +35,8 @@ type SurveyController interface {
 }
 
 // NewUserController provides functions for request handling
-func NewSurveyController(repo repository.SurveyRepository) SurveyController {
-	return &surveyController{surveyRepository: repo}
+func NewSurveyController(repo repository.SurveyRepository, assetRepo repository.AssetsRepository) SurveyController {
+	return &surveyController{surveyRepository: repo, assetRepository: assetRepo}
 }
 
 func (uc *surveyController) GetAll(writer http.ResponseWriter, request *http.Request) {
@@ -77,6 +79,12 @@ func (uc *surveyController) Post(writer http.ResponseWriter, request *http.Reque
 	if err != nil {
 		log.Error().Err(err).Msg("unable to write post survey to db")
 		writer.WriteHeader(http.StatusInternalServerError)
+	}
+	err = uc.assetRepository.PostIntroduction(strconv.Itoa(int(survey2.ID)))
+	if err != nil {
+		log.Error().Err(err).Msg("unable to create asset folder for introduction")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	r := SingleSurveyResp{Survey: survey2}
 	json.NewEncoder(writer).Encode(r)

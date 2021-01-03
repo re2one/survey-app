@@ -1,11 +1,9 @@
-import {Component, OnInit, Output, Input} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {SurveysService} from '../../services/surveys.service';
-import {EventEmitter} from '@angular/core';
 import {Survey, SurveyResponse} from '../../models/survey';
 import {HttpResponse} from '@angular/common/http';
-import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-survey-form',
@@ -29,7 +27,7 @@ export class SurveyFormComponent implements OnInit {
     title: ['', [Validators.required]],
     summary: ['', [Validators.required]],
     disclaimer: ['', [Validators.required]],
-    introduction: ['', [Validators.required]],
+      // introduction: ['', [Validators.required]],
     });
   }
 
@@ -46,7 +44,9 @@ export class SurveyFormComponent implements OnInit {
               title: this.survey.title,
               summary: this.survey.summary,
               disclaimer: this.survey.disclaimer,
-              introduction: this.survey.introduction});
+              // introduction: this.survey.introduction
+              introduction: '',
+            });
           }
         });
       });

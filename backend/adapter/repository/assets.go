@@ -35,9 +35,35 @@ func (a *assetsRepository) Post(surveyId string, questionId string) error {
 	return nil
 }
 
+func (a *assetsRepository) PostIntroduction(surveyId string) error {
+	surveyPath, err := a.createDirectory("assets", "survey", surveyId)
+	if err != nil {
+		return err
+	}
+	introPath, err := a.createDirectoryForIntroduction(surveyPath, "introduction")
+	if err != nil {
+		return err
+	}
+	log.Info().Str("question path", introPath).Msg("Asset-Folder Created")
+	return nil
+}
+
 func (a *assetsRepository) createDirectory(path string, dirType string, id string) (string, error) {
 
 	dirPath := fmt.Sprintf("%v/%v_%v", path, dirType, id)
+	_, err := os.Stat(dirPath)
+	if os.IsNotExist(err) {
+		errDir := os.MkdirAll(dirPath, 0755)
+		if errDir != nil {
+			return "", errDir
+		}
+	}
+	return dirPath, nil
+}
+
+func (a *assetsRepository) createDirectoryForIntroduction(path string, dirType string) (string, error) {
+
+	dirPath := fmt.Sprintf("%v/%v", path, dirType)
 	_, err := os.Stat(dirPath)
 	if os.IsNotExist(err) {
 		errDir := os.MkdirAll(dirPath, 0755)
@@ -69,6 +95,17 @@ func (a *assetsRepository) SaveFile(surveyId string, questionId string, data ima
 	}
 	defer f.Close()
 	jpeg.Encode(f, data, nil)
+	return nil
+}
+
+func (a *assetsRepository) SavePDF(surveyId string, data []byte) error {
+	path := fmt.Sprintf("assets/survey_%v/introduction/introduction.pdf", surveyId)
+	f, err := os.Create(path)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	f.Write(data)
 	return nil
 }
 

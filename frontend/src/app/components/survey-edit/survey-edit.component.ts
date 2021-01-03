@@ -1,12 +1,12 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {HttpResponse} from '@angular/common/http';
 import {Survey, SurveyResponse} from '../../models/survey';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {SurveysService} from '../../services/surveys.service';
-import {ActivatedRoute} from '@angular/router';
 import {QuestionsService} from '../../services/questions.service';
 import {BracketService} from '../../services/bracket.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AssetService} from '../../services/asset.service';
 
 @Component({
   selector: 'app-survey-edit',
@@ -19,6 +19,9 @@ export class SurveyEditComponent implements OnInit {
   localQuestions: Map<any, any>;
   brackets: Array<string>;
   bracketForm: FormGroup;
+  fileToUpload: File = null;
+  fileSelected: boolean;
+
   constructor(
     public router: Router,
     private surveysService: SurveysService,
@@ -27,11 +30,13 @@ export class SurveyEditComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private formBuilder: FormBuilder,
     private bracketService: BracketService,
+    private assetService: AssetService,
   ) {
     this.localQuestions = new Map();
     this.bracketForm = this.formBuilder.group({
       name: ['', [Validators.required]],
     });
+    this.fileSelected = false;
   }
 
   ngOnInit(): void {
@@ -98,13 +103,31 @@ export class SurveyEditComponent implements OnInit {
       }
     });
   }
-  onBracketSubmit(bracketData): void{
+
+  onBracketSubmit(bracketData): void {
     this.bracketService.postBracket(this.surveyId, bracketData.name).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
         this.bracketForm.reset();
         this.getBrackets(this.surveyId);
         this.cdr.detectChanges();
       }
+    });
+  }
+
+  handleFileInput(files: FileList): void {
+    this.fileToUpload = files.item(0);
+    this.fileSelected = true;
+  }
+
+  uploadFileToActivity(): void {
+    this.assetService.postIntroduction(this.fileToUpload, this.surveyId).subscribe((response: HttpResponse<any>) => {
+      if (response.status === 200) {
+        this.fileSelected = false;
+        this.fileToUpload = null;
+        console.log('SUCCESS!');
+      }
+    }, error => {
+      console.log('error');
     });
   }
 }

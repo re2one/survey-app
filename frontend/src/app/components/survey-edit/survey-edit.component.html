@@ -1,6 +1,20 @@
 <div class="edit-container">
   <div class="edit-element first left-container">
     <app-survey-form (formData)="onSurveySubmit($event)" [getSurvey]="true" class=""></app-survey-form>
+    <!-- add the upload form for the introductory pdf here -->
+    <div>
+      <h1>Introduction</h1>
+      <div class="form-group">
+        <label for="file">Choose File</label>
+        <input type="file"
+               accept="application/pdf"
+               id="file"
+               (change)="handleFileInput($event.target.files)">
+      </div>
+      <button mat-flat-button class="buttons" [disabled]="!fileSelected" (click)="uploadFileToActivity()">UPLOAD
+      </button>
+
+    </div>
     <div>
       <h1>Random Brackets</h1>
       <ul>
