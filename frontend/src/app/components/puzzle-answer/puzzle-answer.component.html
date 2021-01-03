@@ -1,8 +1,9 @@
-<div *ngIf="previewActive">{{counter$ | async}}</div>
-<app-puzzle-preview *ngIf="previewActive" (finished)="togglePreview($event)" [counter]="counter$"
-                    [question]="question"></app-puzzle-preview>
-<div *ngIf="!previewActive" class="general-container">
-  <div class="puzzle-container">
+<div class="general-container">
+  <app-puzzle-preview class="beep" *ngIf="previewActive" (finished)="togglePreview($event)" [counter]="counter$"
+                      [question]="question">
+
+  </app-puzzle-preview>
+  <div class="puzzle-container" *ngIf="!previewActive">
     <div *ngFor="let piece of puzzlepieces | keyvalue" class="puzzle-element">
       <div class="puzzle-piece">
         <img *ngIf="!piece.value.empty" (click)="toggleTap(piece.key)"
@@ -16,6 +17,7 @@
     </div>
   </div>
   <div>
-    <button mat-flat-button (click)="save()">Submit</button>
+    <button class="button" mat-flat-button (click)="save()" *ngIf="!previewActive">Submit</button>
+    <button class="button" mat-flat-button *ngIf="previewActive">{{counter$ | async}}</button>
   </div>
 </div>

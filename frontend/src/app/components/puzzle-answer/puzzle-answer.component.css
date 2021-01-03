@@ -66,3 +66,12 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
+.button {
+  margin-top: 23%;
+}
+
+.beep {
+  flex: auto;
+  position: relative;
+}
+
