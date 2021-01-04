@@ -99,13 +99,6 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 			continue
 		}
 
-		// branching here
-		// todo:
-		// [x] check wether question is multiple choice or puzzle
-		// [x] case multiple choice: do below
-		// case puzzle: come up with a function that returns the next questions id...
-		// how to get to the first question id of a random question?
-
 		var nextQuestion string
 		switch currentQuestion.Type {
 		case "multiplechoice":
@@ -132,9 +125,18 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 				}
 
 				possibleNextQuestions := make([]uint, 0)
+				var alreadyPreviewed uint = 0
+				// for each question, get the current state
+				// if it has been previewed, use it
 
 				for k, v := range questionsInBracket {
 					if _, ok := state[k]; !ok {
+						previewed, err := uc.answeredRepository.GetSingle(retrievedUser, v)
+						if err == nil && len(previewed) > 0 {
+							if previewed[0].Viewed {
+								alreadyPreviewed = v.ID
+							}
+						}
 						possibleNextQuestions = append(possibleNextQuestions, k)
 						continue
 					}
@@ -146,6 +148,11 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 					}
 					fullQuestions = append(fullQuestions, &fq)
 					delete(questionsInBracket, k)
+				}
+
+				if alreadyPreviewed != 0 {
+					nextQuestion = fmt.Sprint(questionsInBracket[alreadyPreviewed].ID)
+					break
 				}
 
 				if len(possibleNextQuestions) < 1 {
@@ -163,7 +170,6 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 			}
 		case "puzzle":
 			q, err := uc.questionRepository.Get(strconv.Itoa(int(currentQuestion.ID)))
-			// userAnswer, err := uc.multiplechoiceRepository.Get(currentQuestion.ID, email)
 			if err != nil {
 				log.Error().Err(err).Msg("Unable to fetch question.")
 				writer.WriteHeader(http.StatusInternalServerError)
