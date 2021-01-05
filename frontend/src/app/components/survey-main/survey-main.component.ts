@@ -57,10 +57,6 @@ export class SurveyMainComponent implements OnInit {
         this.moveToAnswer(questionid);
       }
     });
-    /*
-    dialogRef.afterClosed().subscribe(result => {
-    });
-    */
   }
 }
 

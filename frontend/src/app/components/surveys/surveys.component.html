@@ -12,11 +12,12 @@
       <mat-card-actions class="actions">
         <button *ngIf="permissionCheck()" mat-button (click)="moveToEditForm(survey.value.ID)">EDIT</button>
         <button *ngIf="permissionCheck()" mat-button (click)="getResult(survey.value.ID)">RESULT</button>
-        <button *ngIf="permissionCheck()" mat-button (click)="delete(survey.value.ID)">DELETE</button>
+        <button *ngIf="permissionCheck()" mat-button (click)="openDeleteAlert(survey.value.ID)">DELETE</button>
       </mat-card-actions>
     </mat-card>
   </div>
   <div class="button-container">
-    <button *ngIf="permissionCheck()" class="bg-color add-button" mat-raised-button (click)="moveToAddForm()">ADD</button>
+    <button *ngIf="permissionCheck()" class="bg-color add-button" mat-raised-button (click)="moveToAddForm()">ADD
+    </button>
   </div>
 </div>

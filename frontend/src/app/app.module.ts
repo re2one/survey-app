@@ -15,7 +15,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatCardModule} from '@angular/material/card';
-import {SurveysComponent} from './components/surveys/surveys.component';
+import {DeleteDialogComponent, SurveysComponent} from './components/surveys/surveys.component';
 import {AuthInterceptor} from './services/auth-interceptor.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
@@ -67,6 +67,7 @@ import {PuzzlePreviewComponent} from './components/puzzle-preview/puzzle-preview
     PuzzleAddDialogComponent,
     PuzzlePreviewComponent,
     TimerAlertDialogComponent,
+    DeleteDialogComponent,
   ],
   imports: [
     FormsModule,
