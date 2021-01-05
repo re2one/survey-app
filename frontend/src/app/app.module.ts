@@ -40,6 +40,7 @@ import {QuestionEditPuzzleComponent} from './components/question-edit-puzzle/que
 import {MatDialogModule} from '@angular/material/dialog';
 import {PuzzleAddDialogComponent} from './components/puzzle-add-dialog/puzzle-add-dialog.component';
 import {PuzzlePreviewComponent} from './components/puzzle-preview/puzzle-preview.component';
+import {SurveyInspectComponent} from './components/survey-inspect/survey-inspect.component';
 
 
 @NgModule({
@@ -68,6 +69,7 @@ import {PuzzlePreviewComponent} from './components/puzzle-preview/puzzle-preview
     PuzzlePreviewComponent,
     TimerAlertDialogComponent,
     DeleteDialogComponent,
+    SurveyInspectComponent,
   ],
   imports: [
     FormsModule,

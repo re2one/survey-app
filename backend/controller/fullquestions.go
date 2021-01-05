@@ -126,8 +126,6 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 
 				possibleNextQuestions := make([]uint, 0)
 				var alreadyPreviewed uint = 0
-				// for each question, get the current state
-				// if it has been previewed, use it
 
 				for k, v := range questionsInBracket {
 					if _, ok := state[k]; !ok {

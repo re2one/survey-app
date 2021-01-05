@@ -50,17 +50,22 @@ export class SurveysComponent implements OnInit{
       }
     });
   }
+
   moveToEditForm(surveyId: number): void {
     this.router.navigate(['/surveys/edit', surveyId]);
   }
-  moveToDetails(surveyId: number): void{
+
+  moveToDetails(surveyId: number): void {
     this.router.navigate(['/surveys/details', surveyId]);
+  }
+
+  moveToInspect(surveyId: number): void {
+    this.router.navigate(['/surveys/inspect', surveyId]);
   }
 
   getResult(surveyId: number): void {
     this.resultService.getResult(surveyId).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
-        // console.log(response.body.result);
         const data = new Blob([response.body.result], {type: 'text/csv'});
         const url = window.URL.createObjectURL(data);
         window.open(url);
