@@ -72,9 +72,9 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 		return
 	}
 
-	state, err := uc.answeredRepository.Get(retrievedUser, currentQuestion)
+	state, err := uc.answeredRepository.Get(retrievedUser)
 	if err != nil {
-		log.Error().Err(err).Msg("Unable to retrieve if current question has been answered.")
+		log.Error().Err(err).Msg("Unable to retrieve the answered questions.")
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}

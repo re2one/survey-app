@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"backend/model"
+	"backend/model/response"
 	"backend/usecase/interactor"
 
 	"github.com/rs/zerolog/log"
@@ -19,6 +20,7 @@ type UserController interface {
 	Login(writer http.ResponseWriter, request *http.Request)
 	Signup(writer http.ResponseWriter, request *http.Request)
 	RefreshToken(writer http.ResponseWriter, request *http.Request)
+	Get(writer http.ResponseWriter, request *http.Request)
 }
 
 // NewUserController provides functions for request handling
@@ -102,4 +104,16 @@ func (uc *userController) RefreshToken(writer http.ResponseWriter, request *http
 func handleDecoderError(err error, writer http.ResponseWriter) {
 	log.Err(err).Caller().Msg("Error while decoding the passed User.")
 	http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+}
+
+func (uc *userController) Get(writer http.ResponseWriter, request *http.Request) {
+	var users []*response.SmolUserResponse
+	users, err := uc.userInteractor.GetAll()
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve smol users.")
+		writer.WriteHeader(http.StatusForbidden)
+		return
+	}
+	writer.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(writer).Encode(users)
 }

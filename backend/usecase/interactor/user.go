@@ -3,6 +3,7 @@ package interactor
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 
@@ -23,6 +24,7 @@ type userInteractor struct {
 
 type UserInteractor interface {
 	Get(*model.User) (*response.UserResponse, error)
+	GetAll() ([]*response.SmolUserResponse, error)
 	Post(*model.User, string) (*response.UserResponse, error)
 	Refresh(*http.Request) (*response.UserResponse, error)
 }
@@ -103,4 +105,17 @@ func (us *userInteractor) Refresh(request *http.Request) (*response.UserResponse
 		return nil, err
 	}
 	return token, nil
+}
+
+func (us *userInteractor) GetAll() ([]*response.SmolUserResponse, error) {
+	var users []*model.User
+	users, err := us.UserRepository.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	smolUsers := make([]*response.SmolUserResponse, 0, len(users))
+	for _, user := range users {
+		smolUsers = append(smolUsers, &response.SmolUserResponse{Email: user.Email, Username: user.Name, Id: strconv.Itoa(int(user.ID))})
+	}
+	return smolUsers, nil
 }

@@ -18,7 +18,7 @@ func NewAnsweredRepository(db *gorm.DB) repository.AnsweredRepository {
 	return &answeredRepository{db}
 }
 
-func (rr *answeredRepository) Get(u *model.User, q *model.Question) (map[uint]*model.Answered, error) {
+func (rr *answeredRepository) Get(u *model.User) (map[uint]model.Answered, error) {
 
 	answered := make([]model.Answered, 0)
 	err := rr.db.Where("user_id = ? and answered = ?", u.ID, true).Find(&answered).Error
@@ -26,9 +26,9 @@ func (rr *answeredRepository) Get(u *model.User, q *model.Question) (map[uint]*m
 		return nil, err
 	}
 	log.Info().Int("length", len(answered)).Msg("number of retrieved states")
-	result := make(map[uint]*model.Answered, len(answered))
+	result := make(map[uint]model.Answered, len(answered))
 	for _, v := range answered {
-		result[v.QuestionId] = &v
+		result[v.QuestionId] = v
 	}
 
 	return result, nil

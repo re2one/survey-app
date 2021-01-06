@@ -12,20 +12,28 @@ export class QuestionsService {
   constructor(
     private http: HttpClient,
     private router: Router,
-  ) { }
+  ) {
+  }
+
   getQuestions(surveyId: string): Observable<HttpResponse<any>> {
     return this.http.get(`/api/questions/${surveyId}`, {observe: 'response'});
   }
+
   getQuestion(questionId): Observable<any> {
     return this.http.get(`/api/questions/single/${questionId}`, {observe: 'response'});
   }
+
+  getAnsweredQuestions(email: string): Observable<any> {
+    return this.http.get(`/api/questions/answered/${email}`, {observe: 'response'});
+  }
+
   postQuestion(
     title: string,
     text: string,
     first: string,
     surveyId: string,
     type: string,
-    ): Observable<HttpResponse<any>> {
+  ): Observable<HttpResponse<any>> {
     return this.http.post(`/api/questions/${surveyId}`, {
       title,
       text,

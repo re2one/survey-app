@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
@@ -14,6 +15,9 @@ import (
 type questionController struct {
 	questionRepository repository.QuestionRepository
 	surveyRepository   repository.SurveyRepository
+	answeredRepository repository.AnsweredRepository
+	userRepository     repository.UserRepository
+	piecesRepository   repository.PuzzleAnswerRepository
 }
 
 type QuestionResp struct {
@@ -24,16 +28,33 @@ type SingleQuestionResp struct {
 	Question *model.Question `json:"question"`
 }
 
+type AnswersResponse struct {
+	Submissions map[string][]*model.PuzzleAnswer `json:"submissions"`
+}
+
 type QuestionController interface {
 	GetAll(writer http.ResponseWriter, request *http.Request)
 	Get(writer http.ResponseWriter, request *http.Request)
+	GetAnswered(writer http.ResponseWriter, request *http.Request)
 	Post(writer http.ResponseWriter, request *http.Request)
 	Put(writer http.ResponseWriter, request *http.Request)
 	Delete(writer http.ResponseWriter, request *http.Request)
 }
 
-func NewQuestionController(q repository.QuestionRepository, s repository.SurveyRepository) QuestionController {
-	return &questionController{questionRepository: q, surveyRepository: s}
+func NewQuestionController(
+	q repository.QuestionRepository,
+	s repository.SurveyRepository,
+	a repository.AnsweredRepository,
+	u repository.UserRepository,
+	p repository.PuzzleAnswerRepository,
+) QuestionController {
+	return &questionController{
+		questionRepository: q,
+		surveyRepository:   s,
+		answeredRepository: a,
+		userRepository:     u,
+		piecesRepository:   p,
+	}
 }
 
 func (uc *questionController) GetAll(writer http.ResponseWriter, request *http.Request) {
@@ -59,6 +80,55 @@ func (uc *questionController) Get(writer http.ResponseWriter, request *http.Requ
 		return
 	}
 	json.NewEncoder(writer).Encode(SingleQuestionResp{Question: question})
+	return
+}
+
+func (uc *questionController) GetAnswered(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	v := mux.Vars(request)
+
+	email := v["email"]
+	lookupUser := model.User{Email: email}
+	retrievedUser, err := uc.userRepository.Get(&lookupUser)
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve user.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	state, err := uc.answeredRepository.Get(retrievedUser)
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve the answered questions.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	submissions := make(map[string][]*model.PuzzleAnswer)
+
+	for _, v := range state {
+		questionId := strconv.Itoa(int(v.QuestionId))
+
+		question, err := uc.questionRepository.Get(questionId)
+		if err != nil {
+			log.Error().Err(err).Msg("Unable to retrieve question.")
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if question.Type != "puzzle" {
+			continue
+		}
+
+		pieces, err := uc.piecesRepository.GetUserSolution(email, questionId)
+		if err != nil {
+			log.Error().Err(err).Msg("Unable to retrieve the submitted answers for this puzzle question.")
+			writer.WriteHeader(http.StatusInternalServerError)
+		}
+
+		submissions[questionId] = pieces
+	}
+
+	json.NewEncoder(writer).Encode(&AnswersResponse{Submissions: submissions})
 	return
 }
 

@@ -48,8 +48,12 @@ func main() {
 
 	pc := controller.NewPubkeyController()
 
+	par := repository.NewPuzzleAnswerRepository(db)
+	pac := controller.NewPuzzleAnswerController(par)
+
+	ar := repository.NewAnsweredRepository(db)
 	qr := repository.NewQuestionRepository(db)
-	qc := controller.NewQuestionController(qr, sr)
+	qc := controller.NewQuestionController(qr, sr, ar, ur, par)
 
 	cr := repository.NewChoiceRepository(db)
 	cc := controller.NewChoiceController(cr, qr)
@@ -57,14 +61,10 @@ func main() {
 	mr := repository.NewMultipleChoiceRepository(db)
 	mc := controller.NewMultipleChoiceController(mr, qr)
 
-	ar := repository.NewAnsweredRepository(db)
 	fc := controller.NewFullQuestionsController(qr, ar, sr, ur, mr, cr)
 
 	puzzr := repository.NewPuzzleRepository(db)
 	puzzc := controller.NewPuzzleController(puzzr, ar, ur, qr)
-
-	par := repository.NewPuzzleAnswerRepository(db)
-	pac := controller.NewPuzzleAnswerController(par)
 
 	rc := controller.NewResultsController(qr, mr, puzzr, par, ur)
 
@@ -86,6 +86,7 @@ func main() {
 	router.HandleFunc("/api/questions/{surveyId}", authorizer.IsAuthorized("user", qc.GetAll)).Methods(http.MethodGet)
 	router.HandleFunc("/api/questions/single/{id}", authorizer.IsAuthorized("user", qc.Get)).Methods(http.MethodGet)
 	router.HandleFunc("/api/questions/{surveyId}", authorizer.IsAuthorized("admin", qc.Post)).Methods(http.MethodPost)
+	router.HandleFunc("/api/questions/answered/{email}", authorizer.IsAuthorized("admin", qc.GetAnswered)).Methods(http.MethodGet)
 	router.HandleFunc("/api/questions", authorizer.IsAuthorized("admin", qc.Put)).Methods(http.MethodPut)
 	router.HandleFunc("/api/questions/{id}", authorizer.IsAuthorized("admin", qc.Delete)).Methods(http.MethodDelete)
 
@@ -118,6 +119,8 @@ func main() {
 	router.HandleFunc("/api/brackets/{surveyId}", authorizer.IsAuthorized("admin", bc.Post)).Methods(http.MethodPost)
 
 	router.HandleFunc("/api/answer/puzzle", authorizer.IsAuthorized("user", pac.Post)).Methods(http.MethodPost)
+
+	router.HandleFunc("/api/users", authorizer.IsAuthorized("admin", uc.Get)).Methods(http.MethodGet)
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }
