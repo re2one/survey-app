@@ -47,6 +47,8 @@
   margin-top: 0.8%;
   margin-right: 2%;
   position: relative;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .puzzle-element:nth-child(gt17) {

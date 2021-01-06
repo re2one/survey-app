@@ -19,6 +19,7 @@ export class SurveyInspectComponent implements OnInit {
   presentedPieces: Map<any, any>;
   currentQuestions: Array<string>;
   questionId: string;
+  // fields: Array<number>;
   public userForm: FormGroup;
   public questionForm: FormGroup;
 
@@ -36,6 +37,7 @@ export class SurveyInspectComponent implements OnInit {
       question: ['', [Validators.required]]
     });
     this.presentedPieces = new Map();
+    // this.fields = [...Array(24).keys()];
   }
 
   ngOnInit(): void {
@@ -62,6 +64,7 @@ export class SurveyInspectComponent implements OnInit {
       if (response.status === 200) {
         const map = new Map<string, Array<PuzzlePiece>>();
         this.currentQuestions = Object.keys(response.body.submissions);
+        console.log(response.body.submissions);
         Object.keys(response.body.submissions).forEach(key => {
           const arr = new Array<PuzzlePiece>();
           response.body.submissions[key].forEach(piece => {
@@ -82,13 +85,11 @@ export class SurveyInspectComponent implements OnInit {
     this.presentedPieces = new Map();
     for (let i = 0; i < 24; i++) {
       const piece = new PuzzlePiece(i.toString(10), value.question);
-      this.presentedPieces.set(i.toString(10), piece);
+      this.presentedPieces.set(i, piece);
     }
-    console.log(this.presentedPieces);
     this.currentUsersAnswers.get(value.question).forEach((v, k) => {
-      this.presentedPieces.set(v.position, v);
+      this.presentedPieces.set(parseInt(v.position, 10), v);
     });
-    console.log(this.presentedPieces);
     this.questionId = value.question;
     this.cdr.detectChanges();
   }
