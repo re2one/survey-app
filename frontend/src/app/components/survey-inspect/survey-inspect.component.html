@@ -28,6 +28,10 @@
     </div>
   </div>
   <div class="state-viewer">
-    the big container
+    <div *ngFor="let piece of presentedPieces | keyvalue" class="puzzle-element">
+      <img *ngIf="!piece.value.empty"
+           [ngClass]="{'puzzle-piece-image': !piece.value.tapped, 'puzzle-piece-image-tapped': piece.value.tapped }"
+           src="{{'/api/assets/' + surveyId + '/' + questionId + '/' + piece.value.image}}">
+    </div>
   </div>
 </div>

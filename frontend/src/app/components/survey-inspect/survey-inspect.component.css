@@ -28,4 +28,46 @@
 .state-viewer {
   border: 1px black solid;
   flex: 1;
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  position: relative;
+  overflow: auto;
+}
+
+.puzzle-element {
+  border: solid 1px black;
+  flex: 1;
+  max-height: 24%;
+  min-width: 14%;
+  margin-top: 0.8%;
+  margin-right: 2%;
+  position: relative;
+}
+
+.puzzle-element:nth-child(gt17) {
+  margin-bottom: 0.8%;
+}
+
+.puzzle-element:nth-child(6n) {
+  page-break-after: always;
+  margin-right: 0%;
+}
+
+.puzzle-piece-image {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.puzzle-piece-image-tapped {
+
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  transform: rotate(90deg);
 }
