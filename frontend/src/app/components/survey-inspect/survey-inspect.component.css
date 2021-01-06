@@ -42,7 +42,7 @@
 .puzzle-element {
   border: solid 1px black;
   flex: 1;
-  max-height: 24%;
+  height: 24%;
   min-width: 14%;
   margin-top: 0.8%;
   margin-right: 2%;
