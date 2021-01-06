@@ -24,6 +24,7 @@ type resultsController struct {
 
 type ResultsController interface {
 	Get(writer http.ResponseWriter, request *http.Request)
+	GetUser(writer http.ResponseWriter, request *http.Request)
 }
 
 type Results struct {
@@ -152,6 +153,12 @@ func (rc *resultsController) Get(writer http.ResponseWriter, request *http.Reque
 	transformedResult := rc.transformOutput(resultQuestions)
 
 	json.NewEncoder(writer).Encode(&ResultResponse{Result: transformedResult})
+}
+
+func (rc *resultsController) GetUser(writer http.ResponseWriter, request *http.Request) {
+
+	log.Info().Msg("Get user results has been called.")
+	writer.WriteHeader(http.StatusInternalServerError)
 }
 
 func (rc *resultsController) mapPositions(solutions []*model.Puzzlepiece) (map[string]*model.Puzzlepiece, error) {
