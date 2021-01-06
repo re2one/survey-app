@@ -14,7 +14,17 @@
       </form>
     </div>
     <div class="menu-item">
-      <p> questions here </p>
+      <form [formGroup]="questionForm" (ngSubmit)="onSubmissionSubmit(questionForm.value)" class="opacity">
+
+        <mat-form-field class="input" appearance="fill">
+          <mat-label>Pick an question:</mat-label>
+          <select matNativeControl formControlName="question">
+            <option *ngFor="let a of currentQuestions" [value]="a" selected> {{a}}</option>
+          </select>
+        </mat-form-field>
+        <button mat-raised-button type="submit" [disabled]="!questionForm.valid">Submit</button>
+
+      </form>
     </div>
   </div>
   <div class="state-viewer">
