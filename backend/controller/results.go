@@ -24,7 +24,7 @@ type resultsController struct {
 
 type ResultsController interface {
 	Get(writer http.ResponseWriter, request *http.Request)
-	GetUser(writer http.ResponseWriter, request *http.Request)
+	GetSingle(writer http.ResponseWriter, request *http.Request)
 }
 
 type Results struct {
@@ -155,10 +155,66 @@ func (rc *resultsController) Get(writer http.ResponseWriter, request *http.Reque
 	json.NewEncoder(writer).Encode(&ResultResponse{Result: transformedResult})
 }
 
-func (rc *resultsController) GetUser(writer http.ResponseWriter, request *http.Request) {
+func (rc *resultsController) GetSingle(writer http.ResponseWriter, request *http.Request) {
 
-	log.Info().Msg("Get user results has been called.")
-	writer.WriteHeader(http.StatusInternalServerError)
+	writer.Header().Set("Content-Type", "application/json")
+	v := mux.Vars(request)
+
+	question, err := rc.questionRepository.Get(v["questionId"])
+	if err != nil {
+		log.Error().Err(err).Msg("Unable retrieve question.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if question.Type != "puzzle" {
+		log.Error().Err(err).Msg("Cant retrieve score for non puzzle question.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	solutions, err := rc.puzzleSolutionRepository.GetAll(v["questionId"])
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve puzzle solution.")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+
+	solutionsMap, err := rc.mapPositions(solutions)
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to map their positions onto solutions.")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+
+	userPieces, err := rc.puzzleAnswerRepository.GetUserSolution(v["email"], v["questionId"])
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve the submitted answers for this puzzle question.")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+
+	userPiecesMap, err := rc.mapUserSolution(userPieces)
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to map their positions onto solutions.")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+
+	score := 0
+	for i := 0; i < 24; i++ {
+		solution, fieldFilled := solutionsMap[strconv.Itoa(i)]
+		answer, fieldAnswered := userPiecesMap[strconv.Itoa(i)]
+		if !fieldFilled && !fieldAnswered {
+			score++
+			continue
+		}
+
+		if fieldFilled && fieldAnswered {
+			if solution.Image == answer.Image {
+				score++
+				continue
+			}
+		}
+	}
+
+	json.NewEncoder(writer).Encode(score)
 }
 
 func (rc *resultsController) mapPositions(solutions []*model.Puzzlepiece) (map[string]*model.Puzzlepiece, error) {

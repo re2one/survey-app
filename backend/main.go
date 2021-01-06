@@ -103,7 +103,7 @@ func main() {
 	router.HandleFunc("/api/answer/multiplechoice", authorizer.IsAuthorized("user", mc.Post)).Methods(http.MethodPost)
 
 	router.HandleFunc("/api/results/{surveyId}", authorizer.IsAuthorized("admin", rc.Get)).Methods(http.MethodGet)
-	router.HandleFunc("/api/results/{surveyId}/{userId}", authorizer.IsAuthorized("admin", rc.GetUser)).Methods(http.MethodGet)
+	router.HandleFunc("/api/results/{surveyId}/{email}/{questionId}", authorizer.IsAuthorized("admin", rc.GetSingle)).Methods(http.MethodGet)
 
 	router.HandleFunc("/api/assets/directory/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", assc.Post)).Methods(http.MethodPost)
 	router.HandleFunc("/api/assets/upload/{surveyId}/{questionId}", authorizer.IsAuthorized("admin", assc.Upload)).Methods(http.MethodPost)

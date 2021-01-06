@@ -5,6 +5,7 @@ import {SmolUser} from '../../models/smoUsers';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {QuestionsService} from '../../services/questions.service';
 import {PuzzlePiece} from '../question-edit-puzzle/question-edit-puzzle.component';
+import {ResultService} from '../../services/result.service';
 
 @Component({
   selector: 'app-survey-inspect',
@@ -19,6 +20,8 @@ export class SurveyInspectComponent implements OnInit {
   presentedPieces: Map<any, any>;
   currentQuestions: Array<string>;
   questionId: string;
+  currentScore: number;
+  currentUser: string;
   // fields: Array<number>;
   public userForm: FormGroup;
   public questionForm: FormGroup;
@@ -28,6 +31,7 @@ export class SurveyInspectComponent implements OnInit {
     private userService: UserService,
     private formBuilder: FormBuilder,
     private questionsService: QuestionsService,
+    private resultService: ResultService,
     private cdr: ChangeDetectorRef,
   ) {
     this.userForm = this.formBuilder.group({
@@ -62,6 +66,7 @@ export class SurveyInspectComponent implements OnInit {
   onUserFormSubmit(userEmail): void {
     this.questionsService.getAnsweredQuestions(userEmail.email).subscribe(response => {
       if (response.status === 200) {
+        this.currentUser = userEmail.email;
         const map = new Map<string, Array<PuzzlePiece>>();
         this.currentQuestions = Object.keys(response.body.submissions);
         console.log(response.body.submissions);
@@ -91,6 +96,11 @@ export class SurveyInspectComponent implements OnInit {
       this.presentedPieces.set(parseInt(v.position, 10), v);
     });
     this.questionId = value.question;
+    this.resultService.getSingleResult(this.surveyId, this.currentUser, this.questionId).subscribe(response => {
+      if (response.status === 200) {
+        this.currentScore = response.body;
+      }
+    });
     this.cdr.detectChanges();
   }
 }
