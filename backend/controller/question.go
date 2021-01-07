@@ -96,7 +96,8 @@ func (uc *questionController) GetAnswered(writer http.ResponseWriter, request *h
 		return
 	}
 
-	state, err := uc.answeredRepository.Get(retrievedUser)
+	// add survey id to query!!!
+	state, err := uc.answeredRepository.Get(retrievedUser, v["surveyId"])
 	if err != nil {
 		log.Error().Err(err).Msg("Unable to retrieve the answered questions.")
 		writer.WriteHeader(http.StatusInternalServerError)

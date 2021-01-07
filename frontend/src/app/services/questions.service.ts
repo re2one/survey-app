@@ -23,8 +23,10 @@ export class QuestionsService {
     return this.http.get(`/api/questions/single/${questionId}`, {observe: 'response'});
   }
 
-  getAnsweredQuestions(email: string): Observable<any> {
-    return this.http.get(`/api/questions/answered/${email}`, {observe: 'response'});
+  getAnsweredQuestions(email: string, surveyid: string): Observable<any> {
+
+    console.log('SURVEY ID: ' + surveyid);
+    return this.http.get(`/api/questions/answered/${email}/${surveyid}`, {observe: 'response'});
   }
 
   postQuestion(

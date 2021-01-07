@@ -86,7 +86,7 @@ func main() {
 	router.HandleFunc("/api/questions/{surveyId}", authorizer.IsAuthorized("user", qc.GetAll)).Methods(http.MethodGet)
 	router.HandleFunc("/api/questions/single/{id}", authorizer.IsAuthorized("user", qc.Get)).Methods(http.MethodGet)
 	router.HandleFunc("/api/questions/{surveyId}", authorizer.IsAuthorized("admin", qc.Post)).Methods(http.MethodPost)
-	router.HandleFunc("/api/questions/answered/{email}", authorizer.IsAuthorized("admin", qc.GetAnswered)).Methods(http.MethodGet)
+	router.HandleFunc("/api/questions/answered/{email}/{surveyId}", authorizer.IsAuthorized("admin", qc.GetAnswered)).Methods(http.MethodGet)
 	router.HandleFunc("/api/questions", authorizer.IsAuthorized("admin", qc.Put)).Methods(http.MethodPut)
 	router.HandleFunc("/api/questions/{id}", authorizer.IsAuthorized("admin", qc.Delete)).Methods(http.MethodDelete)
 

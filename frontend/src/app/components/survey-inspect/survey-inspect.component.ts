@@ -64,7 +64,7 @@ export class SurveyInspectComponent implements OnInit {
   }
 
   onUserFormSubmit(userEmail): void {
-    this.questionsService.getAnsweredQuestions(userEmail.email).subscribe(response => {
+    this.questionsService.getAnsweredQuestions(userEmail.email, this.surveyId).subscribe(response => {
       if (response.status === 200) {
         this.currentUser = userEmail.email;
         const map = new Map<string, Array<PuzzlePiece>>();

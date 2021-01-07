@@ -9,6 +9,7 @@ type Answered struct {
 	User       User
 	UserId     uint `gorm:"foreignkey:UserRefer" json:"userid"`
 	QuestionId uint `json:"questionid"`
+	SurveyId   uint `json:"surveyid"`
 	Answered   bool `json:"answered"`
 	Viewed     bool `json:"viewed"`
 }

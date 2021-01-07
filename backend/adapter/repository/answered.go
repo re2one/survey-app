@@ -18,10 +18,10 @@ func NewAnsweredRepository(db *gorm.DB) repository.AnsweredRepository {
 	return &answeredRepository{db}
 }
 
-func (rr *answeredRepository) Get(u *model.User) (map[uint]model.Answered, error) {
+func (rr *answeredRepository) Get(u *model.User, surveyId string) (map[uint]model.Answered, error) {
 
 	answered := make([]model.Answered, 0)
-	err := rr.db.Where("user_id = ? and answered = ?", u.ID, true).Find(&answered).Error
+	err := rr.db.Where("user_id = ? and answered = ? and survey_id = ?", u.ID, true, surveyId).Find(&answered).Error
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (rr *answeredRepository) Post(u *model.User, q *model.Question) (*model.Ans
 	var answered model.Answered
 	err := rr.db.Where("user_id = ? and question_id = ?", u.ID, q.ID).Find(&answered).Error
 	if err != nil {
-		answered := model.Answered{User: *u, QuestionId: q.ID, Answered: true}
+		answered := model.Answered{User: *u, QuestionId: q.ID, Answered: true, SurveyId: q.SurveyId}
 		err := rr.db.Create(&answered).Error
 		if err != nil {
 			return nil, err
@@ -66,7 +66,7 @@ func (rr *answeredRepository) Post(u *model.User, q *model.Question) (*model.Ans
 
 func (rr *answeredRepository) Viewed(u *model.User, q *model.Question) (*model.Answered, error) {
 	// userExists := ur.db.NewRecord(u)
-	answered := model.Answered{User: *u, QuestionId: q.ID, Viewed: true, Answered: false}
+	answered := model.Answered{User: *u, QuestionId: q.ID, Viewed: true, Answered: false, SurveyId: q.SurveyId}
 	err := rr.db.Create(&answered).Error
 	if err != nil {
 		return nil, err
