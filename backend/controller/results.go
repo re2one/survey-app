@@ -20,6 +20,7 @@ type resultsController struct {
 	puzzleSolutionRepository repository.PuzzleRepository
 	puzzleAnswerRepository   repository.PuzzleAnswerRepository
 	userRepository           repository.UserRepository
+	answeredRepository       repository.AnsweredRepository
 }
 
 type ResultsController interface {
@@ -53,6 +54,7 @@ func NewResultsController(
 	puzzleSolutionRepository repository.PuzzleRepository,
 	puzzleAnswerRepository repository.PuzzleAnswerRepository,
 	userRepository repository.UserRepository,
+	answeredRepository repository.AnsweredRepository,
 ) ResultsController {
 	return &resultsController{
 		questionRepository:       questionRepository,
@@ -60,6 +62,7 @@ func NewResultsController(
 		puzzleSolutionRepository: puzzleSolutionRepository,
 		puzzleAnswerRepository:   puzzleAnswerRepository,
 		userRepository:           userRepository,
+		answeredRepository:       answeredRepository,
 	}
 }
 
@@ -112,6 +115,20 @@ func (rc *resultsController) Get(writer http.ResponseWriter, request *http.Reque
 
 			resultAnswers := make([]*Answer, 0)
 			for _, user := range users {
+
+				answered, err := rc.answeredRepository.GetSingle(user, q)
+				if err != nil {
+					resultAnswers = append(resultAnswers, &Answer{User: user.Email, Score: ""})
+					continue
+				}
+				if len(answered) < 1 {
+					resultAnswers = append(resultAnswers, &Answer{User: user.Email, Score: ""})
+					continue
+				}
+				if answered[0].Answered == false {
+					resultAnswers = append(resultAnswers, &Answer{User: user.Email, Score: ""})
+					continue
+				}
 				userPieces, err := rc.puzzleAnswerRepository.GetUserSolution(user.Email, strconv.Itoa(int(q.ID)))
 				if err != nil {
 					log.Error().Err(err).Msg("Unable to retrieve the submitted answers for this puzzle question.")
@@ -237,9 +254,18 @@ func (rc *resultsController) transformOutput(questions []*Question) string {
 	// maps an users email address
 	// to a map of question ids
 	// to the users answers
-	answersByUser := make(map[string]map[uint]string)
+	answersByUser := make(map[uint]map[uint]string)
 	columnLabels := make([]string, 0, len(questions)+1)
 	columnLabels = append(columnLabels, "user")
+
+	users, err := rc.userRepository.GetAll()
+	if err != nil {
+		log.Error().Err(err).Msg("unable to retrieve users")
+		return ""
+	}
+
+	uids := rc.mapEmailsToIds(users)
+	qids := make([]uint, 0, len(questions))
 
 	// iterating over questions
 	// adding question id to column labels
@@ -247,43 +273,46 @@ func (rc *resultsController) transformOutput(questions []*Question) string {
 	// populating a users-to-(questionid-to-answer map) map
 	for _, q := range questions {
 		columnLabels = append(columnLabels, fmt.Sprint(q.Id))
+		qids = append(qids, q.Id)
 		for _, a := range q.Answers {
-			if answersByUser[a.User] == nil {
-				answersByUser[a.User] = make(map[uint]string)
+			id, ok := uids[a.User]
+			if !ok {
+				log.Error().Err(err).Str("email", a.User).Msg("cant find id for users")
+				continue
 			}
-			answersByUser[a.User][q.Id] = a.Score
+			if answersByUser[id] == nil {
+				answersByUser[id] = make(map[uint]string)
+			}
+			answersByUser[id][q.Id] = a.Score
 		}
 	}
 
-	// adding each questionid-to-answer map to a slice to get rid of the user key
-	answerSlice := make([]map[uint]string, 0, len(answersByUser))
-	for _, v := range answersByUser {
-		answerSlice = append(answerSlice, v)
-	}
-
-	// creating the first row of column labels
 	joinedColumnLabels := strings.Join(columnLabels, ",")
 
-	// iterating over questionid-to-answer map slice
-	// i indicates the new user id
-	for i, v := range answerSlice {
-		// init new "userid"-to-answer map
+	for userId, answersMap := range answersByUser {
+
 		newRow := make([]string, 0, len(questions)+1)
-
-		// appending "userid" as first question
-		newRow = append(newRow, fmt.Sprint(i))
-
-		// iterate over questions to fetch answer
-		for _, q := range questions {
-			nextItem := ""
-			if j, ok := v[q.Id]; ok {
-				nextItem = j
+		newRow = append(newRow, fmt.Sprint(userId))
+		for _, id := range qids {
+			a, ok := answersMap[id]
+			if ok {
+				newRow = append(newRow, a)
+				continue
 			}
-			newRow = append(newRow, nextItem)
+			newRow = append(newRow, "")
 		}
+
 		joinedColumnLabels += "\n"
 		joinedColumnLabels += strings.Join(newRow, ",")
 	}
 
 	return joinedColumnLabels
+}
+
+func (rc *resultsController) mapEmailsToIds(users []*model.User) map[string]uint {
+	result := make(map[string]uint)
+	for _, u := range users {
+		result[u.Email] = u.ID
+	}
+	return result
 }

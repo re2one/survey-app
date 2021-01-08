@@ -66,7 +66,7 @@ func main() {
 	puzzr := repository.NewPuzzleRepository(db)
 	puzzc := controller.NewPuzzleController(puzzr, ar, ur, qr)
 
-	rc := controller.NewResultsController(qr, mr, puzzr, par, ur)
+	rc := controller.NewResultsController(qr, mr, puzzr, par, ur, ar)
 
 	br := repository.NewBracketRepository(db)
 	bc := controller.NewBracketController(br, sr)

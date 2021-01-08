@@ -67,3 +67,12 @@ func (ur *userRepository) Post(u *model.User) (*model.User, error) {
 	ur.db.Create(&u)
 	return u, nil
 }
+
+func (ur *userRepository) GetIdFromEmail(email string) (uint, error) {
+	var user model.User
+	err := ur.db.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return 0, err
+	}
+	return user.ID, nil
+}
