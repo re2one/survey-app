@@ -99,7 +99,7 @@ func (sr *questionRepository) Put(s *model.Question) (*model.Question, error) {
 	question.Next = s.Next
 	question.SecondToNext = s.SecondToNext
 	question.TypeOfNextQuestion = s.TypeOfNextQuestion
-	sr.db.Save(question)
+	sr.db.Save(&question)
 	return &question, nil
 }
 

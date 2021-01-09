@@ -62,7 +62,7 @@ func (sr *puzzleRepository) addPiece(surveyId string, questionId string, piece *
 			return err
 		}
 	*/
-	sr.db.Save(piece)
+	sr.db.Save(&piece)
 	return nil
 }
 

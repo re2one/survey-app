@@ -35,7 +35,7 @@ export class MultipleEditComponent implements OnInit {
       answerData.typeOfNextQuestion,
     ).subscribe((response: HttpResponse<SurveyResponse>) => {
       if (response.status === 200) {
-        this.router.navigate(['/questions/edit', answerData.questionId, this.surveyId]);
+        this.router.navigate(['/questions/edit/multiplechoice', answerData.questionId, this.surveyId]);
       }
     });
   }

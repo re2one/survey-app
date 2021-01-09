@@ -77,7 +77,7 @@ func (sr *choiceRepository) Put(s *model.Choice) (*model.Choice, error) {
 	choice.NextQuestion = s.NextQuestion
 	choice.SecondToNext = s.SecondToNext
 	choice.TypeOfNextQuestion = s.TypeOfNextQuestion
-	sr.db.Save(choice)
+	sr.db.Save(&choice)
 	return &choice, nil
 }
 

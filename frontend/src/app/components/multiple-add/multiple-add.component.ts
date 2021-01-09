@@ -1,9 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {QuestionsService} from '../../services/questions.service';
 import {MuchoService} from '../../services/mucho.service';
 import {HttpResponse} from '@angular/common/http';
-import {QuestionsResponse} from '../../models/questions';
 import {AnswerResponse} from '../../models/mucho';
 
 @Component({
@@ -33,7 +31,7 @@ export class MultipleAddComponent implements OnInit {
     ).subscribe((response: HttpResponse<AnswerResponse>) => {
       console.log(response);
       if (response.status === 200) {
-        this.router.navigate(['/questions/edit', this.questionId, this.surveyId]);
+        this.router.navigate(['/questions/edit/multiplechoice', this.questionId, this.surveyId]);
       }
     });
   }

@@ -66,7 +66,7 @@ func (sr *surveyRepository) Put(s *model.Survey) (*model.Survey, error) {
 	survey.Disclaimer = s.Disclaimer
 	survey.Introduction = s.Introduction
 	survey.Title = s.Title
-	sr.db.Save(survey)
+	sr.db.Save(&survey)
 	return &survey, nil
 }
 

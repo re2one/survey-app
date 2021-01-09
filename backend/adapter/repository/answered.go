@@ -60,7 +60,7 @@ func (rr *answeredRepository) Post(u *model.User, q *model.Question) (*model.Ans
 		return &answered, nil
 	}
 	answered.Answered = true
-	rr.db.Save(answered)
+	rr.db.Save(&answered)
 	return &answered, nil
 
 }
