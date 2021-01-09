@@ -12,4 +12,5 @@ require (
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/rs/cors v1.7.0
 	github.com/rs/zerolog v1.19.0
+	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 )

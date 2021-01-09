@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"golang.org/x/crypto/bcrypt"
+
+	"backend/common"
 	"backend/model"
 	"backend/model/response"
 	"backend/usecase/interactor"
@@ -13,6 +16,7 @@ import (
 
 type userController struct {
 	userInteractor interactor.UserInteractor
+	randomString   common.RandomString
 }
 
 // UserController defines functions available for requesat handling
@@ -24,8 +28,8 @@ type UserController interface {
 }
 
 // NewUserController provides functions for request handling
-func NewUserController(us interactor.UserInteractor) UserController {
-	return &userController{us}
+func NewUserController(us interactor.UserInteractor, randomString common.RandomString) UserController {
+	return &userController{userInteractor: us, randomString: randomString}
 }
 
 func (uc *userController) Login(writer http.ResponseWriter, request *http.Request) {
@@ -79,6 +83,18 @@ func (uc *userController) Signup(writer http.ResponseWriter, request *http.Reque
 		writer.WriteHeader(http.StatusUnauthorized)
 		return
 	}
+
+	salt := uc.randomString.Get()
+	user.Salt = salt
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(salt+user.Password), 4)
+	if err != nil {
+		log.Error().Msg("unable to hash Password")
+		writer.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	user.Password = string(hash)
 
 	result, err := uc.userInteractor.Post(&user, defaultRole)
 	if err != nil {

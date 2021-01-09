@@ -38,7 +38,9 @@ func main() {
 	rr := repository.NewRoleRepository(db)
 	up := presenter.NewUserPresenter(&authenticator)
 	ui := interactor.NewUserInteractor(ur, rr, up, authorizer, authenticator)
-	uc := controller.NewUserController(ui)
+
+	rnd := common.NewRandomString()
+	uc := controller.NewUserController(ui, rnd)
 
 	assr := repository.NewAssetsRepository(db)
 	assc := controller.NewAssetsController(assr)

@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/rs/zerolog/log"
+	"golang.org/x/crypto/bcrypt"
 
 	"backend/common"
 	"backend/model"
@@ -49,6 +50,11 @@ func (us *userInteractor) Get(u *model.User) (*response.UserResponse, error) {
 	u, err = us.UserRepository.Get(u)
 	if err != nil {
 		return nil, err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(u.Salt+pw))
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to compare hash and salted pw, trying plain pw.")
 	}
 
 	if u.Password != pw {
