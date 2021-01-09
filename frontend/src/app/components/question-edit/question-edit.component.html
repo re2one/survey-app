@@ -17,12 +17,13 @@
         </mat-card-content>
         <mat-card-actions class="actions">
           <button mat-button (click)="moveToEditForm(answer.value.ID)">EDIT</button>
-          <button mat-button (click)="delete(answer.value.ID)">DELETE</button>
+          <button mat-button (click)="openDeleteAlert(answer.value.ID)">DELETE</button>
         </mat-card-actions>
       </mat-card>
     </div>
     <div class="button-container">
-      <button *ngIf="permissionCheck()" class="bg-color add-button" mat-raised-button (click)="moveToAddForm()">ADD</button>
+      <button *ngIf="permissionCheck()" class="bg-color add-button" mat-raised-button (click)="moveToAddForm()">ADD
+      </button>
     </div>
   </div>
 </div>

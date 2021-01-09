@@ -7,12 +7,12 @@
       <p>{{question.text}}</p>
     </mat-card-content>
   </mat-card>
-  <form [formGroup]="answerForm" (ngSubmit)="onAnswerSubmit(answerForm.value)" class="opacity">
+  <form [formGroup]="answerForm" (ngSubmit)="openSubmitAlert(answerForm.value)" class="opacity">
 
     <mat-form-field class="input" appearance="fill">
       <mat-label>Pick an option:</mat-label>
       <select matNativeControl formControlName="answer">
-          <option *ngFor="let a of localAnswers | keyvalue" [value]="a.value.text" selected> {{a.value.text}}</option>
+        <option *ngFor="let a of localAnswers | keyvalue" [value]="a.value.text" selected> {{a.value.text}}</option>
       </select>
     </mat-form-field>
     <button mat-raised-button type="submit" class="input in2" [disabled]="!answerForm.valid">Submit</button>

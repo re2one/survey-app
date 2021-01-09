@@ -12,6 +12,7 @@ import {QuestionsService} from '../../services/questions.service';
 import {Router} from '@angular/router';
 import {Puzzlepiece} from '../../models/puzzle';
 import {FullQuestionsService} from '../../services/full-questions.service';
+import {SubmitDialogComponent} from '../submit-dialog/submit-dialog.component';
 
 @Component({
   selector: 'app-puzzle-answer',
@@ -21,7 +22,7 @@ import {FullQuestionsService} from '../../services/full-questions.service';
 export class PuzzleAnswerComponent implements OnInit {
   @Input() question: Question;
   counter$: Observable<number>;
-  count = 10;
+  count = 15;
   previewActive = true;
   puzzlepieces: Map<any, any>;
   filenames: Array<string>;
@@ -90,6 +91,15 @@ export class PuzzleAnswerComponent implements OnInit {
   togglePreview(toggle: boolean): void {
     console.log('TOGGLE');
     this.previewActive = toggle;
+  }
+
+  openSubmitAlert(): void {
+    const dialogRef = this.dialog.open(SubmitDialogComponent);
+    dialogRef.componentInstance.shouldProceed.subscribe(event => {
+      if (event) {
+        this.save();
+      }
+    });
   }
 
   save(): void {

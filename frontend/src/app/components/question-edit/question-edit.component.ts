@@ -6,6 +6,8 @@ import {HttpResponse} from '@angular/common/http';
 import {MuchoService} from '../../services/mucho.service';
 import {SurveyResponse} from '../../models/survey';
 import {BracketService} from '../../services/bracket.service';
+import {MatDialog} from '@angular/material/dialog';
+import {DeleteDialogComponent} from '../delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-question-edit',
@@ -21,6 +23,7 @@ export class QuestionEditComponent implements OnInit {
   brackets: Array<any>;
   constructor(
     public router: Router,
+    public dialog: MatDialog,
     private questionsService: QuestionsService,
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
@@ -47,9 +50,19 @@ export class QuestionEditComponent implements OnInit {
       this.getBrackets(this.surveyId);
     }, 0);
   }
+
   permissionCheck(): boolean {
     const role = localStorage.getItem('role');
     return role === 'admin';
+  }
+
+  openDeleteAlert(id: number): void {
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+    dialogRef.componentInstance.shouldProceed.subscribe(event => {
+      if (event) {
+        this.delete(id);
+      }
+    });
   }
 
   delete(questionId: number): void {

@@ -3,7 +3,8 @@ import {Question} from '../../models/questions';
 import {MuchoService} from '../../services/mucho.service';
 import {HttpResponse} from '@angular/common/http';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {SubmitDialogComponent} from '../submit-dialog/submit-dialog.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-multiple-answer',
@@ -18,6 +19,7 @@ export class MultipleAnswerComponent implements OnInit {
   constructor(
     private muchoService: MuchoService,
     private formBuilder: FormBuilder,
+    public dialog: MatDialog,
   ) {
     this.localAnswers = new Map();
     this.answerForm = this.formBuilder.group({
@@ -27,7 +29,7 @@ export class MultipleAnswerComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.question.type === 'multiplechoice'){
-      this.muchoService.getAnswers(this.question.ID.toString(10)).subscribe( (response: HttpResponse<any>) => {
+      this.muchoService.getAnswers(this.question.ID.toString(10)).subscribe((response: HttpResponse<any>) => {
         if (response.status === 200) {
           response.body.choices.forEach(answer => {
             this.localAnswers.set(answer.ID, answer);
@@ -37,7 +39,17 @@ export class MultipleAnswerComponent implements OnInit {
       });
     }
   }
-  onAnswerSubmit(answer): void{
+
+  openSubmitAlert(answer): void {
+    const dialogRef = this.dialog.open(SubmitDialogComponent);
+    dialogRef.componentInstance.shouldProceed.subscribe(event => {
+      if (event) {
+        this.onAnswerSubmit(answer);
+      }
+    });
+  }
+
+  onAnswerSubmit(answer): void {
     this.answer.emit(answer);
   }
 

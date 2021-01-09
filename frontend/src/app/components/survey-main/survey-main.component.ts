@@ -65,7 +65,7 @@ export class SurveyMainComponent implements OnInit {
   template: `
     <h1 mat-dialog-title>Attention</h1>
     <div mat-dialog-content>
-      After confirmation of this dialog, a timer of 10 seconds will start.
+      After confirmation of this dialog, a timer of 15 seconds will start.
       <br>
       Please try to remember the game state during this time.
     </div>

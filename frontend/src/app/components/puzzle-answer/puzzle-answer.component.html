@@ -17,7 +17,7 @@
     </div>
   </div>
   <div>
-    <button class="button" mat-flat-button (click)="save()" *ngIf="!previewActive">Submit</button>
+    <button class="button" mat-flat-button (click)="openSubmitAlert()" *ngIf="!previewActive">Submit</button>
     <button class="button" mat-flat-button *ngIf="previewActive">{{counter$ | async}}</button>
   </div>
 </div>

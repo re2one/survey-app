@@ -7,6 +7,8 @@ import {QuestionsService} from '../../services/questions.service';
 import {BracketService} from '../../services/bracket.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AssetService} from '../../services/asset.service';
+import {DeleteDialogComponent} from '../delete-dialog/delete-dialog.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-survey-edit',
@@ -31,6 +33,7 @@ export class SurveyEditComponent implements OnInit {
     private formBuilder: FormBuilder,
     private bracketService: BracketService,
     private assetService: AssetService,
+    public dialog: MatDialog,
   ) {
     this.localQuestions = new Map();
     this.bracketForm = this.formBuilder.group({
@@ -68,10 +71,21 @@ export class SurveyEditComponent implements OnInit {
       }
     });
   }
+
   permissionCheck(): boolean {
     const role = localStorage.getItem('role');
     return role === 'admin';
   }
+
+  openDeleteAlert(id: number): void {
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+    dialogRef.componentInstance.shouldProceed.subscribe(event => {
+      if (event) {
+        this.delete(id);
+      }
+    });
+  }
+
   delete(questionId: number): void {
     console.log(`question id to be deleted: ${questionId}`);
     this.questionsService.deleteQuestions(questionId).subscribe((response: HttpResponse<any>) => {
@@ -81,6 +95,7 @@ export class SurveyEditComponent implements OnInit {
       }
     });
   }
+
   moveToEditForm(questionId: number, questionType: string): void {
     console.log(questionType);
     this.router.navigate([`/questions/edit/${questionType}`, questionId, this.surveyId]);

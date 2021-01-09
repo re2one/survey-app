@@ -15,9 +15,10 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatCardModule} from '@angular/material/card';
-import {DeleteDialogComponent, SurveysComponent} from './components/surveys/surveys.component';
+import {SurveysComponent} from './components/surveys/surveys.component';
 import {AuthInterceptor} from './services/auth-interceptor.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {DeleteDialogComponent} from './components/delete-dialog/delete-dialog.component';
 
 import {environment} from '../environments/environment';
 import {SurveyFormComponent} from './components/survey-form/survey-form.component';
@@ -41,6 +42,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {PuzzleAddDialogComponent} from './components/puzzle-add-dialog/puzzle-add-dialog.component';
 import {PuzzlePreviewComponent} from './components/puzzle-preview/puzzle-preview.component';
 import {SurveyInspectComponent} from './components/survey-inspect/survey-inspect.component';
+import {SubmitDialogComponent} from './components/submit-dialog/submit-dialog.component';
 
 
 @NgModule({
@@ -70,6 +72,7 @@ import {SurveyInspectComponent} from './components/survey-inspect/survey-inspect
     TimerAlertDialogComponent,
     DeleteDialogComponent,
     SurveyInspectComponent,
+    SubmitDialogComponent,
   ],
   imports: [
     FormsModule,

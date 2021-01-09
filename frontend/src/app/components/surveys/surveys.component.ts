@@ -1,10 +1,11 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {SurveysService} from '../../services/surveys.service';
 import {LoginService} from '../../services/login.service';
 import {Router} from '@angular/router';
 import {HttpResponse} from '@angular/common/http';
 import {ResultService} from '../../services/result.service';
 import {MatDialog} from '@angular/material/dialog';
+import {DeleteDialogComponent} from '../delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-surveys',
@@ -80,26 +81,5 @@ export class SurveysComponent implements OnInit{
         this.delete(id);
       }
     });
-  }
-}
-
-@Component({
-  selector: 'app-delete-dialog',
-  template: `
-    <h1 mat-dialog-title>Attention</h1>
-    <div mat-dialog-content>
-      Do you really want to delete this survey?
-    </div>
-    <div mat-dialog-actions>
-      <button mat-button mat-dialog-close (click)="emitProceeding(true)">Delete</button>
-      <button mat-button mat-dialog-close (click)="emitProceeding(false)">Cancel</button>
-    </div>
-  `,
-})
-export class DeleteDialogComponent {
-  @Output() shouldProceed = new EventEmitter<boolean>();
-
-  emitProceeding(action: boolean): void {
-    this.shouldProceed.emit(action);
   }
 }
