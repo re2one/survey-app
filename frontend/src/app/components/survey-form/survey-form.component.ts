@@ -27,7 +27,6 @@ export class SurveyFormComponent implements OnInit {
     title: ['', [Validators.required]],
     summary: ['', [Validators.required]],
     disclaimer: ['', [Validators.required]],
-      // introduction: ['', [Validators.required]],
     });
   }
 
@@ -44,8 +43,6 @@ export class SurveyFormComponent implements OnInit {
               title: this.survey.title,
               summary: this.survey.summary,
               disclaimer: this.survey.disclaimer,
-              // introduction: this.survey.introduction
-              introduction: '',
             });
           }
         });
