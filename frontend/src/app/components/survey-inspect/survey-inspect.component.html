@@ -6,7 +6,7 @@
         <mat-form-field class="input" appearance="fill">
           <mat-label>Pick an user:</mat-label>
           <select matNativeControl formControlName="email">
-            <option *ngFor="let u of users" [value]="u.email" selected> {{u.id}}</option>
+            <option *ngFor="let u of users" [value]="u.email"> {{u.id}}</option>
           </select>
         </mat-form-field>
         <button mat-raised-button type="submit" [disabled]="!userForm.valid">Submit</button>
@@ -17,9 +17,9 @@
       <form [formGroup]="questionForm" (ngSubmit)="onSubmissionSubmit(questionForm.value)" class="opacity">
 
         <mat-form-field class="input" appearance="fill">
-          <mat-label>Pick an question:</mat-label>
+          <mat-label>Pick a question:</mat-label>
           <select matNativeControl formControlName="question">
-            <option *ngFor="let a of currentQuestions" [value]="a" selected> {{a}}</option>
+            <option *ngFor="let a of currentQuestions" [value]="a"> {{a}}</option>
           </select>
         </mat-form-field>
         <button mat-raised-button type="submit" [disabled]="!questionForm.valid">Submit</button>

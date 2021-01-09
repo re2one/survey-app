@@ -24,8 +24,6 @@ export class QuestionsService {
   }
 
   getAnsweredQuestions(email: string, surveyid: string): Observable<any> {
-
-    console.log('SURVEY ID: ' + surveyid);
     return this.http.get(`/api/questions/answered/${email}/${surveyid}`, {observe: 'response'});
   }
 

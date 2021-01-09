@@ -22,6 +22,7 @@ export class SurveyInspectComponent implements OnInit {
   questionId: string;
   currentScore: number;
   currentUser: string;
+  currentUserId: string;
   // fields: Array<number>;
   public userForm: FormGroup;
   public questionForm: FormGroup;
@@ -41,7 +42,6 @@ export class SurveyInspectComponent implements OnInit {
       question: ['', [Validators.required]]
     });
     this.presentedPieces = new Map();
-    // this.fields = [...Array(24).keys()];
   }
 
   ngOnInit(): void {
@@ -61,15 +61,17 @@ export class SurveyInspectComponent implements OnInit {
       const piece = new PuzzlePiece(i.toString(10), -1);
       this.presentedPieces.set(i, piece);
     }
+
+    this.currentUsersAnswers = new Map<string, Array<PuzzlePiece>>();
   }
 
-  onUserFormSubmit(userEmail): void {
-    this.questionsService.getAnsweredQuestions(userEmail.email, this.surveyId).subscribe(response => {
+  onUserFormSubmit(user): void {
+    this.questionsService.getAnsweredQuestions(user.email, this.surveyId).subscribe(response => {
       if (response.status === 200) {
-        this.currentUser = userEmail.email;
-        const map = new Map<string, Array<PuzzlePiece>>();
+        this.currentUser = user.email;
+        // const map = new Map<string, Array<PuzzlePiece>>();
+        this.currentUsersAnswers.clear();
         this.currentQuestions = Object.keys(response.body.submissions);
-        console.log(response.body.submissions);
         Object.keys(response.body.submissions).forEach(key => {
           const arr = new Array<PuzzlePiece>();
           response.body.submissions[key].forEach(piece => {
@@ -79,9 +81,10 @@ export class SurveyInspectComponent implements OnInit {
             p.empty = false;
             arr.push(p);
           });
-          map.set(key, arr);
+          this.currentUsersAnswers.set(key, arr);
         });
-        this.currentUsersAnswers = map;
+        this.cdr.detectChanges();
+        this.questionForm.reset();
       }
     });
   }
@@ -92,6 +95,10 @@ export class SurveyInspectComponent implements OnInit {
       const piece = new PuzzlePiece(i.toString(10), value.question);
       this.presentedPieces.set(i, piece);
     }
+    console.log('currentn questions');
+    console.log(this.currentQuestions);
+    console.log('value!');
+    console.log(value);
     this.currentUsersAnswers.get(value.question).forEach((v, k) => {
       this.presentedPieces.set(parseInt(v.position, 10), v);
     });
