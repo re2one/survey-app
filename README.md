@@ -1,14 +1,13 @@
 # survey-app
-An App to conduct multiple choice and image-puzzle based surveys.
+This project aims to provide a platform for people to conduct surveys that contain more specialized / advanced tasks that the typical single-/ multiplechoice or freeform questions.  
+As of now, it provides the following features:
+1) add two types of questions: single choice or an interactive puzzle/ memoization question
+2) branch the survey
+3) progress specified parts of the survey in a random order 
 
-## Setup
+## setup
+I'll add detailed setup instructions in the weeks to come.
 
-### Frontend
-run "npm install" in project root/frontend
+## issues
+there are a lot of issues and todos that I am aware of and that I'll add in the following weeks as well.
 
-
-### Backend
-run "go run main.go" in project root/backend
-
-### Database
-run "docker-compose up" within project root.
