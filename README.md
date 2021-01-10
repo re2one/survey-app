@@ -9,5 +9,7 @@ As of now, it provides the following features:
 I'll add detailed setup instructions in the weeks to come.
 
 ## issues
-there are a lot of issues and todos that I am aware of and that I'll add in the following weeks as well.
+There are a lot of issues and todos that I am aware of and that I'll add in the following weeks as well.  
+I often drifted into a really bad style because of timely contraints and I plan to tidy that up.  
+I ask you to meanwhile not judge me. My first objective was to help certain people out as fast as possible.
 
