@@ -21,27 +21,37 @@
       <mat-tab label="Signup">
           <div class="elem">
               <form [formGroup]="signupForm" (ngSubmit)="onSignupSubmit(signupForm.value)">
-                  <mat-form-field class="input" appearance="fill">
-                      <mat-label>Username</mat-label>
-                      <input matInput formControlName="username">
-                  </mat-form-field>
-                  <br>
-                  <mat-form-field class="input" appearance="fill">
-                      <mat-label>Email</mat-label>
-                      <input matInput formControlName="email">
-                  </mat-form-field>
-                  <br>
-                  <mat-form-field class="input" appearance="fill">
-                      <mat-label>Password</mat-label>
-                      <input matInput type="password" formControlName="password">
-                  </mat-form-field>
-                  <br>
-                  <mat-form-field class="input" appearance="fill">
-                      <mat-label>Repeat Password</mat-label>
-                      <input matInput type="password" formControlName="passwordConfirmation">
-                      <!--<mat-error *ngIf="signupForm.get('passwordConfirmation').hasError('passwordsEqual')">
-                        Passwörter stimmen nicht überein.
-                      </mat-error>-->
+                <mat-form-field class="input" appearance="fill">
+                  <mat-label>Username</mat-label>
+                  <input matInput formControlName="username">
+                </mat-form-field>
+                <br>
+                <mat-form-field class="input" appearance="fill">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email">
+                </mat-form-field>
+                <br>
+                <mat-form-field class="input"
+                                matTooltip="Do you want to receive the final thesis via mail once its done?"
+                                appearance="fill">
+                  <mat-label>Do you want to receive the final thesis via mail once its done??</mat-label>
+                  <select matNativeControl formControlName="wantsThesis">
+                    <option [value]="'true'">Sure, why not?</option>
+                    <option [value]="'false'">No thanks.</option>
+                  </select>
+                </mat-form-field>
+                <br>
+                <mat-form-field class="input" appearance="fill">
+                  <mat-label>Password</mat-label>
+                  <input matInput type="password" formControlName="password">
+                </mat-form-field>
+                <br>
+                <mat-form-field class="input" appearance="fill">
+                  <mat-label>Repeat Password</mat-label>
+                  <input matInput type="password" formControlName="passwordConfirmation">
+                  <!--<mat-error *ngIf="signupForm.get('passwordConfirmation').hasError('passwordsEqual')">
+                    Passwörter stimmen nicht überein.
+                  </mat-error>-->
                   </mat-form-field>
                   <br>
                   <button mat-raised-button class="input in2" type="submit" [disabled]="!signupForm.valid">Submit</button>

@@ -10,6 +10,7 @@ type User struct {
 	Email    string `json:"email" gorm:"unique"`
 	Salt     string `json:"salt"`
 	Password string `json:"password"`
+	Thesis   string `json:"thesis"`
 }
 
 func (User) TableName() string { return "users" }

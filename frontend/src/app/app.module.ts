@@ -19,6 +19,7 @@ import {SurveysComponent} from './components/surveys/surveys.component';
 import {AuthInterceptor} from './services/auth-interceptor.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {DeleteDialogComponent} from './components/delete-dialog/delete-dialog.component';
+import {MatRadioModule} from '@angular/material/radio';
 
 import {environment} from '../environments/environment';
 import {SurveyFormComponent} from './components/survey-form/survey-form.component';
@@ -43,6 +44,7 @@ import {PuzzleAddDialogComponent} from './components/puzzle-add-dialog/puzzle-ad
 import {PuzzlePreviewComponent} from './components/puzzle-preview/puzzle-preview.component';
 import {SurveyInspectComponent} from './components/survey-inspect/survey-inspect.component';
 import {SubmitDialogComponent} from './components/submit-dialog/submit-dialog.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -90,6 +92,8 @@ import {SubmitDialogComponent} from './components/submit-dialog/submit-dialog.co
     MatCardModule,
     HttpClientModule,
     MatDialogModule,
+    MatRadioModule,
+    MatTooltipModule,
   ],
   providers: [
     AppModule,

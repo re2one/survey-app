@@ -1,9 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import {FormGroup, FormBuilder, ValidationErrors, ValidatorFn} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {Validators} from '@angular/forms';
-import {MatError} from '@angular/material/form-field';
-import {HttpErrorResponse} from '@angular/common/http';
 import {LoginService} from '../../services/login.service';
 
 
@@ -31,6 +28,7 @@ export class LoginComponent implements OnInit {
       email: ['', [Validators.required]],
       password: ['', [Validators.required]],
       passwordConfirmation: ['', [Validators.required]],
+      wantsThesis: ['', [Validators.required]],
     }, {validators: this.checkPasswords });
   }
 
@@ -41,39 +39,26 @@ export class LoginComponent implements OnInit {
   }
 
   onLoginSubmit(loginData): void {
-    // Process checkout data here
-    // this.items = this.cartService.clearCart();
-    // this.loginForm.reset();
 
-    // console.warn('LOGIN', loginData);
     this.loginService.getAccessToken(loginData.email, loginData.password).subscribe(
       obj => {
-        // this.loginData = obj;
-        console.log('RESULT', obj);
         this.loginService.setSession(obj, loginData.email);
         this.router.navigate(['/surveys']);
       },
       error => console.log(error)
-      // this.error.setError(error)
     );
     this.loginForm.reset();
   }
 
   onSignupSubmit(signupData): void {
-    // Process checkout data here
-    // this.items = this.cartService.clearCart();
     this.loginForm.reset();
 
-    // console.warn('SIGNUP', signupData);
-    this.loginService.signupAndGetAccessToken(signupData.username, signupData.email, signupData.password).subscribe(
+    this.loginService.signupAndGetAccessToken(signupData.username, signupData.email, signupData.wantsThesis, signupData.password).subscribe(
       obj => {
-        // this.signupData = obj;
-        console.log('RESULT', obj);
         this.loginService.setSession(obj, signupData.email);
         this.router.navigate(['/surveys']);
       },
       error => console.log(error)
-      // this.error.setError(error)
     );
   }
 

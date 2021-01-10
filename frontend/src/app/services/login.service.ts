@@ -1,11 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
-import {} from 'jwt-decode';
-import {environment} from '../../environments/environment';
-import {of} from 'rxjs';
-import * as moment from 'moment';
 
 
 @Injectable({
@@ -28,12 +24,13 @@ export class LoginService {
     });
   }
 
-  signupAndGetAccessToken(username: string, email: string, password: string): Observable<object> {
-      return this.http.post(`/api/signup`, {
-        email,
-        password,
-        name: username
-      });
+  signupAndGetAccessToken(username: string, email: string, wantsThesis: string, password: string): Observable<object> {
+    return this.http.post(`/api/signup`, {
+      email,
+      password,
+      name: username,
+      thesis: wantsThesis,
+    });
   }
 
   public setSession(authResult, email: string): void {
