@@ -1,7 +1,6 @@
 package interactor
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -56,10 +55,6 @@ func (us *userInteractor) Get(u *model.User) (*response.UserResponse, error) {
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(u.Salt+pw))
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to compare hash and salted pw, trying plain pw.")
-	}
-
-	if u.Password != pw {
-		return nil, errors.New("Wrong password")
 	}
 
 	r, err = us.RoleRepository.Get(u)

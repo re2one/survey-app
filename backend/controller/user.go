@@ -59,10 +59,6 @@ func (uc *userController) Login(writer http.ResponseWriter, request *http.Reques
 	}
 
 	// writer.Header().Set("Access-Control-Allow-Origin", "*")
-
-	log.Error().Str("Username", result.Username).Msg("Response body")
-	log.Error().Str("Role", result.Role).Msg("Response body")
-	log.Error().Str("Token", result.Token).Msg("Response body")
 	json.NewEncoder(writer).Encode(result)
 	return
 }
