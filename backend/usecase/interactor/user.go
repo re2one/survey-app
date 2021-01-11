@@ -49,6 +49,7 @@ func (us *userInteractor) Get(u *model.User) (*response.UserResponse, error) {
 
 	u, err = us.UserRepository.Get(u)
 	if err != nil {
+		log.Error().Err(err).Msg("Failed to get user from user repo.")
 		return nil, err
 	}
 
@@ -63,12 +64,15 @@ func (us *userInteractor) Get(u *model.User) (*response.UserResponse, error) {
 
 	r, err = us.RoleRepository.Get(u)
 	if err != nil {
+		log.Error().Err(err).Msg("Failed to get role from role repo.")
 		return nil, err
 	}
 
 	// hhhhh
 	res, err = us.UserPresenter.LoginResponse(u, r)
 	if err != nil {
+
+		log.Error().Err(err).Msg("Failed to build login response.")
 		return nil, err
 	}
 	return res, nil
