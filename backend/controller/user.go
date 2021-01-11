@@ -54,12 +54,13 @@ func (uc *userController) Login(writer http.ResponseWriter, request *http.Reques
 
 	result, err := uc.userInteractor.Get(&user)
 	if err != nil {
+		log.Error().Err(err).Msg("error with retrieval of user")
 		return
 	}
 
 	// writer.Header().Set("Access-Control-Allow-Origin", "*")
 
-	log.Info().Str("Username", result.Username).Str("Role", result.Role).Str("Token", result.Token).Msg("Response body")
+	log.Error().Str("Username", result.Username).Str("Role", result.Role).Str("Token", result.Token).Msg("Response body")
 	json.NewEncoder(writer).Encode(result)
 	return
 }
