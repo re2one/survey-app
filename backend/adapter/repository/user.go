@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"github.com/rs/zerolog/log"
+
 	"backend/model"
 	"backend/usecase/repository"
 
@@ -38,6 +40,8 @@ func (ur *userRepository) Get(u *model.User) (*model.User, error) {
 	//check if record exists
 	err := ur.db.Where("email = ?", u.Email).First(&u).Error
 	if err != nil {
+
+		log.Error().Err(err).Msg("Failed to retrieve user from db.")
 		return nil, err
 	}
 
