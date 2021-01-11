@@ -57,7 +57,7 @@ func (uc *userController) Login(writer http.ResponseWriter, request *http.Reques
 		return
 	}
 
-	writer.Header().Set("Access-Control-Allow-Origin", "*")
+	// writer.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(writer).Encode(result)
 	return
 }
