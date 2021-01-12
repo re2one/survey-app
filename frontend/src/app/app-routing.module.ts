@@ -16,6 +16,7 @@ import {SurveyMainComponent} from './components/survey-main/survey-main.componen
 import {QuestionAnswerComponent} from './components/question-answer/question-answer.component';
 import {QuestionEditPuzzleComponent} from './components/question-edit-puzzle/question-edit-puzzle.component';
 import {SurveyInspectComponent} from './components/survey-inspect/survey-inspect.component';
+import {AboutComponent} from './components/about/about.component';
 
 
 const routes: Routes = [
@@ -41,10 +42,19 @@ const routes: Routes = [
     canActivate: [AuthGuardService, RoleGuardService],
     component: QuestionEditPuzzleComponent
   },
-  {path: 'multiple/add/:questionId/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: MultipleAddComponent},
-  {path: 'multiple/edit/:answerId/:surveyId', canActivate: [AuthGuardService, RoleGuardService], component: MultipleEditComponent},
+  {
+    path: 'multiple/add/:questionId/:surveyId',
+    canActivate: [AuthGuardService, RoleGuardService],
+    component: MultipleAddComponent
+  },
+  {
+    path: 'multiple/edit/:answerId/:surveyId',
+    canActivate: [AuthGuardService, RoleGuardService],
+    component: MultipleEditComponent
+  },
   {path: 'survey/:surveyId', canActivate: [AuthGuardService], component: SurveyMainComponent},
   {path: 'question/answer/:surveyId/:questionId', canActivate: [AuthGuardService], component: QuestionAnswerComponent},
+  {path: 'about', canActivate: [AuthGuardService], component: AboutComponent},
   {path: '**', redirectTo: 'login'}
 ];
 

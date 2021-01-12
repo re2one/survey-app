@@ -4,7 +4,15 @@
 
 export const environment = {
   production: false,
-  backendUrl: '${BACKEND_URL}'
+  backendUrl: '${BACKEND_URL}',
+  aboutProject: 'https://github.com/re2one/survey-app',
+  aboutName: 'John Doe',
+  aboutOrganisazion: 'Cookie Doe Inc.',
+  aboutEmail: 'me@johndoe.net',
+  aboutStreet: '5th Avenue No. 420',
+  aboutPostcode: '12345',
+  aboutCity: 'Smallville',
+  aboutCountry: 'Canada',
 };
 
 /*

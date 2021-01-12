@@ -45,6 +45,7 @@ import {PuzzlePreviewComponent} from './components/puzzle-preview/puzzle-preview
 import {SurveyInspectComponent} from './components/survey-inspect/survey-inspect.component';
 import {SubmitDialogComponent} from './components/submit-dialog/submit-dialog.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {AboutComponent} from './components/about/about.component';
 
 
 @NgModule({
@@ -75,6 +76,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     DeleteDialogComponent,
     SurveyInspectComponent,
     SubmitDialogComponent,
+    AboutComponent,
   ],
   imports: [
     FormsModule,

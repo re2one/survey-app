@@ -1,7 +1,6 @@
-import { Component, OnChanges } from '@angular/core';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {AuthTestService} from './services/auth-test.service';
+import {Component} from '@angular/core';
 import {LoginService} from './services/login.service';
+import {Router} from '@angular/router';
 
 
 @Component({
@@ -12,13 +11,20 @@ import {LoginService} from './services/login.service';
 export class AppComponent {
   title = 'frontend';
   constructor(
-    private loginService: LoginService
-  ) { }
+    private loginService: LoginService,
+    private router: Router
+  ) {
+  }
 
-  isLoggedIn(): boolean{
+  isLoggedIn(): boolean {
     return this.loginService.hasToken();
   }
-  logout(): void{
+
+  logout(): void {
     this.loginService.logout();
+  }
+
+  about(): void {
+    this.router.navigate(['about']);
   }
 }

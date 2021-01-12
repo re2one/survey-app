@@ -1,7 +1,7 @@
 <div class="edit-container">
   <div class="edit-element">
     <div *ngFor="let question of questions" class="card">
-      <mat-card class="bg-color">
+      <mat-card *ngIf="!finished" class="bg-color">
         <mat-card-header>
           <mat-card-title>{{question.title}}</mat-card-title>
         </mat-card-header>
@@ -13,8 +13,16 @@
         </mat-card-actions>
       </mat-card>
     </div>
-    <div *ngIf="finished">
-      <h3>Congrats, you have finished this survey!</h3>
+    <div>
+      <mat-card *ngIf="finished" class="bg-color" style="margin-top: 0px;">
+        <mat-card-header>
+          <mat-card-title>Congrats, you have finished this survey!</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <h3>Something something average pts.</h3>
+        </mat-card-content>
+      </mat-card>
     </div>
   </div>
 </div>
