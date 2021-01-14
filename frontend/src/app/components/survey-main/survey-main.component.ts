@@ -67,7 +67,7 @@ export class SurveyMainComponent implements OnInit {
     <div mat-dialog-content>
       After confirmation of this dialog, a timer of 15 seconds will start.
       <br>
-      Please try to remember the game state during this time.
+      Please try to memorize the game state during this time and replicate it afterwards.
     </div>
     <div mat-dialog-actions>
       <button mat-button mat-dialog-close (click)="emitProceeding(true)">Start</button>

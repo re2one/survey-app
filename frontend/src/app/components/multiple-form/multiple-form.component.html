@@ -6,7 +6,7 @@
     </mat-form-field>
     <br>
     <mat-form-field class="input" appearance="fill">
-      <mat-label>Is the follwing question a random one?</mat-label>
+      <mat-label>Is the following question a random one?</mat-label>
       <select matNativeControl formControlName="typeOfNextQuestion" (change)="disableSecond($event)">
         <option [value]="'regular'" selected>regular</option>
         <option [value]="'random'">random</option>
