@@ -9,7 +9,7 @@ type Question struct {
 	Survey             Survey
 	SurveyId           uint   `gorm:"foreignkey:SurveyRefer" json:"surveyid"`
 	Title              string `json:"title"`
-	Text               string `json:"text"`
+	Text               string `json:"text" gorm:"type:text"`
 	Type               string `json:"type"`
 	First              string `json:"first"`
 	Bracket            string `json:"bracket"`
