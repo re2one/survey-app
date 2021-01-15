@@ -24,11 +24,12 @@ export class LoginService {
     });
   }
 
-  signupAndGetAccessToken(username: string, email: string, wantsThesis: string, password: string): Observable<object> {
+  signupAndGetAccessToken(username: string, email: string, wantsThesis: string, agreesToTNC: string, password: string): Observable<object> {
     return this.http.post(`/api/signup`, {
       email,
       password,
       name: username,
+      termsAndConditions: agreesToTNC,
       thesis: wantsThesis,
     });
   }

@@ -7,10 +7,10 @@ import (
 
 type AssetsRepository interface {
 	Post(string, string) error
-	PostIntroduction(string) error
+	PostAssetFolder(string, string) error
 	Upload(string, string) error
 	SaveFile(string, string, image.Image, string) error
-	SavePDF(string, []byte) error
+	SavePDF(string, string, []byte) error
 	GetFilenames(string, string) ([]string, error)
 	Get(string, string, string) (*os.File, error)
 }

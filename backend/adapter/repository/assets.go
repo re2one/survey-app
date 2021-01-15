@@ -35,12 +35,12 @@ func (a *assetsRepository) Post(surveyId string, questionId string) error {
 	return nil
 }
 
-func (a *assetsRepository) PostIntroduction(surveyId string) error {
+func (a *assetsRepository) PostAssetFolder(surveyId string, dirType string) error {
 	surveyPath, err := a.createDirectory("assets", "survey", surveyId)
 	if err != nil {
 		return err
 	}
-	introPath, err := a.createDirectoryForIntroduction(surveyPath, "introduction")
+	introPath, err := a.createDirectoryForIntroduction(surveyPath, dirType)
 	if err != nil {
 		return err
 	}
@@ -98,8 +98,14 @@ func (a *assetsRepository) SaveFile(surveyId string, questionId string, data ima
 	return nil
 }
 
-func (a *assetsRepository) SavePDF(surveyId string, data []byte) error {
-	path := fmt.Sprintf("assets/survey_%v/introduction/introduction.pdf", surveyId)
+func (a *assetsRepository) SavePDF(filetype string, surveyId string, data []byte) error {
+	var path string
+	switch filetype {
+	case "termsandconditions":
+		path = "assets/termsandconditions.pdf"
+	default:
+		path = fmt.Sprintf("assets/survey_%v/%v/%v.pdf", surveyId, filetype, filetype)
+	}
 	f, err := os.Create(path)
 	if err != nil {
 		panic(err)

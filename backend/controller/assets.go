@@ -115,7 +115,7 @@ func (a *assetsController) UploadPDF(writer http.ResponseWriter, request *http.R
 	}
 
 	// save file to disk
-	err = a.assetsRepository.SavePDF(v["surveyId"], fileBytes)
+	err = a.assetsRepository.SavePDF(v["type"], v["surveyId"], fileBytes)
 	if err != nil {
 		log.Error().Err(err).Caller().Msg("unable to write file to disc")
 		writer.WriteHeader(http.StatusInternalServerError)
@@ -156,7 +156,13 @@ func (a *assetsController) Get(writer http.ResponseWriter, request *http.Request
 func (a *assetsController) GetPDF(writer http.ResponseWriter, request *http.Request) {
 	v := mux.Vars(request)
 
-	path := fmt.Sprintf("assets/survey_%v/introduction/introduction.pdf", v["surveyId"])
+	var path string
+	switch v["type"] {
+	case "termsandconditions":
+		path = "assets/termsandconditions.pdf"
+	default:
+		path = fmt.Sprintf("assets/survey_%v/%v/%v.pdf", v["surveyId"], v["type"], v["type"])
+	}
 	file, err := os.Open(path)
 	defer file.Close()
 	if err != nil {

@@ -34,10 +34,19 @@
                 <mat-form-field class="input"
                                 matTooltip="Do you want to receive the final thesis via mail once its done?"
                                 appearance="fill">
-                  <mat-label>Do you want to receive the final thesis via mail once its done??</mat-label>
+                  <mat-label>Do you want to receive the final thesis via mail once its done?</mat-label>
                   <select matNativeControl formControlName="wantsThesis">
                     <option [value]="'true'">Yes</option>
                     <option [value]="'false'">No</option>
+                  </select>
+                </mat-form-field>
+                <br>
+                <mat-form-field class="input"
+                                matTooltip="Do you agree to the terms and conditions?"
+                                appearance="fill">
+                  <mat-label>Do you agree to the terms and conditions?</mat-label>
+                  <select matNativeControl formControlName="agreesToTNC">
+                    <option [value]="'true'">I agree to the terms and conditions.</option>
                   </select>
                 </mat-form-field>
                 <br>
@@ -52,11 +61,16 @@
                   <!--<mat-error *ngIf="signupForm.get('passwordConfirmation').hasError('passwordsEqual')">
                     Passwörter stimmen nicht überein.
                   </mat-error>-->
-                  </mat-form-field>
-                  <br>
-                  <button mat-raised-button class="input in2" type="submit" [disabled]="!signupForm.valid">Submit</button>
+                </mat-form-field>
+                <br>
+                <button mat-raised-button class="input in2" type="submit" [disabled]="!signupForm.valid">Submit</button>
               </form>
           </div>
       </mat-tab>
   </mat-tab-group>
+  <div class="elem">
+    <h2>
+      <a target="_blank" rel="noopener noreferrer" href="{{'/api/assets/static/termsandconditions/' + 420}}">Terms and
+        Conditions</a></h2>
+  </div>
 </div>

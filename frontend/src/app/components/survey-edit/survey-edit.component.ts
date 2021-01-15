@@ -22,7 +22,8 @@ export class SurveyEditComponent implements OnInit {
   brackets: Array<string>;
   bracketForm: FormGroup;
   fileToUpload: File = null;
-  fileSelected: boolean;
+  fileOneSelected: boolean;
+  fileTwoSelected: boolean;
 
   constructor(
     public router: Router,
@@ -39,7 +40,8 @@ export class SurveyEditComponent implements OnInit {
     this.bracketForm = this.formBuilder.group({
       name: ['', [Validators.required]],
     });
-    this.fileSelected = false;
+    this.fileOneSelected = false;
+    this.fileTwoSelected = false;
   }
 
   ngOnInit(): void {
@@ -129,15 +131,33 @@ export class SurveyEditComponent implements OnInit {
     });
   }
 
-  handleFileInput(files: FileList): void {
+  handleFileInput(files: FileList, file: string): void {
     this.fileToUpload = files.item(0);
-    this.fileSelected = true;
+    switch (file) {
+      case 'one':
+        this.fileOneSelected = true;
+        break;
+      case 'two':
+        this.fileTwoSelected = true;
+        break;
+      default:
+        break;
+    }
   }
 
-  uploadFileToActivity(): void {
-    this.assetService.postIntroduction(this.fileToUpload, this.surveyId).subscribe((response: HttpResponse<any>) => {
+  uploadFileToActivity(path: string): void {
+    this.assetService.postAsset(this.fileToUpload, this.surveyId, path).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
-        this.fileSelected = false;
+        switch (path) {
+          case '/api/assets/static/introduction/':
+            this.fileOneSelected = false;
+            break;
+          case '/api/assets/static/termsandconditions/':
+            this.fileTwoSelected = false;
+            break;
+          default:
+            break;
+        }
         this.fileToUpload = null;
         console.log('SUCCESS!');
       }

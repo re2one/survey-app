@@ -5,15 +5,35 @@
     <div>
       <h1>Introduction</h1>
 
-      <a target="_blank" rel="noopener noreferrer" href="{{'/api/assets/introduction/' + surveyId}}">Click to open</a>
+      <a target="_blank" rel="noopener noreferrer" href="{{'/api/assets/static/introduction/' + surveyId}}">Click to
+        open</a>
       <div class="form-group">
         <label for="file">Choose File</label>
         <input type="file"
                accept="application/pdf"
                id="file"
-               (change)="handleFileInput($event.target.files)">
+               (change)="handleFileInput($event.target.files, 'one')">
       </div>
-      <button mat-flat-button class="buttons" [disabled]="!fileSelected" (click)="uploadFileToActivity()">UPLOAD
+      <button mat-flat-button class="buttons" [disabled]="!fileOneSelected"
+              (click)="uploadFileToActivity('/api/assets/static/introduction/')">UPLOAD
+      </button>
+
+    </div>
+    <br>
+    <div>
+      <h1>Terms and Conditions</h1>
+
+      <a target="_blank" rel="noopener noreferrer" href="{{'/api/assets/static/termsandconditions/' + surveyId}}">Click
+        to open</a>
+      <div class="form-group">
+        <label for="file">Choose File</label>
+        <input type="file"
+               accept="application/pdf"
+               id="file2"
+               (change)="handleFileInput($event.target.files, 'two')">
+      </div>
+      <button mat-flat-button class="buttons" [disabled]="!fileTwoSelected"
+              (click)="uploadFileToActivity('/api/assets/static/termsandconditions/')">UPLOAD
       </button>
 
     </div>

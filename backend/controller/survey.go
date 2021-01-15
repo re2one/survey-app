@@ -80,7 +80,13 @@ func (uc *surveyController) Post(writer http.ResponseWriter, request *http.Reque
 		log.Error().Err(err).Msg("unable to write post survey to db")
 		writer.WriteHeader(http.StatusInternalServerError)
 	}
-	err = uc.assetRepository.PostIntroduction(strconv.Itoa(int(survey2.ID)))
+	err = uc.assetRepository.PostAssetFolder(strconv.Itoa(int(survey2.ID)), "introduction")
+	if err != nil {
+		log.Error().Err(err).Msg("unable to create asset folder for introduction")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	err = uc.assetRepository.PostAssetFolder(strconv.Itoa(int(survey2.ID)), "termsandconditions")
 	if err != nil {
 		log.Error().Err(err).Msg("unable to create asset folder for introduction")
 		writer.WriteHeader(http.StatusInternalServerError)

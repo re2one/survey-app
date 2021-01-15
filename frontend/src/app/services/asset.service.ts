@@ -29,20 +29,16 @@ export class AssetService {
     return this.http.post(endpoint, formData, {observe: 'response'});
   }
 
-  postIntroduction(
+  postAsset(
     fileToUpload: File,
     surveyId: string,
+    path: string,
   ): Observable<HttpResponse<any>> {
-    const endpoint = `/api/assets/introduction/${surveyId}`;
+    const endpoint = `${path}${surveyId}`;
+    console.log(endpoint);
     const formData: FormData = new FormData();
     formData.append('fileKey', fileToUpload, fileToUpload.name);
     return this.http.post(endpoint, formData, {observe: 'response'});
-  }
-
-  getIntroduction(
-    surveyId: string,
-  ): Observable<HttpResponse<any>> {
-    return this.http.get(`/api/assets/introduction`, {observe: 'response'});
   }
 
   getFilenames(

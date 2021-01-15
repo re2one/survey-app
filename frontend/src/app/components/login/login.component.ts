@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
       password: ['', [Validators.required]],
       passwordConfirmation: ['', [Validators.required]],
       wantsThesis: ['', [Validators.required]],
+      agreesToTNC: ['', [Validators.required]],
     }, {validators: this.checkPasswords });
   }
 
@@ -53,7 +54,13 @@ export class LoginComponent implements OnInit {
   onSignupSubmit(signupData): void {
     this.loginForm.reset();
 
-    this.loginService.signupAndGetAccessToken(signupData.username, signupData.email, signupData.wantsThesis, signupData.password).subscribe(
+    this.loginService.signupAndGetAccessToken(
+      signupData.username,
+      signupData.email,
+      signupData.wantsThesis,
+      signupData.agreesToTNC,
+      signupData.password,
+    ).subscribe(
       obj => {
         this.loginService.setSession(obj, signupData.email);
         this.router.navigate(['/surveys']);
