@@ -21,4 +21,8 @@ export class ResultService {
   getSingleResult(surveyId: string, email: string, questionId: string): Observable<HttpResponse<any>> {
     return this.http.get(`/api/results/${surveyId}/${email}/${questionId}`, {observe: 'response'});
   }
+
+  getAverage(surveyId: string, email: string): Observable<HttpResponse<any>> {
+    return this.http.get(`/api/results/try/average/${email}/${surveyId}`, {observe: 'response'});
+  }
 }

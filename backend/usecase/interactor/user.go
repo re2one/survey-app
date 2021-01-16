@@ -55,6 +55,7 @@ func (us *userInteractor) Get(u *model.User) (*response.UserResponse, error) {
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(u.Salt+pw))
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to compare hash and salted pw, trying plain pw.")
+		return nil, err
 	}
 
 	r, err = us.RoleRepository.Get(u)

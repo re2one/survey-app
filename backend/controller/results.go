@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -26,6 +27,7 @@ type resultsController struct {
 type ResultsController interface {
 	Get(writer http.ResponseWriter, request *http.Request)
 	GetSingle(writer http.ResponseWriter, request *http.Request)
+	GetUserAverage(writer http.ResponseWriter, request *http.Request)
 }
 
 type Results struct {
@@ -177,41 +179,44 @@ func (rc *resultsController) GetSingle(writer http.ResponseWriter, request *http
 	writer.Header().Set("Content-Type", "application/json")
 	v := mux.Vars(request)
 
-	question, err := rc.questionRepository.Get(v["questionId"])
+	score, err := rc.getSingleScore(v["email"], v["questionId"])
 	if err != nil {
-		log.Error().Err(err).Msg("Unable retrieve question.")
+		log.Error().Err(err).Msg("Unable compute single question score.")
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
+	}
+
+	json.NewEncoder(writer).Encode(score)
+}
+
+func (rc *resultsController) getSingleScore(email string, questionId string) (int, error) {
+	question, err := rc.questionRepository.Get(questionId)
+	if err != nil {
+		return -1, errors.New("Unable retrieve question.")
 	}
 
 	if question.Type != "puzzle" {
-		log.Error().Err(err).Msg("Cant retrieve score for non puzzle question.")
-		writer.WriteHeader(http.StatusInternalServerError)
-		return
+		return -1, errors.New("Cant retrieve score for non puzzle question.")
 	}
 
-	solutions, err := rc.puzzleSolutionRepository.GetAll(v["questionId"])
+	solutions, err := rc.puzzleSolutionRepository.GetAll(questionId)
 	if err != nil {
-		log.Error().Err(err).Msg("Unable to retrieve puzzle solution.")
-		writer.WriteHeader(http.StatusInternalServerError)
+		return -1, errors.New("Unable to retrieve puzzle solution.")
 	}
 
 	solutionsMap, err := rc.mapPositions(solutions)
 	if err != nil {
-		log.Error().Err(err).Msg("Unable to map their positions onto solutions.")
-		writer.WriteHeader(http.StatusInternalServerError)
+		return -1, errors.New("Unable to map their positions onto solutions.")
 	}
 
-	userPieces, err := rc.puzzleAnswerRepository.GetUserSolution(v["email"], v["questionId"])
+	userPieces, err := rc.puzzleAnswerRepository.GetUserSolution(email, questionId)
 	if err != nil {
-		log.Error().Err(err).Msg("Unable to retrieve the submitted answers for this puzzle question.")
-		writer.WriteHeader(http.StatusInternalServerError)
+		return -1, errors.New("Unable to retrieve the submitted answers for this puzzle question.")
 	}
 
 	userPiecesMap, err := rc.mapUserSolution(userPieces)
 	if err != nil {
-		log.Error().Err(err).Msg("Unable to map their positions onto solutions.")
-		writer.WriteHeader(http.StatusInternalServerError)
+		return -1, errors.New("Unable to map their positions onto solutions.")
 	}
 
 	score := 0
@@ -230,8 +235,7 @@ func (rc *resultsController) GetSingle(writer http.ResponseWriter, request *http
 			}
 		}
 	}
-
-	json.NewEncoder(writer).Encode(score)
+	return score, nil
 }
 
 func (rc *resultsController) mapPositions(solutions []*model.Puzzlepiece) (map[string]*model.Puzzlepiece, error) {
@@ -315,4 +319,41 @@ func (rc *resultsController) mapEmailsToIds(users []*model.User) map[string]uint
 		result[u.Email] = u.ID
 	}
 	return result
+}
+
+func (rc *resultsController) GetUserAverage(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	v := mux.Vars(request)
+
+	surveyId := v["surveyId"]
+	email := v["email"]
+
+	lookupUser := model.User{Email: email}
+	retrievedUser, err := rc.userRepository.Get(&lookupUser)
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve user.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	answered, err := rc.answeredRepository.Get(retrievedUser, surveyId)
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve answered questions for user.")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	score := 0.0
+	puzzleCount := 0.0
+	for _, a := range answered {
+		singleScore, err := rc.getSingleScore(email, strconv.Itoa(int(a.QuestionId)))
+		if err != nil {
+			log.Error().Err(err).Str("questionId", strconv.Itoa(int(a.QuestionId))).Str("userId", strconv.Itoa(int(retrievedUser.ID))).Msg("Unable to evaluate score for user + question pair.")
+			continue
+		}
+		score += float64(singleScore)
+		puzzleCount++
+	}
+
+	json.NewEncoder(writer).Encode(fmt.Sprintf("%.2f", score/puzzleCount))
 }

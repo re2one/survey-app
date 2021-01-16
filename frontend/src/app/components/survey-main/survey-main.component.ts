@@ -4,6 +4,7 @@ import {FullQuestionsService} from '../../services/full-questions.service';
 import {HttpResponse} from '@angular/common/http';
 import {FullQuestion, FullQuestions} from '../../models/questions';
 import {MatDialog} from '@angular/material/dialog';
+import {ResultService} from '../../services/result.service';
 
 @Component({
   selector: 'app-survey-main',
@@ -14,13 +15,18 @@ export class SurveyMainComponent implements OnInit {
   private surveyId: string;
   public questions: Array<FullQuestion>;
   public finished: boolean;
+  public average: number;
+
   constructor(
     public dialog: MatDialog,
     private router: Router,
     private fullQuestionService: FullQuestionsService,
     private activatedRoute: ActivatedRoute,
+    private resultService: ResultService,
     private cdr: ChangeDetectorRef,
-  ) { }
+  ) {
+    this.average = 0.0;
+  }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
@@ -29,6 +35,12 @@ export class SurveyMainComponent implements OnInit {
       this.fullQuestionService.getFullQuestions(this.surveyId, email).subscribe((response: HttpResponse<FullQuestions>) => {
         this.questions = response.body.questions;
         this.finished = response.body.finished;
+        if (this.finished === true) {
+          this.resultService.getAverage(this.surveyId, localStorage.getItem('email')).subscribe(response2 => {
+            this.average = response2.body;
+            this.cdr.detectChanges();
+          });
+        }
       });
     });
   }
