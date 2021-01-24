@@ -243,6 +243,7 @@ func (uc *fullQuestionsController) Post(writer http.ResponseWriter, request *htt
 	v := mux.Vars(request)
 
 	email := v["email"]
+	order := v["order"]
 	lookupUser := model.User{Email: email}
 
 	retrievedUser, err := uc.userRepository.Get(&lookupUser)
@@ -262,7 +263,7 @@ func (uc *fullQuestionsController) Post(writer http.ResponseWriter, request *htt
 		return
 	}
 
-	answered, err := uc.answeredRepository.Post(retrievedUser, &question)
+	answered, err := uc.answeredRepository.Post(retrievedUser, &question, order)
 	if err != nil {
 		log.Error().Err(err).Msg("unable post question state")
 		writer.WriteHeader(http.StatusInternalServerError)

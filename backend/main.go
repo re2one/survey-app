@@ -100,7 +100,7 @@ func main() {
 	router.HandleFunc("/api/choices/{id}", authorizer.IsAdmin(cc.Delete)).Methods(http.MethodDelete)
 
 	router.HandleFunc("/api/fullquestions/{surveyid}/{email}", authorizer.IsUser(fc.GetAll)).Methods(http.MethodGet)
-	router.HandleFunc("/api/fullquestions/{email}", authorizer.IsUser(fc.Post)).Methods(http.MethodPost)
+	router.HandleFunc("/api/fullquestions/answered/{email}/{order}", authorizer.IsUser(fc.Post)).Methods(http.MethodPost)
 	router.HandleFunc("/api/fullquestions/viewed/{email}", authorizer.IsUser(fc.Viewed)).Methods(http.MethodPost)
 
 	router.HandleFunc("/api/answer/multiplechoice", authorizer.IsUser(mc.Post)).Methods(http.MethodPost)

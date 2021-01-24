@@ -42,13 +42,6 @@ func (sr *surveyRepository) GetAll() ([]*model.Survey, error) {
 
 func (sr *surveyRepository) Post(s *model.Survey) (*model.Survey, error) {
 
-	err := sr.db.Where("title = ?", s.Title).First(&s).Error
-
-	if err == nil {
-		err = errors.New("Survey already exists")
-		return nil, err
-	}
-
 	sr.db.Create(&s)
 	return s, nil
 }

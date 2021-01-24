@@ -58,9 +58,9 @@
     <div *ngFor="let question of localQuestions | keyvalue" class="card">
       <mat-card class="bg-color">
         <mat-card-header>
-          <mat-card-title>{{question.value.title}}</mat-card-title>
+          <mat-card-title>{{question.value.title}} (ID: {{question.value.ID}})</mat-card-title>
         </mat-card-header>
-        <mat-card-content >
+        <mat-card-content>
           <p>
             {{question.value.text}}
           </p>

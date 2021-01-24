@@ -21,6 +21,7 @@ import {SubmitDialogComponent} from '../submit-dialog/submit-dialog.component';
 })
 export class PuzzleAnswerComponent implements OnInit {
   @Input() question: Question;
+  @Input() order: number;
   counter$: Observable<number>;
   count = 15;
   previewActive = true;
@@ -118,7 +119,11 @@ export class PuzzleAnswerComponent implements OnInit {
     });
     this.questionsService.answerPuzzle(pieces).subscribe((response: HttpResponse<any>) => {
       if (response.status === 200) {
-        this.fullQuestuionsService.postFullQuestion(email, this.question).subscribe((response2: HttpResponse<QuestionsResponse>) => {
+        this.fullQuestuionsService.postFullQuestion(
+          email,
+          this.question,
+          this.order,
+        ).subscribe((response2: HttpResponse<QuestionsResponse>) => {
           if (response2.status === 200) {
             console.log(response2.body);
             this.router.navigate(['survey', this.question.surveyid]);

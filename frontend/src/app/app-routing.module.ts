@@ -53,7 +53,11 @@ const routes: Routes = [
     component: MultipleEditComponent
   },
   {path: 'survey/:surveyId', canActivate: [AuthGuardService], component: SurveyMainComponent},
-  {path: 'question/answer/:surveyId/:questionId', canActivate: [AuthGuardService], component: QuestionAnswerComponent},
+  {
+    path: 'question/answer/:surveyId/:questionId/:order',
+    canActivate: [AuthGuardService],
+    component: QuestionAnswerComponent
+  },
   {path: 'about', canActivate: [AuthGuardService], component: AboutComponent},
   {path: '**', redirectTo: 'login'}
 ];

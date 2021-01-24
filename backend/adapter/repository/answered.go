@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"strconv"
+
 	"github.com/rs/zerolog/log"
 
 	"backend/model"
@@ -47,12 +49,16 @@ func (rr *answeredRepository) GetSingle(u *model.User, q *model.Question) ([]*mo
 	return answered, nil
 }
 
-func (rr *answeredRepository) Post(u *model.User, q *model.Question) (*model.Answered, error) {
+func (rr *answeredRepository) Post(u *model.User, q *model.Question, order string) (*model.Answered, error) {
 	// userExists := ur.db.NewRecord(u)
-	var answered model.Answered
-	err := rr.db.Where("user_id = ? and question_id = ?", u.ID, q.ID).Find(&answered).Error
+	orderAsInt, err := strconv.Atoi(order)
 	if err != nil {
-		answered := model.Answered{User: *u, QuestionId: q.ID, Answered: true, SurveyId: q.SurveyId}
+		return nil, err
+	}
+	var answered model.Answered
+	err = rr.db.Where("user_id = ? and question_id = ?", u.ID, q.ID).Find(&answered).Error
+	if err != nil {
+		answered := model.Answered{User: *u, QuestionId: q.ID, Answered: true, SurveyId: q.SurveyId, Order: uint(orderAsInt)}
 		err := rr.db.Create(&answered).Error
 		if err != nil {
 			return nil, err
@@ -60,6 +66,8 @@ func (rr *answeredRepository) Post(u *model.User, q *model.Question) (*model.Ans
 		return &answered, nil
 	}
 	answered.Answered = true
+
+	answered.Order = uint(orderAsInt)
 	rr.db.Save(&answered)
 	return &answered, nil
 

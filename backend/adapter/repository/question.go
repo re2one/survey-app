@@ -71,13 +71,6 @@ func (sr *questionRepository) GetBracket(surveyId string, bracket string) (map[u
 
 func (sr *questionRepository) Post(surveyId string, s *model.Question) (*model.Question, error) {
 
-	err := sr.db.Where("title = ? and survey_id = ?", s.Title, surveyId).First(&s).Error
-
-	if err == nil {
-		err = errors.New("question already exists")
-		return nil, err
-	}
-
 	sr.db.Create(&s)
 	return s, nil
 }

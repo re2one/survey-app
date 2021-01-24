@@ -10,14 +10,15 @@ export class FullQuestionsService {
 
   constructor(
     private http: HttpClient
-    ) { }
+  ) {
+  }
 
   getFullQuestions(surveyId: string, email: string): Observable<HttpResponse<any>> {
     return this.http.get(`/api/fullquestions/${surveyId}/${email}`, {observe: 'response'});
   }
 
-  postFullQuestion(email: string, question: Question): Observable<HttpResponse<any>> {
-    return this.http.post(`/api/fullquestions/${email}`, {
+  postFullQuestion(email: string, question: Question, order: number): Observable<HttpResponse<any>> {
+    return this.http.post(`/api/fullquestions/answered/${email}/${order}`, {
       ID: question.ID,
       surveyId: question.surveyid,
       title: question.title,

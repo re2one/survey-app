@@ -214,10 +214,10 @@ export class PuzzlePiece {
 }
 
 class SelectOptions {
-  value: string;
-  viewValue: string;
+  value: string; // id
+  viewValue: string; // title
   constructor(value: string, viewValue: string) {
     this.value = value;
-    this.viewValue = viewValue;
+    this.viewValue = viewValue + ` (ID: ${value})`;
   }
 }
