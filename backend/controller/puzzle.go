@@ -99,7 +99,7 @@ func (pc *puzzleController) GetAllForQuestionaire(writer http.ResponseWriter, re
 		return
 	}
 
-	ans, err := pc.answeredRepository.GetSingle(retrievedUser, q)
+	ans, err := pc.answeredRepository.GetSingle(retrievedUser.ID, q)
 	if err != nil {
 		log.Error().Err(err).Msg("Unable to retrieve question state.")
 		writer.WriteHeader(http.StatusInternalServerError)

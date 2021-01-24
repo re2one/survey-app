@@ -129,7 +129,7 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 
 				for k, v := range questionsInBracket {
 					if _, ok := state[k]; !ok {
-						previewed, err := uc.answeredRepository.GetSingle(retrievedUser, v)
+						previewed, err := uc.answeredRepository.GetSingle(retrievedUser.ID, v)
 						if err == nil && len(previewed) > 0 {
 							if previewed[0].Viewed {
 								alreadyPreviewed = v.ID

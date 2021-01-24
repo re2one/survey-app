@@ -44,6 +44,7 @@ type Question struct {
 type Answer struct {
 	User  string `json:"user"`
 	Score string `json:"score"`
+	Order string `json:"order"`
 }
 
 type ResultResponse struct {
@@ -82,6 +83,17 @@ func (rc *resultsController) Get(writer http.ResponseWriter, request *http.Reque
 
 	resultQuestions := make([]*Question, 0, len(questions))
 
+	users, err := rc.userRepository.GetAll()
+	if err != nil {
+		log.Error().Err(err).Msg("Unable to retrieve the users.")
+		writer.WriteHeader(http.StatusInternalServerError)
+	}
+
+	usersByEmail := make(map[string]*model.User, len(users))
+	for _, user := range users {
+		usersByEmail[user.Email] = user
+	}
+
 	for _, q := range questions {
 		switch q.Type {
 		case "multiplechoice":
@@ -93,7 +105,28 @@ func (rc *resultsController) Get(writer http.ResponseWriter, request *http.Reque
 			resultAnswers := make([]*Answer, 0, len(answers))
 
 			for _, a := range answers {
-				resultAnswers = append(resultAnswers, &Answer{User: a.Email, Score: a.Text})
+
+				if _, ok := usersByEmail[a.Email]; !ok {
+					log.Error().Err(err).Msg("Unable to find email in retrieved users.")
+					continue
+				}
+				id := usersByEmail[a.Email].ID
+
+				answered, err := rc.answeredRepository.GetSingle(id, q)
+				if err != nil {
+					resultAnswers = append(resultAnswers, &Answer{User: a.Email, Score: ""})
+					continue
+				}
+				if len(answered) < 1 {
+					resultAnswers = append(resultAnswers, &Answer{User: a.Email, Score: ""})
+					continue
+				}
+				if answered[0].Answered == false {
+					resultAnswers = append(resultAnswers, &Answer{User: a.Email, Score: ""})
+					continue
+				}
+
+				resultAnswers = append(resultAnswers, &Answer{User: a.Email, Score: a.Text, Order: strconv.Itoa(int(answered[0].Order))})
 			}
 			resultQuestions = append(resultQuestions, &Question{Type: q.Type, Text: q.Text, Id: q.ID, Answers: resultAnswers})
 		case "puzzle":
@@ -109,16 +142,10 @@ func (rc *resultsController) Get(writer http.ResponseWriter, request *http.Reque
 				writer.WriteHeader(http.StatusInternalServerError)
 			}
 
-			users, err := rc.userRepository.GetAll()
-			if err != nil {
-				log.Error().Err(err).Msg("Unable to retrieve the users.")
-				writer.WriteHeader(http.StatusInternalServerError)
-			}
-
 			resultAnswers := make([]*Answer, 0)
 			for _, user := range users {
 
-				answered, err := rc.answeredRepository.GetSingle(user, q)
+				answered, err := rc.answeredRepository.GetSingle(user.ID, q)
 				if err != nil {
 					resultAnswers = append(resultAnswers, &Answer{User: user.Email, Score: ""})
 					continue
@@ -160,7 +187,7 @@ func (rc *resultsController) Get(writer http.ResponseWriter, request *http.Reque
 					}
 				}
 
-				resultAnswers = append(resultAnswers, &Answer{User: user.Email, Score: strconv.Itoa(score)})
+				resultAnswers = append(resultAnswers, &Answer{User: user.Email, Score: strconv.Itoa(score), Order: strconv.Itoa(int(answered[0].Order))})
 			}
 
 			resultQuestions = append(resultQuestions, &Question{Type: q.Type, Text: q.Text, Id: q.ID, Answers: resultAnswers})
@@ -169,7 +196,7 @@ func (rc *resultsController) Get(writer http.ResponseWriter, request *http.Reque
 		}
 	}
 
-	transformedResult := rc.transformOutput(resultQuestions)
+	transformedResult := rc.transformOutput(resultQuestions, users)
 
 	json.NewEncoder(writer).Encode(&ResultResponse{Result: transformedResult})
 }
@@ -254,19 +281,13 @@ func (rc *resultsController) mapUserSolution(solutions []*model.PuzzleAnswer) (m
 	return result, nil
 }
 
-func (rc *resultsController) transformOutput(questions []*Question) string {
+func (rc *resultsController) transformOutput(questions []*Question, users []*model.User) string {
 	// maps an users email address
 	// to a map of question ids
 	// to the users answers
 	answersByUser := make(map[uint]map[uint]string)
 	columnLabels := make([]string, 0, len(questions)+1)
 	columnLabels = append(columnLabels, "user")
-
-	users, err := rc.userRepository.GetAll()
-	if err != nil {
-		log.Error().Err(err).Msg("unable to retrieve users")
-		return ""
-	}
 
 	uids := rc.mapEmailsToIds(users)
 	qids := make([]uint, 0, len(questions))
@@ -281,13 +302,17 @@ func (rc *resultsController) transformOutput(questions []*Question) string {
 		for _, a := range q.Answers {
 			id, ok := uids[a.User]
 			if !ok {
-				log.Error().Err(err).Str("email", a.User).Msg("cant find id for users")
+				log.Error().Str("email", a.User).Msg("cant find id for users")
 				continue
 			}
 			if answersByUser[id] == nil {
 				answersByUser[id] = make(map[uint]string)
 			}
-			answersByUser[id][q.Id] = a.Score
+			var score string = ""
+			if a.Order != "" && a.Score != "" {
+				score = fmt.Sprintf("%v$%v", a.Order, a.Score)
+			}
+			answersByUser[id][q.Id] = score
 		}
 	}
 

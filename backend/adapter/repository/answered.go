@@ -37,10 +37,10 @@ func (rr *answeredRepository) Get(u *model.User, surveyId string) (map[uint]mode
 	return result, nil
 }
 
-func (rr *answeredRepository) GetSingle(u *model.User, q *model.Question) ([]*model.Answered, error) {
+func (rr *answeredRepository) GetSingle(userId uint, q *model.Question) ([]*model.Answered, error) {
 
 	answered := make([]*model.Answered, 0)
-	err := rr.db.Where("user_id = ? and question_id = ?", u.ID, q.ID).Find(&answered).Error
+	err := rr.db.Where("user_id = ? and question_id = ?", userId, q.ID).Find(&answered).Error
 	if err != nil {
 		return nil, err
 	}
