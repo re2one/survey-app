@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QuestionsService} from '../../services/questions.service';
 import {HttpResponse} from '@angular/common/http';
@@ -32,6 +32,7 @@ export class QuestionAddComponent implements OnInit {
       surveyData.first,
       this.surveyId,
       surveyData.type,
+      surveyData.example,
     ).subscribe((response: HttpResponse<QuestionsResponse>) => {
       console.log(response);
       if (response.status === 200) {

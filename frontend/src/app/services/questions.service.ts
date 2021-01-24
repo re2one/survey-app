@@ -33,12 +33,14 @@ export class QuestionsService {
     first: string,
     surveyId: string,
     type: string,
+    example: boolean,
   ): Observable<HttpResponse<any>> {
     return this.http.post(`/api/questions/${surveyId}`, {
       title,
       text,
       first,
       type,
+      example,
     }, {observe: 'response'});
   }
 

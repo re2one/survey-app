@@ -11,6 +11,14 @@
     </mat-form-field>
     <br>
     <mat-form-field class="input" appearance="fill">
+      <mat-label>Is this an example question?</mat-label>
+      <select matNativeControl formControlName="example">
+        <option [value]="'true'" selected>Yes</option>
+        <option [value]="'false'">No</option>
+      </select>
+    </mat-form-field>
+    <br>
+    <mat-form-field class="input" appearance="fill">
       <mat-label>What type of question is this?</mat-label>
       <select matNativeControl formControlName="type">
         <option [value]="'multiplechoice'" selected>Multiplechoice</option>

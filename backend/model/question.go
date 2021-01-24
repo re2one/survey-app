@@ -12,6 +12,7 @@ type Question struct {
 	Text               string `json:"text" gorm:"type:text"`
 	Type               string `json:"type"`
 	First              string `json:"first"`
+	Example            string `json:"example"`
 	Bracket            string `json:"bracket"`
 	Next               string `json:"next"`
 	SecondToNext       string `json:"secondToNext"`

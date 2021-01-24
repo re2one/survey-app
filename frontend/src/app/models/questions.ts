@@ -7,6 +7,7 @@ export class Question{
   public DeletedAt: string;
   public Survey: Survey;
   public surveyid: number;
+  public example: string;
   public title: string;
   public text: string;
   public type: string;
@@ -29,6 +30,7 @@ export class FullQuestion {
   public questionId: number;
   public title: string;
   public type: string;
+  public example: string;
   public answered: boolean;
 }
 

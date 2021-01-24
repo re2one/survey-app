@@ -10,4 +10,5 @@ type FullQuestion struct {
 	Title      string `json:"title"`
 	Type       string `json:"type"`
 	Answered   bool   `json:"answered"`
+	Example    string `json:"example"`
 }

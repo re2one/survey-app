@@ -1,9 +1,9 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FullQuestionsService} from '../../services/full-questions.service';
 import {HttpResponse} from '@angular/common/http';
 import {FullQuestion, FullQuestions} from '../../models/questions';
-import {MatDialog} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog,} from '@angular/material/dialog';
 import {ResultService} from '../../services/result.service';
 
 @Component({
@@ -52,7 +52,8 @@ export class SurveyMainComponent implements OnInit {
   questionHelper(question: FullQuestion): void {
     switch (question.type) {
       case 'puzzle': {
-        this.openTimerAlert(question.questionId);
+        const example = question.example === 'true';
+        this.openTimerAlert(question.questionId, example);
         break;
       }
       default: {
@@ -62,8 +63,14 @@ export class SurveyMainComponent implements OnInit {
     }
   }
 
-  openTimerAlert(questionid: number): void {
-    const dialogRef = this.dialog.open(TimerAlertDialogComponent);
+  openTimerAlert(questionid: number, example: boolean): void {
+    console.log('Example:');
+    console.log(example);
+    const dialogRef = this.dialog.open(TimerAlertDialogComponent, {
+      data: {
+        example
+      }
+    });
     dialogRef.componentInstance.shouldProceed.subscribe(event => {
       if (event) {
         this.moveToAnswer(questionid);
@@ -77,9 +84,16 @@ export class SurveyMainComponent implements OnInit {
   template: `
     <h1 mat-dialog-title>Attention</h1>
     <div mat-dialog-content>
-      After confirmation of this dialog, a timer of 15 seconds will start.
-      <br>
-      Please try to memorize the game state during this time and replicate it afterwards.
+      <p>
+        After confirmation of this dialog, a timer of 15 seconds will start.
+        <br>
+        Please try to memorize the game state during this time and replicate it afterwards.
+      </p>
+      <p *ngIf="data.example">
+        THIS IS AN EXAMPLE QUESTION!
+        <br>
+        Your score on this question will not be counted towards your total score.
+      </p>
     </div>
     <div mat-dialog-actions>
       <button mat-button mat-dialog-close (click)="emitProceeding(true)">Start</button>
@@ -87,8 +101,19 @@ export class SurveyMainComponent implements OnInit {
     </div>
   `,
 })
-export class TimerAlertDialogComponent {
+export class TimerAlertDialogComponent implements OnInit {
+
   @Output() shouldProceed = new EventEmitter<boolean>();
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+
+  }
+
+  ngOnInit(): void {
+    console.log(this.data);
+  }
 
   emitProceeding(action: boolean): void {
     this.shouldProceed.emit(action);

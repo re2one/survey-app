@@ -91,6 +91,7 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 			Title:      currentQuestion.Title,
 			Type:       currentQuestion.Type,
 			Answered:   answered,
+			Example:    currentQuestion.Example,
 		}
 
 		fullQuestions = append(fullQuestions, &fullQuestion)
@@ -143,6 +144,7 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 						Title:      v.Title,
 						Type:       v.Type,
 						Answered:   answered,
+						Example:    v.Example,
 					}
 					fullQuestions = append(fullQuestions, &fq)
 					delete(questionsInBracket, k)
@@ -195,6 +197,7 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 						Title:      v.Title,
 						Type:       v.Type,
 						Answered:   answered,
+						Example:    v.Example,
 					}
 					fullQuestions = append(fullQuestions, &fq)
 					delete(questionsInBracket, k)

@@ -30,6 +30,7 @@ export class QuestionFormComponent implements OnInit {
       first: ['', [Validators.required]],
       type: ['', [Validators.required]],
       bracket: ['', [Validators.required]],
+      example: ['', [Validators.required]],
       surveyId: [''],
     });
   }
@@ -49,6 +50,7 @@ export class QuestionFormComponent implements OnInit {
               first: this.question.first,
               type: this.question.type,
               bracket: this.question.bracket || 'none',
+              example: this.question.example,
             });
           }
         });
