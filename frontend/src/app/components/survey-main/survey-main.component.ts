@@ -53,21 +53,25 @@ export class SurveyMainComponent implements OnInit {
     switch (question.type) {
       case 'puzzle': {
         const example = question.example === 'true';
-        this.openTimerAlert(question.questionId, example);
+        this.openTimerAlert(question.questionId, question.type, example);
         break;
       }
       default: {
+        const example = question.example === 'true';
+        if (example) {
+          this.openTimerAlert(question.questionId, question.type, example);
+          break;
+        }
         this.moveToAnswer(question.questionId);
         break;
       }
     }
   }
 
-  openTimerAlert(questionid: number, example: boolean): void {
-    console.log('Example:');
-    console.log(example);
+  openTimerAlert(questionid: number, typeOfQuestion: string, example: boolean): void {
     const dialogRef = this.dialog.open(TimerAlertDialogComponent, {
       data: {
+        typeOfQuestion,
         example
       }
     });
@@ -84,15 +88,25 @@ export class SurveyMainComponent implements OnInit {
   template: `
     <h1 mat-dialog-title>Attention</h1>
     <div mat-dialog-content>
-      <p>
+      <p *ngIf="data.typeOfQuestion==='puzzle'">
         After confirmation of this dialog, a timer of 15 seconds will start.
         <br>
         Please try to memorize the game state during this time and replicate it afterwards.
       </p>
-      <p *ngIf="data.example">
+      <p *ngIf="data.typeOfQuestion==='multiplechoice'">
+        This is a single choice question.
+        <br>
+        Please choose the option that suits you best.
+      </p>
+      <p *ngIf="data.example && data.typeOfQuestion==='puzzle'">
         THIS IS AN EXAMPLE QUESTION!
         <br>
         Your score on this question will not be counted towards your total score.
+      </p>
+      <p *ngIf="data.example && data.typeOfQuestion==='multiplechoice'">
+        THIS IS AN EXAMPLE QUESTION!
+        <br>
+        Your answer on this question will not impact your final result.
       </p>
     </div>
     <div mat-dialog-actions>
