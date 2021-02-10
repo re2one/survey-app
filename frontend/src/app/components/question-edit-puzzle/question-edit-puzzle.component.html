@@ -62,6 +62,7 @@
           <option *ngFor="let q of questionz" [value]="q.value">
             {{q.viewValue}}
           </option>
+          <option [value]="'lastQuestion'"> The Survey will end after the random block.</option>
         </select>
       </mat-form-field>
     </form>

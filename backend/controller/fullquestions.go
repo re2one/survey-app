@@ -186,9 +186,16 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 				}
 
 				possibleNextQuestions := make([]uint, 0)
+				var alreadyPreviewed uint = 0
 
 				for k, v := range questionsInBracket {
 					if _, ok := state[k]; !ok {
+						previewed, err := uc.answeredRepository.GetSingle(retrievedUser.ID, v)
+						if err == nil && len(previewed) > 0 {
+							if previewed[0].Viewed {
+								alreadyPreviewed = v.ID
+							}
+						}
 						possibleNextQuestions = append(possibleNextQuestions, k)
 						continue
 					}
@@ -203,13 +210,20 @@ func (uc *fullQuestionsController) GetAll(writer http.ResponseWriter, request *h
 					delete(questionsInBracket, k)
 				}
 
+				if alreadyPreviewed != 0 {
+					nextQuestion = fmt.Sprint(questionsInBracket[alreadyPreviewed].ID)
+					break
+				}
+
 				if len(possibleNextQuestions) < 1 {
 					nextQuestion = fmt.Sprint(q.SecondToNext)
 					break
 				}
 
-				randomIndex := rand.Intn(len(possibleNextQuestions))
-				nextQuestion = fmt.Sprint(questionsInBracket[uint(randomIndex)].ID)
+				if len(possibleNextQuestions) > 0 {
+					randomIndex := rand.Intn(len(possibleNextQuestions))
+					nextQuestion = fmt.Sprint(questionsInBracket[possibleNextQuestions[uint(randomIndex)]].ID)
+				}
 
 			default:
 				nextQuestion = fmt.Sprint(q.Next)
