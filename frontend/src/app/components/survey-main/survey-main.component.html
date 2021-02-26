@@ -16,9 +16,19 @@
     <div>
       <mat-card *ngIf="finished" class="bg-color" style="margin-top: 0px;">
         <mat-card-header>
-          <mat-card-title>Congrats, you have finished this survey!</mat-card-title>
+          <mat-card-title>
+            Congrats, you have finished this survey!
+          </mat-card-title>
         </mat-card-header>
-
+        <mat-card-content>
+          The goal of this survey and my thesis overall is to figure out whether effects that are found in chess players
+          are also present in the game "Magic: The Gathering" and to what degree.
+          Specifically it's about the difference in skill experts show over novices in memorizing gameplay-situations
+          and then reconstructing them.
+          Of interest is mostly, whether there's a significant difference between those gameplay situations being some
+          that could reasonably occur in usual games of "Magic: The Gathering" or not.
+          Your participation helped a lot, so thank you!
+        </mat-card-content>
         <mat-card-content>
           <h3>Your average score: {{this.average}}/24 points.</h3>
         </mat-card-content>

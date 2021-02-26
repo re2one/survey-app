@@ -25,6 +25,17 @@
   border-radius: 5px;
 }
 
-.in2{
+.in2 {
   margin-bottom: 10px;
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.footer-element {
+  margin: 5%;
 }

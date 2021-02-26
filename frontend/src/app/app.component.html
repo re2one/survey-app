@@ -11,10 +11,13 @@
     <div class="topbar-element">
       <button *ngIf="isLoggedIn()" class="top-button" mat-flat-button [matMenuTriggerFor]="menu">Menu</button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item class="top-button" (click)="about()">About</button>
-        <button mat-menu-item class="top-button"><a target="_blank" rel="noopener noreferrer"
-                                                    href="{{'/api/assets/static/termsandconditions/' + 420}}">Terms and
-            Conditions</a></button>
+        <button mat-menu-item class="top-button" (click)="about()">About
+        </button>
+        <button mat-menu-item class="top-button">
+          Impressum
+        </button>
+        <button mat-menu-item class="top-button">
+          <a target="_blank" href="{{'/api/assets/static/termsandconditions/' + 1}}">AGB</a></button>
         <button mat-menu-item class="top-button" (click)="logout()">Logout</button>
       </mat-menu>
     </div>
