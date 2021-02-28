@@ -58,7 +58,7 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     component: QuestionAnswerComponent
   },
-  {path: 'about', canActivate: [AuthGuardService], component: AboutComponent},
+  {path: 'about', component: AboutComponent},
   {path: '**', redirectTo: 'login'}
 ];
 

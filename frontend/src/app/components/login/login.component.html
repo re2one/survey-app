@@ -64,21 +64,21 @@
                     Passwörter stimmen nicht überein.
                   </mat-error>-->
                 </mat-form-field>
-                <br>
-                <button mat-raised-button class="input in2" type="submit" [disabled]="!signupForm.valid">Submit</button>
-              </form>
-          </div>
-      </mat-tab>
+          <br>
+          <button mat-raised-button class="input in2" type="submit" [disabled]="!signupForm.valid">Submit</button>
+        </form>
+      </div>
+    </mat-tab>
   </mat-tab-group>
   <div class="elem footer">
     <h2 class="footer-element">
-      Impressum
+      <a target="_blank" href="{{'/api/assets/static/impressum/' + 1}}">Impressum</a>
     </h2>
     <h2 class="footer-element">
       <a target="_blank" href="{{'/api/assets/static/termsandconditions/' + 1}}">AGB</a>
     </h2>
     <h2 class="footer-element">
-      About
+      <a routerLink="/about" routerLinkActive="active">About</a>
     </h2>
   </div>
 </div>

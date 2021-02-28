@@ -24,6 +24,7 @@ export class SurveyEditComponent implements OnInit {
   fileToUpload: File = null;
   fileOneSelected: boolean;
   fileTwoSelected: boolean;
+  fileThreeSelected: boolean;
 
   constructor(
     public router: Router,
@@ -42,6 +43,7 @@ export class SurveyEditComponent implements OnInit {
     });
     this.fileOneSelected = false;
     this.fileTwoSelected = false;
+    this.fileThreeSelected = false;
   }
 
   ngOnInit(): void {
@@ -140,6 +142,9 @@ export class SurveyEditComponent implements OnInit {
       case 'two':
         this.fileTwoSelected = true;
         break;
+      case 'three':
+        this.fileThreeSelected = true;
+        break;
       default:
         break;
     }
@@ -154,6 +159,9 @@ export class SurveyEditComponent implements OnInit {
             break;
           case '/api/assets/static/termsandconditions/':
             this.fileTwoSelected = false;
+            break;
+          case '/api/assets/static/impressum/':
+            this.fileThreeSelected = false;
             break;
           default:
             break;

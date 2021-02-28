@@ -103,6 +103,9 @@ func (a *assetsRepository) SavePDF(filetype string, surveyId string, data []byte
 	switch filetype {
 	case "termsandconditions":
 		path = "assets/termsandconditions.pdf"
+	case "impressum":
+		path = "assets/impressum.pdf"
+
 	default:
 		path = fmt.Sprintf("assets/survey_%v/%v/%v.pdf", surveyId, filetype, filetype)
 	}

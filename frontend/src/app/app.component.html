@@ -14,8 +14,7 @@
         <button mat-menu-item class="top-button" (click)="about()">About
         </button>
         <button mat-menu-item class="top-button">
-          Impressum
-        </button>
+          <a target="_blank" href="{{'/api/assets/static/impressum/' + 1}}">Impressum</a></button>
         <button mat-menu-item class="top-button">
           <a target="_blank" href="{{'/api/assets/static/termsandconditions/' + 1}}">AGB</a></button>
         <button mat-menu-item class="top-button" (click)="logout()">Logout</button>

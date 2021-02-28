@@ -21,7 +21,7 @@
     </div>
     <br>
     <div>
-      <h1>Terms and Conditions</h1>
+      <h1>AGB</h1>
 
       <a target="_blank" href="{{'/api/assets/static/termsandconditions/' + surveyId}}">Click
         to open</a>
@@ -34,6 +34,24 @@
       </div>
       <button mat-flat-button class="buttons" [disabled]="!fileTwoSelected"
               (click)="uploadFileToActivity('/api/assets/static/termsandconditions/')">UPLOAD
+      </button>
+
+    </div>
+    <br>
+    <div>
+      <h1>Impressum</h1>
+
+      <a target="_blank" href="{{'/api/assets/static/impressum/' + surveyId}}">Click
+        to open</a>
+      <div class="form-group">
+        <label for="file">Choose File</label>
+        <input type="file"
+               accept="application/pdf"
+               id="file3"
+               (change)="handleFileInput($event.target.files, 'three')">
+      </div>
+      <button mat-flat-button class="buttons" [disabled]="!fileThreeSelected"
+              (click)="uploadFileToActivity('/api/assets/static/impressum/')">UPLOAD
       </button>
 
     </div>
