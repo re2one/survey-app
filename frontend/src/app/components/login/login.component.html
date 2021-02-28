@@ -18,25 +18,27 @@
           </div>
 
       </mat-tab>
-      <mat-tab label="Signup">
-          <div class="elem">
-              <form [formGroup]="signupForm" (ngSubmit)="onSignupSubmit(signupForm.value)">
-                <mat-form-field class="input" appearance="fill">
-                  <mat-label>Username</mat-label>
-                  <input matInput formControlName="username">
-                </mat-form-field>
-                <br>
-                <mat-form-field class="input" appearance="fill">
-                  <mat-label>Email</mat-label>
-                  <input matInput formControlName="email">
-                </mat-form-field>
-                <br>
-                <mat-form-field class="input"
-                                matTooltip="Do you want to receive the final thesis via mail once its done?"
-                                appearance="fill">
-                  <mat-label>Do you want to receive the final thesis via mail once its done?</mat-label>
-                  <select matNativeControl formControlName="wantsThesis">
-                    <option [value]="'true'">Yes</option>
+    <mat-tab label="Signup">
+      <div class="elem">
+        <form [formGroup]="signupForm" (ngSubmit)="onSignupSubmit(signupForm.value)">
+          <mat-form-field class="input" appearance="fill">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username">
+          </mat-form-field>
+          <br>
+          <mat-form-field class="input"
+                          matTooltip="We won't send you a verification mail."
+                          appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+          </mat-form-field>
+          <br>
+          <mat-form-field class="input"
+                          matTooltip="Do you want to receive the final thesis via mail once its done?"
+                          appearance="fill">
+            <mat-label>Do you want to receive the final thesis via mail once its done?</mat-label>
+            <select matNativeControl formControlName="wantsThesis">
+              <option [value]="'true'">Yes</option>
                     <option [value]="'false'">No</option>
                   </select>
                 </mat-form-field>
