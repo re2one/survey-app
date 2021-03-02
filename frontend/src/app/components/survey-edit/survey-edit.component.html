@@ -56,6 +56,23 @@
 
     </div>
     <div>
+      <h1>Datenschutz</h1>
+
+      <a target="_blank" href="{{'/api/assets/static/datenschutz/' + surveyId}}">Click
+        to open</a>
+      <div class="form-group">
+        <label for="file">Choose File</label>
+        <input type="file"
+               accept="application/pdf"
+               id="file4"
+               (change)="handleFileInput($event.target.files, 'four')">
+      </div>
+      <button mat-flat-button class="buttons" [disabled]="!fileFourSelected"
+              (click)="uploadFileToActivity('/api/assets/static/datenschutz/')">UPLOAD
+      </button>
+
+    </div>
+    <div>
       <h1>Random Brackets</h1>
       <ul>
         <li *ngFor="let b of brackets">

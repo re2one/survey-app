@@ -162,7 +162,8 @@ func (a *assetsController) GetPDF(writer http.ResponseWriter, request *http.Requ
 		path = "assets/termsandconditions.pdf"
 	case "impressum":
 		path = "assets/impressum.pdf"
-
+	case "datenschutz":
+		path = "assets/datenschutz.pdf"
 	default:
 		path = fmt.Sprintf("assets/survey_%v/%v/%v.pdf", v["surveyId"], v["type"], v["type"])
 	}
